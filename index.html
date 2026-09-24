@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuromi & Bé Bảo Hân | Trợ Lý AI Đa Giác Quan</title>
+  <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio chân thật dành riêng cho bé Bảo Hân. Hỏi đáp vạn vật, xem hình ảnh minh họa dẫn chứng, nghe hát và tiếng động muôn loài sống động.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars-particle-container" id="starsContainer"></div>
+
+  <!-- Main App Wrapper -->
+  <div class="app-layout">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="kuromi-logo-badge">
+          <span class="skull-icon">💀</span>
+          <div class="logo-text-group">
+            <h1 class="logo-title">KUROMI &amp; BẢO HÂN</h1>
+            <span class="logo-subtitle">Trợ Lý AI Của Bé Yêu ✨</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Voice read toggle -->
+        <button id="toggleTtsBtn" class="control-btn active" title="Bật/Tắt giọng Kuromi đọc to">
+          <span class="btn-icon">🗣️</span>
+          <span class="btn-label">Giọng đọc: BẬT</span>
+        </button>
+
+        <!-- Sound FX toggle -->
+        <button id="toggleSfxBtn" class="control-btn active" title="Bật/Tắt âm thanh hiệu ứng">
+          <span class="btn-icon">🔔</span>
+          <span class="btn-label">Âm thanh</span>
+        </button>
+
+        <!-- Remote link button -->
+        <button id="remoteLinkBtn" class="control-btn remote-btn" title="Lấy đường dẫn dùng khác mạng Wifi / 4G">
+          <span class="btn-icon">🌐</span>
+          <span class="btn-label">Dùng Từ Xa (4G/Khác Wifi)</span>
+        </button>
+
+        <!-- Parent settings button -->
+        <button id="openSettingsBtn" class="control-btn settings-btn" title="Cài đặt cho Ba Mẹ">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-label">Ba Mẹ</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- Left Column / Top Stage: Interactive Kuromi Mascot Stage -->
+      <section class="kuromi-stage-card">
+        <div class="stage-ribbon-tag">🎀 Bạn Thân Của Bé Bảo Hân 🎀</div>
+        
+        <div class="mascot-display-container">
+          <div class="avatar-halo" id="avatarHalo"></div>
+          <div class="mascot-image-wrapper" id="mascotWrapper">
+            <img src="assets/kuromi_normal.jpg" alt="Kuromi Mascot" id="kuromiAvatarImg" class="mascot-img">
+            <div class="emotion-sparkle" id="emotionSparkle">✨</div>
+          </div>
+          <div class="sound-wave-bars" id="musicVisualizerStage">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+
+        <div class="mascot-status-bubble">
+          <span class="bubble-arrow"></span>
+          <p id="kuromiStatusText">Chào bé Bảo Hân đáng yêu! Cần xem ảnh, nghe hát hay hỏi Kuromi điều gì nào? 💕</p>
+        </div>
+
+        <!-- Mascot Mood & Fun Interaction Buttons -->
+        <div class="stage-interactions">
+          <button class="stage-action-pill" id="actionDanceBtn">
+            <span>💃</span> Nhún nhảy
+          </button>
+          <button class="stage-action-pill" id="actionSingBtn">
+            <span>🎤</span> Hát bài mới
+          </button>
+          <button class="stage-action-pill" id="actionCheerBtn">
+            <span>💖</span> Tặng tim
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Column: Interactive Chat & Multi-Sensory Stream -->
+      <section class="chat-display-section">
+        
+        <!-- Multi-Sensory Quick Explore Filter Bar -->
+        <div class="explore-tray-wrapper">
+          <div class="explore-header">
+            <span class="explore-label">🌟 Bé Bảo Hân muốn khám phá gì hôm nay:</span>
+          </div>
+          <div class="quick-explore-carousel">
+            <button class="explore-chip chip-music" data-prompt="Hát cho bé nghe bài Kìa con bướm vàng">
+              🎵 Hát bài Kìa con bướm vàng
+            </button>
+            <button class="explore-chip chip-music" data-prompt="Hát cho bé nghe bài Chú ếch con">
+              🐸 Hát bài Chú ếch con
+            </button>
+            <button class="explore-chip chip-music" data-prompt="Hát bài Twinkle Twinkle Little Star">
+              ⭐ Hát bài Ngôi sao nhỏ
+            </button>
+            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng mèo kêu meo meo">
+              🐱 Nghe tiếng mèo kêu
+            </button>
+            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng sư tử gầm dũng mãnh">
+              🦁 Nghe tiếng sư tử
+            </button>
+            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng còi tàu hỏa tu tu xình xịch">
+              🚂 Nghe tiếng tàu hỏa
+            </button>
+            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình khủng long bạo chúa T-Rex">
+              🦖 Xem hình khủng long
+            </button>
+            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình hệ mặt trời và các hành tinh">
+              🪐 Xem Hệ mặt trời
+            </button>
+            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình cầu vồng 7 màu tuyệt đẹp">
+              🌈 Xem Cầu vồng 7 màu
+            </button>
+            <button class="explore-chip chip-story" data-prompt="Kể cho bé nghe câu chuyện Rùa và Thỏ">
+              🐰 Kể chuyện Rùa & Thỏ
+            </button>
+            <button class="explore-chip chip-knowledge" data-prompt="Tại sao bé phải đánh răng mỗi ngày?">
+              🦷 Vì sao phải đánh răng?
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Conversation Messages Area -->
+        <div class="chat-messages-container" id="chatContainer">
+          
+          <!-- Welcome Initial Message from Kuromi -->
+          <div class="message-row message-kuromi initial-message">
+            <div class="msg-avatar-icon">
+              <img src="assets/kuromi_normal.jpg" alt="Kuromi">
+            </div>
+            <div class="msg-bubble">
+              <div class="msg-header">
+                <span class="sender-name">Kuromi Thông Thái 👑</span>
+                <span class="msg-badge">Người bạn thân</span>
+              </div>
+              <div class="msg-text">
+                Xin chào bé Bảo Hân yêu quý! Kuromi biết tuốt đã sẵn sàng chơi cùng Bảo Hân đây! 🎀<br><br>
+                Bé Bảo Hân có thể <strong>hỏi bất cứ thứ gì</strong> trong thế giới xung quanh:<br>
+                👀 <strong>Muốn NHÌN:</strong> Bảo <em>"Cho bé xem hình khủng long / Hệ mặt trời..."</em><br>
+                👂 <strong>Muốn NGHE:</strong> Bảo <em>"Hát cho bé nghe bài Chú ếch con"</em> hoặc <em>"Tiếng mèo kêu thế nào?"</em><br>
+                🗣️ Bé Bảo Hân hãy bấm <strong>nút Micro nơ hồng</strong> to ở bên dưới để nói trực tiếp với Kuromi nhé!
+              </div>
+
+              <!-- Embedded Sample Visual & Audio Preview -->
+              <div class="msg-features-preview">
+                <div class="preview-mini-card" id="demoPlaySongBtn">
+                  <span class="preview-icon">🎶</span>
+                  <div class="preview-info">
+                    <strong>Bấm nghe Kuromi hát thử</strong>
+                    <small>Giai điệu vui nhộn cho bé</small>
+                  </div>
+                  <span class="play-indicator">▶</span>
+                </div>
+              </div>
+
+              <div class="msg-actions">
+                <button class="msg-action-btn speak-again-btn" title="Đọc lại tin nhắn">
+                  🔊 Đọc lại
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Message Input Bar For Children -->
+        <div class="chat-input-bar">
+          
+          <!-- Big Speech-to-Text Microphone Button -->
+          <button id="voiceInputBtn" class="mic-btn" title="Bấm vào đây để nói chuyện bằng giọng nói">
+            <div class="mic-pulse-ring"></div>
+            <span class="mic-icon">🎤</span>
+            <span class="mic-bow">🎀</span>
+          </button>
+
+          <!-- Input text area -->
+          <div class="input-field-wrapper">
+            <input 
+              type="text" 
+              id="childTextInput" 
+              placeholder="Bé Bảo Hân hỏi Kuromi điều gì nào? (Bấm micro để nói)..." 
+              autocomplete="off"
+            >
+            <div class="quick-reactions">
+              <button class="quick-react-btn" title="Thả tim">💖</button>
+              <button class="quick-react-btn" title="Ngôi sao">⭐</button>
+              <button class="quick-react-btn" title="Kẹo ngọt">🍭</button>
+              <button class="quick-react-btn" title="Cầu vồng">🌈</button>
+            </div>
+          </div>
+
+          <!-- Send Message Button -->
+          <button id="sendBtn" class="send-btn" title="Gửi câu hỏi">
+            <span class="send-icon">💌</span>
+          </button>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Global Persistent Mini Music Player (if playing background tune) -->
+    <div class="now-playing-dock hidden" id="nowPlayingDock">
+      <div class="dock-left">
+        <span class="dock-note-icon">🎵</span>
+        <div class="dock-info">
+          <span class="dock-title" id="dockSongTitle">Đang phát bài hát...</span>
+          <span class="dock-status" id="dockSongStatus">Kuromi đang nhún nhảy cùng bé 💃</span>
+        </div>
+      </div>
+      <div class="dock-visualizer">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="dock-right">
+        <button id="dockPauseBtn" class="dock-ctrl-btn" title="Tạm dừng">⏸</button>
+        <button id="dockStopBtn" class="dock-ctrl-btn" title="Dừng hẳn">⏹</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Parent Settings Modal -->
+  <div class="modal-overlay hidden" id="settingsModal">
+    <div class="modal-window parent-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="skull-badge">💀</span>
+          <h3>Góc Dành Riêng Cho Ba Mẹ</h3>
+        </div>
+        <button class="close-modal-btn" id="closeSettingsBtn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="settings-group">
+          <label class="setting-label">
+            <strong>🎀 Tên của bé yêu:</strong>
+          </label>
+          <input type="text" id="childNameInput" value="Bảo Hân" class="parent-input" placeholder="Nhập tên bé...">
+        </div>
+        <div class="settings-group">
+          <label class="setting-label">
+            <strong>🤖 Chế Độ Trí Tuệ Nhân Tạo (AI Engine)</strong>
+            <span class="setting-desc">Mặc định ứng dụng dùng hệ thống bách khoa toàn thư trẻ em có sẵn (hoạt động offline ngay lập tức). Ba mẹ có thể nhập Gemini API Key để mở rộng câu trả lời sâu hơn.</span>
+          </label>
+          <div class="ai-mode-selector">
+            <label class="radio-label">
+              <input type="radio" name="aiMode" value="local" checked id="modeLocal">
+              <span>Kuromi Thông Thái (Tích hợp sẵn - Tức thì & An toàn 100%)</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="aiMode" value="gemini" id="modeGemini">
+              <span>Google Gemini AI (Đòi hỏi API Key)</span>
+            </label>
+          </div>
+          
+          <div class="api-key-block hidden" id="apiKeyBlock">
+            <label for="geminiApiKey">Nhập Google Gemini API Key:</label>
+            <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="parent-input">
+            <small>Khóa API được lưu an toàn trong trình duyệt của bạn (LocalStorage) và không gửi đi đâu khác.</small>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="setting-label">
+            <strong>👶 Nhóm tuổi của bé:</strong>
+          </label>
+          <div class="age-selector">
+            <button class="age-btn active" data-age="preschool">Mầm non (3 - 6 tuổi: Đơn giản, tranh ảnh, bài hát)</button>
+            <button class="age-btn" data-age="primary">Tiểu học (7 - 12 tuổi: Thích khám phá, khoa học, đố vui)</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="setting-label">
+            <strong>🔊 Tốc độ & Giọng nói Kuromi:</strong>
+          </label>
+          <div class="slider-row">
+            <span>Tốc độ đọc:</span>
+            <input type="range" id="ttsRateSlider" min="0.7" max="1.3" step="0.05" value="1.05">
+            <span id="ttsRateVal">1.0x</span>
+          </div>
+          <div class="slider-row">
+            <span>Độ cao giọng (Cute Pitch):</span>
+            <input type="range" id="ttsPitchSlider" min="1.0" max="1.8" step="0.1" value="1.4">
+            <span id="ttsPitchVal">Dễ thương</span>
+          </div>
+        </div>
+
+        <div class="settings-actions">
+          <button id="saveSettingsBtn" class="primary-save-btn">Lưu Cài Đặt</button>
+          <button id="clearChatBtn" class="danger-btn">Xóa Lịch Sử Trò Chuyện</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Image Zoom Modal with Kuromi Frame -->
+  <div class="modal-overlay hidden" id="imageZoomModal">
+    <div class="image-zoom-box">
+      <button class="close-zoom-btn" id="closeZoomBtn">✕</button>
+      <div class="zoom-image-frame">
+        <img src="" alt="Xem ảnh phóng to" id="zoomTargetImg">
+        <div class="zoom-caption" id="zoomCaptionText">Hình ảnh minh họa</div>
+      </div>
+      <div class="zoom-footer">
+        <button id="zoomSpeakCaptionBtn" class="zoom-action-btn">
+          🔊 Kuromi đọc thông tin bức ảnh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remote Link / Different Wifi Modal -->
+  <div class="modal-overlay hidden" id="remoteLinkModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="skull-badge">🌐</span>
+          <h3>Đường Dẫn Dùng Khác Mạng WiFi / 4G</h3>
+        </div>
+        <button class="close-modal-btn" id="closeRemoteBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.95rem; line-height: 1.5; color: #fff;">
+          Để bé Bảo Hân hoặc người thân có thể chơi ở bất cứ đâu (khác mạng Wifi ở nhà, mạng 4G/5G trên điện thoại), bạn có thể dùng đường dẫn bảo mật trực tuyến:
+        </p>
+        <div style="background: rgba(20, 10, 31, 0.9); padding: 14px; border-radius: 12px; border: 1.5px solid var(--kuromi-pink); display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 0.8rem; color: var(--kuromi-pink-pastel); font-weight: 700;">ĐƯỜNG DẪN CLOUDFLARE (VÀO THẲNG KHÔNG CẦN IP):</span>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" readonly id="publicUrlInput" value="https://coordination-suse-rock-model.trycloudflare.com" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--kuromi-border); background: #140a1f; color: #ffeb3b; font-weight: bold; font-size: 0.92rem;">
+            <button id="copyPublicUrlBtn" style="background: var(--kuromi-pink); color: #fff; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; cursor: pointer;">Sao chép</button>
+          </div>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--kuromi-lavender); line-height: 1.45;">
+          💡 <strong>Mẹo:</strong> Trong thư mục có sẵn tệp <code>aikuromi.bat</code>. Mỗi khi mở máy tính lên, bạn chỉ cần nhấp đúp vào tệp này là đường dẫn online sẽ hoạt động cho bé dùng ở ngoài nhà!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
