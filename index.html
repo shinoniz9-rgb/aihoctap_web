@@ -437,107 +437,106 @@
       <!-- Right Column: Learning Stations Map & Content -->
       <section class="learning-display-section">
         
-        <!-- Filter Tabs for Learning Stations -->
-        <div class="explore-tray-wrapper learning-tray-wrapper">
-          <div class="explore-header">
-            <span class="explore-label">🗺️ Bản Đồ Các Trạm Học Tập Bé Yêu Thích:</span>
-          </div>
-          <div class="explore-category-tabs learning-station-tabs">
-            <button class="station-filter-btn active" data-filter="all">🌟 Tất Cả (4 Trạm)</button>
-            <button class="station-filter-btn" data-filter="math">🔢 Toán Học</button>
-            <button class="station-filter-btn" data-filter="vietnamese">🔤 Tiếng Việt</button>
-            <button class="station-filter-btn" data-filter="english">🇬🇧 Tiếng Anh</button>
-            <button class="station-filter-btn" data-filter="quiz">💡 Đố Vui Săn Sao</button>
-          </div>
+        <!-- Header Banner: 4 Môn Học Cốt Lõi -->
+        <div class="learning-header-bar">
+          <h2 class="learning-grid-headline">🎒 4 Môn Học Bé Yêu Thích Cùng Kuromi:</h2>
         </div>
 
-        <!-- Stations Grid Container (4 Core Learning Stations) -->
+        <!-- Stations Grid Container (4 Core Fixed Stations: 2x2 Grid) -->
         <div class="stations-grid-container" id="stationsGridContainer">
           
-          <!-- Station 1: Toán Học Kẹo Ngọt -->
+          <!-- Station 1: Toán -->
           <div class="station-card" data-station="math">
-            <div class="station-card-ribbon ribbon-purple">🔢 Toán Vui</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">🍓🧮</span>
+            <div class="station-card-ribbon ribbon-purple">🔢 Toán</div>
+            <div class="station-card-header-row">
+              <div class="station-card-icon-halo">
+                <span class="station-big-emoji">🍓🧮</span>
+              </div>
+              <h3 class="station-title">Toán</h3>
             </div>
             <div class="station-card-body">
-              <h3 class="station-title">Toán Học Kẹo Ngọt &amp; Đếm Số</h3>
-              <p class="station-desc">Bé tập đếm kẹo ngọt, que tính hoa quả, giải phép cộng trừ hình tượng siêu dễ hiểu cùng Kuromi.</p>
+              <p class="station-desc">Bé tập đếm kẹo ngọt, que tính hoa quả và làm quen phép cộng trừ trực quan cùng Kuromi.</p>
               <div class="station-tags">
-                <span class="station-tag">🍬 Đếm kẹo &amp; trái cây</span>
-                <span class="station-tag">➕ Phép cộng &amp; trừ</span>
-                <span class="station-tag">⭐ Thưởng sao</span>
+                <span class="station-tag">🍬 Đếm kẹo</span>
+                <span class="station-tag">➕ Phép cộng trừ</span>
+                <span class="station-tag">⭐ Săn sao</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-math" data-station-type="math">
-                <span>Vào Học Toán Ngay</span> 🚀
+                <span>Vào Học Toán</span> 🚀
               </button>
             </div>
           </div>
 
-          <!-- Station 2: Bảng Chữ Cái & Đánh Vần -->
+          <!-- Station 2: Tiếng Việt -->
           <div class="station-card" data-station="vietnamese">
             <div class="station-card-ribbon ribbon-pink">🔤 Tiếng Việt</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">📖🎀</span>
+            <div class="station-card-header-row">
+              <div class="station-card-icon-halo">
+                <span class="station-big-emoji">📖🎀</span>
+              </div>
+              <h3 class="station-title">Tiếng Việt</h3>
             </div>
             <div class="station-card-body">
-              <h3 class="station-title">Bảng Chữ Cái &amp; Ghép Vần</h3>
               <p class="station-desc">29 chữ cái tiếng Việt với giọng Kuromi phát âm tròn vành rõ chữ, kèm tranh minh họa sinh động.</p>
               <div class="station-tags">
                 <span class="station-tag">🅰️ 29 Chữ cái</span>
                 <span class="station-tag">🗣️ Phát âm chuẩn</span>
-                <span class="station-tag">✨ Thưởng sao</span>
+                <span class="station-tag">✨ Ghép vần</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-vietnamese" data-station-type="vietnamese">
-                <span>Khám Phá Chữ Cái</span> 🚀
+                <span>Học Tiếng Việt</span> 🚀
               </button>
             </div>
           </div>
 
-          <!-- Station 3: Tiếng Anh Nhí Sanrio -->
+          <!-- Station 3: Tiếng Anh -->
           <div class="station-card" data-station="english">
             <div class="station-card-ribbon ribbon-blue">🇬🇧 Tiếng Anh</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">🦁🌈</span>
+            <div class="station-card-header-row">
+              <div class="station-card-icon-halo">
+                <span class="station-big-emoji">🦁🌈</span>
+              </div>
+              <h3 class="station-title">Tiếng Anh</h3>
             </div>
             <div class="station-card-body">
-              <h3 class="station-title">Tiếng Anh Nhí &amp; Flashcards</h3>
-              <p class="station-desc">Hơn 40+ từ vựng con vật, màu sắc, trái cây, số đếm phát âm bản ngữ. Kuromi đồng thanh đọc cùng bé.</p>
+              <p class="station-desc">Hơn 40+ từ vựng con vật, màu sắc, hoa quả, số đếm phát âm tiếng Anh chuẩn bản ngữ.</p>
               <div class="station-tags">
-                <span class="station-tag">🎨 Màu sắc &amp; Con vật</span>
-                <span class="station-tag">🍎 Trái cây &amp; Số</span>
-                <span class="station-tag">🔊 Nghe phát âm</span>
+                <span class="station-tag">🎨 Màu &amp; Con vật</span>
+                <span class="station-tag">🍎 Quả &amp; Số</span>
+                <span class="station-tag">🔊 Bản ngữ</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-english" data-station-type="english">
-                <span>Học Từ Tiếng Anh</span> 🚀
+                <span>Học Tiếng Anh</span> 🚀
               </button>
             </div>
           </div>
 
-          <!-- Station 4: Đố Vui Nhanh Săn Sao -->
+          <!-- Station 4: Đố Vui -->
           <div class="station-card" data-station="quiz">
-            <div class="station-card-ribbon ribbon-purple">💡 Đố Vui</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">👑🎁</span>
+            <div class="station-card-ribbon ribbon-gold">💡 Đố Vui</div>
+            <div class="station-card-header-row">
+              <div class="station-card-icon-halo">
+                <span class="station-big-emoji">👑🎁</span>
+              </div>
+              <h3 class="station-title">Đố Vui</h3>
             </div>
             <div class="station-card-body">
-              <h3 class="station-title">Thử Thách Đố Vui Săn Sao</h3>
-              <p class="station-desc">Hơn 20+ câu đố IQ vui nhộn dân gian và trí tuệ để kiểm tra trí nhớ, nhận quà 2 sao rực rỡ.</p>
+              <p class="station-desc">Hơn 20+ câu đố vui nhộn dân gian và trí tuệ rèn luyện sự thông minh của bé để nhận thưởng 2 sao.</p>
               <div class="station-tags">
-                <span class="station-tag">🎯 20+ Câu đố IQ</span>
+                <span class="station-tag">🎯 Câu đố IQ</span>
                 <span class="station-tag">⭐ Thưởng 2 sao</span>
                 <span class="station-tag">🎉 Bắn pháo hoa</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-quiz" data-station-type="quiz">
-                <span>Chơi Đố Vui Ngay</span> 🎯
+                <span>Chơi Đố Vui</span> 🎯
               </button>
             </div>
           </div>
