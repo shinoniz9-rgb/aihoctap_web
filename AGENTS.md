@@ -19,3 +19,5 @@
    - Chỉ khi ba mẹ chủ động bấm nút "Xóa Lịch Sử Trò Chuyện" thì mới làm sạch tin nhắn, và việc xóa tin nhắn **tuyệt đối không làm mất các cài đặt cấu hình**.
 4. **Tự động lưu trạng thái nút bấm**:
    - Nút bật/tắt Giọng đọc (`ttsEnabled`) và Âm thanh (`sfxEnabled`) tự động lưu ngay khi bấm.
+5. **Luôn Git Push lên GitHub sau mỗi lần chỉnh sửa (BẮT BUỘC)**:
+   - Vì người dùng sử dụng web online trên thiết bị (không dùng mạng nội bộ), sau MỖI LẦN chỉnh sửa bất kỳ file nào (`app.js`, `index.html`, `style.css`...), Agent **PHẢI TỰ ĐỘNG** thực hiện `git add`, `git commit` và `git push origin main` ngay lập tức, đảm bảo mã nguồn mới nhất luôn sẵn sàng 24/24 trên GitHub và web online.
