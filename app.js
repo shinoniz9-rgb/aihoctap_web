@@ -515,8 +515,16 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
   if (playSoundAndSpeech) playSfx('pop');
   const chatView = document.getElementById('chatMainView');
   const learnView = document.getElementById('learningMainView');
-  const navChat = document.getElementById('navModeChat');
-  const navLearn = document.getElementById('navModeLearning');
+
+  // Đồng bộ trạng thái active trên tất cả nút chuyển chế độ trong mọi stage card
+  document.querySelectorAll('.mode-tab-pill[data-mode="chat"], .stage-mode-btn[data-mode="chat"]').forEach(btn => {
+    if (mode === 'chat') btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
+  document.querySelectorAll('.mode-tab-pill[data-mode="learning"], .stage-mode-btn[data-mode="learning"]').forEach(btn => {
+    if (mode === 'learning') btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
 
   if (mode === 'learning') {
     if (chatView) {
@@ -527,8 +535,6 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
       learnView.classList.remove('hidden');
       learnView.style.setProperty('display', 'grid', 'important');
     }
-    if (navChat) navChat.classList.remove('active');
-    if (navLearn) navLearn.classList.add('active');
 
     LEARNING_STATE.currentMode = 'learning';
     saveLearningData({ currentMode: 'learning' });
@@ -551,8 +557,6 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
       chatView.classList.remove('hidden');
       chatView.style.setProperty('display', 'grid', 'important');
     }
-    if (navLearn) navLearn.classList.remove('active');
-    if (navChat) navChat.classList.add('active');
 
     LEARNING_STATE.currentMode = 'chat';
     saveLearningData({ currentMode: 'chat' });
@@ -2281,16 +2285,14 @@ function openSingerVideo(songKey, cardElement) {
     externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
   }
 
-  // ĐẢM BẢO PHÁT TRỰC TIẾP TRÊN MOBILE & IPAD TRONG BẢNG TRÒ CHUYỆN
+  // ĐẢM BẢO PHÁT TRỰC TIẾP TRÊN MOBILE & IPAD TRONG BẢNG TRÒ CHUYỆN (KHÔNG LỖI CẤU HÌNH 153)
   if (videoBox && iframe) {
-    const originParam = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null') 
-      ? `&origin=${encodeURIComponent(window.location.origin)}` 
-      : '';
-    const embedSrc = `https://www.youtube.com/embed/${videoId}?playsinline=1&enablejsapi=1&rel=0&modestbranding=1${originParam}`;
+    const embedSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
 
     iframe.removeAttribute('referrerpolicy');
     iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    iframe.setAttribute('allowfullscreen', 'true');
     iframe.setAttribute('playsinline', '1');
     iframe.setAttribute('webkit-playsinline', '1');
     iframe.src = embedSrc;
@@ -3857,7 +3859,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statusEl) statusEl.classList.add('hidden');
 
     const voiceHint = document.getElementById('voiceTestStatus');
-    if (voiceHint) voiceHint.textContent = `Bấm để nghe Kuromi chào bé ${childName}`;
+    if (voiceHint) voiceHint.textContent = '✨ Sẵn sàng nghe thử giọng';
   });
 
   closeSettingsBtn.addEventListener('click', () => {
@@ -3880,13 +3882,12 @@ document.addEventListener('DOMContentLoaded', () => {
       saveSettings({ voiceStyle: style });
 
       const voiceHint = document.getElementById('voiceTestStatus');
-      const childName = (document.getElementById('childNameInput')?.value || APP_STATE.settings.childName || 'Bảo Hân').trim();
       if (voiceHint) {
         let label = 'Kuromi Hoạt Hình';
-        if (style === 'google_online') label = 'Chị Google Trong Trẻo';
-        if (style === 'fairy') label = 'Cô Tiên Kể Chuyện';
-        if (style === 'device') label = 'Giọng Thiết Bị';
-        voiceHint.textContent = `Đã chọn: ${label}. Bấm "Nghe Thử Giọng Này" để nghe giọng mẫu cho bé ${childName}!`;
+        if (style === 'google_online') label = 'Cô Giáo Hiền Dịu';
+        else if (style === 'fairy') label = 'Cô Tiên Dịu Êm';
+        else if (style === 'device' || style === 'hoami_cheerful') label = 'Chị Họa Mi';
+        voiceHint.textContent = `✨ Đã chọn: ${label}`;
       }
     });
   });
@@ -4055,17 +4056,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ===========================================================================
-  // LEARNING CLASSROOM EVENT LISTENERS
+  // MODE SWITCHING EVENT LISTENERS (BẠN NHÍ & TRƯỜNG HỌC KUROMI)
   // ===========================================================================
-  const navChat = document.getElementById('navModeChat');
-  const navLearn = document.getElementById('navModeLearning');
-
-  if (navChat) {
-    navChat.addEventListener('click', () => switchAppMode('chat'));
-  }
-  if (navLearn) {
-    navLearn.addEventListener('click', () => switchAppMode('learning'));
-  }
+  document.querySelectorAll('.stage-mode-btn, .mode-tab-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.getAttribute('data-mode') || 'chat';
+      switchAppMode(mode);
+    });
+  });
 
   // Station Filter Buttons
   document.querySelectorAll('.station-filter-btn').forEach(btn => {

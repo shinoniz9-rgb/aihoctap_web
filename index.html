@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="referrer" content="no-referrer">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Kuromi & Bé Bảo Hân | Trợ Lý AI 100% Google Gemini</title>
   <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio thông minh 100% Google Gemini trực tuyến dành riêng cho bé Bảo Hân. Giải đáp khoa học, kể chuyện cổ tích, nghe nhạc YouTube và học tập vui vẻ.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -68,33 +68,24 @@
       </div>
     </header>
 
-    <!-- Prominent Dual Mode Navigation Bar (Chuyển đổi Tab Rõ Ràng & Trực Quan) -->
-    <nav class="app-mode-nav-bar" aria-label="Chuyển chế độ hoạt động">
-      <button id="navModeChat" class="mode-tab-pill active" data-mode="chat" title="Bé trò chuyện, nghe kể chuyện, nghe hát ca và hỏi đáp tự do">
-        <span class="tab-pill-icon">🎀</span>
-        <div class="tab-pill-text">
-          <strong class="tab-pill-title">Bạn Nhí Kuromi</strong>
-          <span class="tab-pill-sub">Tâm sự, Ca nhạc &amp; Micro 🎙️</span>
-        </div>
-        <span class="tab-active-dot"></span>
-      </button>
-
-      <button id="navModeLearning" class="mode-tab-pill" data-mode="learning" title="Trường học kẹo ngọt, làm bài tập và tích lũy ngôi sao bé ngoan">
-        <span class="tab-pill-icon">🎒</span>
-        <div class="tab-pill-text">
-          <strong class="tab-pill-title">Trường Học Kuromi</strong>
-          <span class="tab-pill-sub">Toán, Chữ cái, Tiếng Anh &amp; Bài ở lớp</span>
-        </div>
-        <span class="tab-pill-badge">Săn Sao ⭐</span>
-      </button>
-    </nav>
-
     <!-- Main Content Area (Chat & Mascot) -->
     <main class="app-main" id="chatMainView">
       
       <!-- Left Column / Top Stage: Interactive Kuromi Mascot Stage -->
       <section class="kuromi-stage-card">
         <div class="stage-ribbon-tag">🎀 Bạn Thân Của Bé Bảo Hân 🎀</div>
+
+        <!-- Chuyển Đổi Chế Độ Trực Tiếp Trong Cột Bạn Thân (Tối ưu diện tích cho Bảng Trò Chuyện) -->
+        <nav class="stage-mode-nav" aria-label="Chuyển chế độ hoạt động">
+          <button type="button" class="stage-mode-btn mode-tab-pill active" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
+            <span class="mode-icon">🎀</span>
+            <span class="mode-title">Bạn Nhí Kuromi</span>
+          </button>
+          <button type="button" class="stage-mode-btn mode-tab-pill" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và tích lũy ngôi sao">
+            <span class="mode-icon">🎒</span>
+            <span class="mode-title">Trường Học Kuromi</span>
+          </button>
+        </nav>
         
         <div class="mascot-display-container">
           <div class="avatar-halo" id="avatarHalo"></div>
@@ -252,7 +243,19 @@
       <!-- Left Column / Top Stage: Classroom Mascot Stage & Gamification -->
       <section class="kuromi-stage-card classroom-stage-card">
         <div class="stage-ribbon-tag classroom-ribbon">🎒 Trường Học Kuromi 🎒</div>
-        
+
+        <!-- Chuyển Đổi Chế Độ Trực Tiếp Trong Cột Bạn Thân -->
+        <nav class="stage-mode-nav" aria-label="Chuyển chế độ hoạt động">
+          <button type="button" class="stage-mode-btn mode-tab-pill" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
+            <span class="mode-icon">🎀</span>
+            <span class="mode-title">Bạn Nhí Kuromi</span>
+          </button>
+          <button type="button" class="stage-mode-btn mode-tab-pill active" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và tích lũy ngôi sao">
+            <span class="mode-icon">🎒</span>
+            <span class="mode-title">Trường Học Kuromi</span>
+          </button>
+        </nav>
+
         <div class="mascot-display-container">
           <div class="avatar-halo classroom-halo"></div>
           <div class="mascot-image-wrapper">
@@ -534,7 +537,7 @@
             <button type="button" id="testVoiceBtn" class="test-voice-btn">
               🔊 Nghe Thử Giọng Này (Tiếng Việt)
             </button>
-            <span class="voice-test-hint" id="voiceTestStatus">Bấm để nghe thử giọng chào bé</span>
+            <span class="voice-test-hint" id="voiceTestStatus">✨ Sẵn sàng nghe thử giọng</span>
           </div>
         </div>
 
