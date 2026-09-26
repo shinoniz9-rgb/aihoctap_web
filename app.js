@@ -3668,7 +3668,6 @@ async function testGeminiApiKey(apiKey) {
   if (!apiKey) return { ok: false, msg: "Vui lòng nhập API Key trước khi kiểm tra!" };
   const models = [
     'gemini-3.8-flash',
-    'gemini-2.5-flash',
     'gemini-2.0-flash',
     'gemini-1.5-flash',
     'gemini-1.5-pro'
@@ -3715,7 +3714,6 @@ async function callGeminiApi(prompt) {
   const ageGroup = APP_STATE.settings.ageGroup || 'preschool';
   const modelsToTry = [
     'gemini-3.8-flash',
-    'gemini-2.5-flash',
     'gemini-2.0-flash',
     'gemini-1.5-flash',
     'gemini-1.5-pro'
