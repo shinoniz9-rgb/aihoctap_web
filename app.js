@@ -143,11 +143,12 @@ function loadChatHistory() {
 // LEARNING HUB & CLASSROOM ENGINE (NON-DESTRUCTIVE SAFE MERGE)
 // =============================================================================
 const DEFAULT_LEARNING_DATA = {
-  stars: 12,
-  rank: 'Bé Chăm Chỉ Thông Thái',
+  stars: 0,
+  rank: 'Bé Chăm Chỉ Khởi Đầu ⭐',
   completedActivities: [],
   activeFilter: 'all',
-  currentMode: 'chat'
+  currentMode: 'chat',
+  updatedAt: 0
 };
 
 function loadLearningData() {
@@ -182,7 +183,7 @@ function saveLearningData(partial = {}) {
 }
 
 function updateLearningUi() {
-  const currentStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
+  const currentStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 0;
 
   const starCountEl = document.getElementById('learningStarCount');
   if (starCountEl) starCountEl.textContent = currentStars;
@@ -257,14 +258,15 @@ const KuromiSync = {
     }
 
     if (headerBtn && headerLabel) {
+      headerLabel.textContent = 'Đồng bộ: BẬT';
       if (status === 'synced') {
         headerBtn.classList.add('active');
-        headerLabel.textContent = 'Đồng bộ: BẬT';
+        headerBtn.classList.remove('syncing');
       } else if (status === 'syncing') {
-        headerLabel.textContent = 'Đang đồng bộ...';
+        headerBtn.classList.add('active', 'syncing');
       } else if (status === 'error') {
-        headerBtn.classList.remove('active');
-        headerLabel.textContent = 'Lỗi kết nối';
+        headerBtn.classList.remove('active', 'syncing');
+        headerLabel.textContent = 'Đồng bộ: TẮT';
       }
     }
 
@@ -364,25 +366,30 @@ const KuromiSync = {
         });
       }
 
-      // 2. Learning Stars Safe Merge
+      // 2. Learning Stars Safe Merge (Timestamped Synchronization)
       if (cloudData.learning) {
-        const localStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
-        const cloudStars = typeof cloudData.learning.stars === 'number' ? cloudData.learning.stars : 0;
-        const finalStars = Math.max(localStars, cloudStars);
+        const localTime = LEARNING_STATE.updatedAt || 0;
+        const cloudTime = cloudData.learning.updatedAt || 0;
 
-        const localCompleted = Array.isArray(LEARNING_STATE.completedActivities) ? LEARNING_STATE.completedActivities : [];
-        const cloudCompleted = Array.isArray(cloudData.learning.completedActivities) ? cloudData.learning.completedActivities : [];
-        const mergedCompleted = Array.from(new Set([...localCompleted, ...cloudCompleted]));
+        if (cloudTime > localTime) {
+          const finalStars = typeof cloudData.learning.stars === 'number' ? cloudData.learning.stars : 0;
+          const currentCompleted = Array.isArray(LEARNING_STATE.completedActivities) ? LEARNING_STATE.completedActivities : [];
+          const cloudCompleted = Array.isArray(cloudData.learning.completedActivities) ? cloudData.learning.completedActivities : [];
+          const mergedCompleted = Array.from(new Set([...currentCompleted, ...cloudCompleted]));
 
-        LEARNING_STATE = {
-          ...DEFAULT_LEARNING_DATA,
-          ...LEARNING_STATE,
-          ...cloudData.learning,
-          stars: finalStars,
-          completedActivities: mergedCompleted
-        };
-        localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
-        updateLearningUi();
+          LEARNING_STATE = {
+            ...DEFAULT_LEARNING_DATA,
+            ...LEARNING_STATE,
+            ...cloudData.learning,
+            stars: finalStars,
+            completedActivities: mergedCompleted,
+            updatedAt: cloudTime
+          };
+          localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
+          updateLearningUi();
+        } else {
+          this.queuePush('learning', LEARNING_STATE);
+        }
       }
 
       // 3. Chat History Merge

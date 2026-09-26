@@ -24,10 +24,10 @@
   --kuromi-glow: 0 0 20px rgba(255, 101, 168, 0.45);
   --kuromi-glow-subtle: 0 4px 15px rgba(214, 184, 246, 0.25);
   
-  /* Fonts */
-  --font-display: 'Comfortaa', 'Fredoka', cursive, sans-serif;
-  --font-body: 'Quicksand', 'Fredoka', sans-serif;
-  --font-kid: 'Fredoka', 'Quicksand', sans-serif;
+  /* Fonts - Modern, Super Legible, Clean Vietnamese Typography */
+  --font-display: 'Lexend', 'Be Vietnam Pro', system-ui, sans-serif;
+  --font-body: 'Be Vietnam Pro', 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-kid: 'Lexend', 'Nunito', 'Be Vietnam Pro', system-ui, sans-serif;
   
   /* Layout */
   --radius-sm: 12px;
@@ -176,14 +176,15 @@ body {
 
 .logo-title {
   font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  background: linear-gradient(135deg, #ffffff 0%, var(--kuromi-pink-pastel) 45%, var(--kuromi-pink-neon) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 20px rgba(255, 101, 168, 0.4);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1.35;
+  padding-top: 4px;
+  padding-bottom: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 101, 168, 0.7), 0 2px 4px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
 }
 
 .logo-subtitle {
@@ -344,23 +345,26 @@ body {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .control-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   background: rgba(44, 20, 69, 0.9);
   border: 1.5px solid rgba(255, 101, 168, 0.4);
   color: var(--kuromi-cream);
-  padding: 8px 14px;
-  min-height: 42px;
+  padding: 7px 12px;
+  min-height: 38px;
   border-radius: var(--radius-full);
   font-family: var(--font-kid);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: var(--transition-smooth);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -409,6 +413,16 @@ body {
 
 .sync-btn.active .btn-icon {
   animation: cloudPulse 2.5s infinite ease-in-out;
+}
+
+.sync-btn.syncing .btn-icon {
+  animation: cloudSpin 1s infinite linear;
+}
+
+@keyframes cloudSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.15); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 @keyframes cloudPulse {
