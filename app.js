@@ -2363,27 +2363,34 @@ function singVocalLine(cleanVerse) {
     currentSongVocalAudio = null;
   }
   const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(cleanVerse)}`;
-  const audio = new Audio(url);
+  const audio = new Audio();
+  audio.referrerPolicy = 'no-referrer';
+  audio.src = url;
   currentSongVocalAudio = audio;
   audio.playbackRate = (APP_STATE.settings.ttsRate || 1.05) * 1.08;
   if ('preservesPitch' in audio) audio.preservesPitch = false;
-  audio.play().catch(e => {
-    const viVoice = getVietnameseVoice();
-    if (viVoice && window.speechSynthesis) {
+
+  const fallbackToWebSpeech = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.resume();
+      } catch (e) {}
       const u = new SpeechSynthesisUtterance(cleanVerse);
-      u.lang = viVoice.lang || 'vi-VN';
-      u.voice = viVoice;
+      u.lang = 'vi-VN';
+      const viVoice = getVietnameseVoice();
+      if (viVoice) u.voice = viVoice;
       u.rate = 1.05;
-      u.pitch = 1.3;
-      window.speechSynthesis.speak(u);
-    } else {
-      // Fallback domain dự phòng Google TTS Tiếng Việt
-      const fbUrl = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=vi&client=gtx&q=${encodeURIComponent(cleanVerse)}`;
-      const fbAudio = new Audio(fbUrl);
-      fbAudio.playbackRate = (APP_STATE.settings.ttsRate || 1.05) * 1.08;
-      fbAudio.play().catch(() => {});
+      u.pitch = 1.35;
+      window._currentUtterance = u;
+      try {
+        window.speechSynthesis.speak(u);
+      } catch (e) {}
     }
-  });
+  };
+
+  audio.onerror = fallbackToWebSpeech;
+  audio.play().catch(fallbackToWebSpeech);
 }
 
 function playKuromiVocalSong(songKey, onLyricUpdate) {
@@ -2570,6 +2577,8 @@ let activeTtsAudio = null;
 let currentTtsSessionId = 0;
 let isTestingVoice = false;
 let cachedVietnameseVoice = null;
+let activeSpeechUtterance = null;
+let webSpeechWatchdogTimer = null;
 
 function cleanKidTextForTts(text) {
   if (!text) return '';
@@ -2582,7 +2591,7 @@ function cleanKidTextForTts(text) {
     .trim();
 }
 
-function chunkTextForTts(text, maxLen = 140) {
+function chunkTextForTts(text, maxLen = 100) {
   const cleaned = cleanKidTextForTts(text);
   if (!cleaned) return [];
   const rawSentences = cleaned.match(/[^.!?\n]+[.!?\n]*/g) || [cleaned];
@@ -2617,7 +2626,7 @@ function chunkTextForTts(text, maxLen = 140) {
   return chunks;
 }
 
-// Danh sách các máy chủ Google Translate TTS dự phòng (Tất cả đều cấu hình tl=vi - 100% Tiếng Việt)
+// Danh sách các máy chủ Google Translate TTS dự phòng (Tất cả đều tl=vi - Tiếng Việt chuẩn)
 const GOOGLE_TTS_HOSTS = [
   'https://translate.google.com/translate_tts',
   'https://translate.googleapis.com/translate_tts',
@@ -2632,33 +2641,34 @@ function buildGoogleTtsUrl(text, hostIndex = 0) {
 
 // Quét và tìm bộ giọng Tiếng Việt của hệ thống
 function refreshAvailableVoices() {
-  if (!window.speechSynthesis) return null;
+  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices() || [];
   if (!voices.length) return null;
 
   // Lọc tất cả giọng tiếng Việt
   const viVoices = voices.filter(v => {
-    const lang = (v.lang || '').toLowerCase();
+    const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
     const name = (v.name || '').toLowerCase();
-    return lang.startsWith('vi') || lang.includes('vi-') || lang.includes('vi_') || 
-           name.includes('vietnam') || name.includes('tiếng việt');
+    return lang.startsWith('vi') || lang.includes('-vn') || lang.includes('vie') ||
+           name.includes('vietnam') || name.includes('tiếng việt') || name.includes('vietnamese') ||
+           name.includes('hoaimy') || name.includes('namminh') || name.includes('linh') ||
+           name.includes('an') || name.includes('mai') || name.includes('siri');
   });
 
   if (viVoices.length > 0) {
-    // Ưu tiên các giọng nữ truyền cảm, tự nhiên
-    const natural = viVoices.find(v => {
+    // Ưu tiên giọng nữ truyền cảm, tự nhiên
+    const femaleOrNatural = viVoices.find(v => {
       const n = v.name.toLowerCase();
       return n.includes('natural') || n.includes('online') || n.includes('hoaimy') || 
              n.includes('linh') || n.includes('an') || n.includes('female') || n.includes('mai');
     });
-    cachedVietnameseVoice = natural || viVoices[0];
+    cachedVietnameseVoice = femaleOrNatural || viVoices[0];
     return cachedVietnameseVoice;
   }
   cachedVietnameseVoice = null;
   return null;
 }
 
-// Lắng nghe sự kiện voiceschanged để nạp giọng ngay khi trình duyệt khởi tạo
 if (typeof window !== 'undefined' && window.speechSynthesis) {
   window.speechSynthesis.onvoiceschanged = () => {
     refreshAvailableVoices();
@@ -2673,6 +2683,10 @@ function getVietnameseVoice() {
 
 function stopAllSpeech() {
   currentTtsSessionId++;
+  if (webSpeechWatchdogTimer) {
+    clearTimeout(webSpeechWatchdogTimer);
+    webSpeechWatchdogTimer = null;
+  }
   if (activeTtsAudio) {
     try {
       activeTtsAudio.pause();
@@ -2680,19 +2694,118 @@ function stopAllSpeech() {
     } catch (e) {}
     activeTtsAudio = null;
   }
-  if (window.speechSynthesis) {
+  if (typeof window !== 'undefined' && window.speechSynthesis) {
     try {
       window.speechSynthesis.cancel();
     } catch (e) {}
   }
+  activeSpeechUtterance = null;
   setKuromiState('normal');
   const testBtn = document.getElementById('testVoiceBtn');
   if (testBtn) testBtn.classList.remove('playing');
   isTestingVoice = false;
 }
 
-// Bộ phát giọng đọc Google Translate Tiếng Việt Online đa máy chủ (Multi-host fallback)
-function speakWithGoogleTts(chunks, options = {}, onComplete) {
+// Bộ phát Web Speech API với bảo vệ 100% TIẾNG VIỆT và Mutual Fallback
+function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
+  if (typeof window === 'undefined' || !window.speechSynthesis) {
+    if (onFallback) onFallback();
+    else if (onComplete) onComplete();
+    return;
+  }
+
+  const chunks = chunkTextForTts(cleanText, 100);
+  if (!chunks.length) {
+    if (onComplete) onComplete();
+    return;
+  }
+
+  try {
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+  } catch (e) {}
+
+  const viVoice = getVietnameseVoice();
+  let chunkIndex = 0;
+  const sessionId = ++currentTtsSessionId;
+  setKuromiState('singing');
+
+  function speakNextChunk() {
+    if (sessionId !== currentTtsSessionId) return;
+    if (chunkIndex >= chunks.length) {
+      if (webSpeechWatchdogTimer) clearTimeout(webSpeechWatchdogTimer);
+      setKuromiState('normal');
+      activeSpeechUtterance = null;
+      if (onComplete) onComplete();
+      return;
+    }
+
+    const currentText = chunks[chunkIndex++];
+    const utterance = new SpeechSynthesisUtterance(currentText);
+    utterance.lang = 'vi-VN';
+    if (viVoice) {
+      utterance.voice = viVoice;
+    }
+
+    const baseRate = options.rate || APP_STATE.settings.ttsRate || 1.05;
+    utterance.rate = Math.min(Math.max(baseRate, 0.6), 1.6);
+    const basePitch = options.pitch !== undefined ? options.pitch : (APP_STATE.settings.ttsPitch || 1.1);
+    utterance.pitch = Math.min(Math.max(basePitch, 0.5), 1.8);
+
+    activeSpeechUtterance = utterance;
+    window._currentUtterance = utterance;
+
+    if (webSpeechWatchdogTimer) clearTimeout(webSpeechWatchdogTimer);
+    const safetyTimeoutMs = Math.max(3000, currentText.length * 200);
+    webSpeechWatchdogTimer = setTimeout(() => {
+      if (sessionId === currentTtsSessionId && chunkIndex < chunks.length) {
+        speakNextChunk();
+      } else if (sessionId === currentTtsSessionId) {
+        setKuromiState('normal');
+        if (onComplete) onComplete();
+      }
+    }, safetyTimeoutMs);
+
+    utterance.onend = () => {
+      if (webSpeechWatchdogTimer) clearTimeout(webSpeechWatchdogTimer);
+      if (sessionId === currentTtsSessionId) {
+        speakNextChunk();
+      }
+    };
+
+    utterance.onerror = (err) => {
+      console.warn("WebSpeech utterance error:", err);
+      if (webSpeechWatchdogTimer) clearTimeout(webSpeechWatchdogTimer);
+      if (sessionId === currentTtsSessionId) {
+        if (chunkIndex <= 1 && onFallback) {
+          onFallback();
+        } else {
+          speakNextChunk();
+        }
+      }
+    };
+
+    try {
+      window.speechSynthesis.speak(utterance);
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    } catch (e) {
+      console.warn("Error in speechSynthesis.speak:", e);
+      if (onFallback) onFallback();
+      else if (onComplete) onComplete();
+    }
+  }
+
+  speakNextChunk();
+}
+
+// Bộ phát Google Translate TTS Tiếng Việt Online đa máy chủ (Multi-host + No-Referrer)
+function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
+  if (!chunks || !chunks.length) {
+    if (onComplete) onComplete();
+    return;
+  }
   const sessionId = ++currentTtsSessionId;
   let index = 0;
   setKuromiState('singing');
@@ -2701,6 +2814,7 @@ function speakWithGoogleTts(chunks, options = {}, onComplete) {
     if (sessionId !== currentTtsSessionId) return;
     if (index >= chunks.length) {
       setKuromiState('normal');
+      activeTtsAudio = null;
       if (onComplete) onComplete();
       return;
     }
@@ -2710,7 +2824,10 @@ function speakWithGoogleTts(chunks, options = {}, onComplete) {
     function tryHost(hIndex) {
       if (sessionId !== currentTtsSessionId) return;
       const url = buildGoogleTtsUrl(chunk, hIndex);
-      const audio = new Audio(url);
+      const audio = new Audio();
+      audio.referrerPolicy = 'no-referrer';
+      audio.preload = 'auto';
+      audio.src = url;
       activeTtsAudio = audio;
 
       const rate = options.rate || 1.0;
@@ -2729,19 +2846,16 @@ function speakWithGoogleTts(chunks, options = {}, onComplete) {
 
       const handleFallback = () => {
         if (sessionId !== currentTtsSessionId) return;
-        // Thử máy chủ Google TTS tiếng Việt tiếp theo
         if (hIndex + 1 < GOOGLE_TTS_HOSTS.length) {
           tryHost(hIndex + 1);
         } else {
-          // Nếu tất cả các host Google TTS đều lỗi, kiểm tra Web Speech có giọng tiếng Việt không
-          const viVoice = getVietnameseVoice();
-          if (viVoice && window.speechSynthesis) {
+          // Thử sang Web Speech API
+          if (onFallback) {
+            onFallback();
+          } else {
+            console.warn("Google TTS lỗi, chuyển Web Speech...");
             const remaining = chunks.slice(index - 1).join('. ');
             speakWithWebSpeech(remaining, options, onComplete);
-          } else {
-            console.warn("Không thể tải âm thanh TTS và thiết bị không có giọng tiếng Việt cài sẵn.");
-            setKuromiState('normal');
-            if (onComplete) onComplete();
           }
         }
       };
@@ -2756,48 +2870,9 @@ function speakWithGoogleTts(chunks, options = {}, onComplete) {
   playNextChunk();
 }
 
-// Bộ phát Web Speech API với bảo vệ 100% TIẾNG VIỆT (Tuyệt đối không để phát âm tiếng Anh)
-function speakWithWebSpeech(cleanText, options = {}, onComplete) {
-  if (!window.speechSynthesis) {
-    if (onComplete) onComplete();
-    return;
-  }
-
-  const viVoice = getVietnameseVoice();
-  // QUY TẮC CỐT LÕI: NẾU THIẾT BỊ KHÔNG CÓ GIỌNG TIẾNG VIỆT, KHÔNG CHO ĐỌC GIỌNG MẶC ĐỊNH (TIẾNG ANH)
-  if (!viVoice) {
-    console.log("Thiết bị không có gói giọng tiếng Việt cục bộ -> Tự động chuyển sang Google TTS Tiếng Việt 100%");
-    const chunks = chunkTextForTts(cleanText);
-    speakWithGoogleTts(chunks, options, onComplete);
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.voice = viVoice;
-  utterance.lang = viVoice.lang || 'vi-VN';
-  utterance.rate = options.rate || APP_STATE.settings.ttsRate || 1.05;
-  utterance.pitch = options.pitch || APP_STATE.settings.ttsPitch || 1.25;
-
-  setKuromiState('singing');
-
-  utterance.onend = () => {
-    setKuromiState('normal');
-    if (onComplete) onComplete();
-  };
-
-  utterance.onerror = (e) => {
-    console.warn("WebSpeech error, fallback to Google TTS Tiếng Việt:", e);
-    const chunks = chunkTextForTts(cleanText);
-    speakWithGoogleTts(chunks, options, onComplete);
-  };
-
-  window.speechSynthesis.speak(utterance);
-}
-
 // Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG ĐỌC TIẾNG VIỆT
-function speakText(text, onComplete) {
-  if (!APP_STATE.ttsEnabled) {
+function speakText(text, onComplete, force = false) {
+  if (!APP_STATE.ttsEnabled && !force) {
     if (onComplete) onComplete();
     return;
   }
@@ -2810,58 +2885,71 @@ function speakText(text, onComplete) {
     return;
   }
 
+  try {
+    getAudioContext();
+  } catch (e) {}
+
   const voiceStyle = APP_STATE.settings.voiceStyle || 'kuromi_anime';
   const userRate = APP_STATE.settings.ttsRate || 1.05;
+  const chunks = chunkTextForTts(cleanText, 100);
 
-  // GIỌNG 1: Kuromi Hoạt Hình (Anime Sanrio - Nhí nhảnh, lí lắc, ngọt ngào - Tiếng Việt 100%)
+  // GIỌNG 1: Kuromi Hoạt Hình (Anime Sanrio - Lí lắc, vui tươi, trong trẻo, đáng yêu)
   if (voiceStyle === 'kuromi_anime') {
     playSfx('chime');
-    const chunks = chunkTextForTts(cleanText);
-    speakWithGoogleTts(chunks, {
-      rate: 1.25 * (userRate / 1.05),
-      preservesPitch: false // Tăng cao độ giọng lên lảnh lót anime vui nhộn
-    }, onComplete);
+    speakWithWebSpeech(cleanText, {
+      rate: 1.15 * (userRate / 1.05),
+      pitch: 1.45
+    }, onComplete, () => {
+      speakWithGoogleTts(chunks, {
+        rate: 1.18 * (userRate / 1.05),
+        preservesPitch: false
+      }, onComplete);
+    });
     return;
   }
 
   // GIỌNG 2: Chị Google Trong Trẻo (Chuẩn Studio Tiếng Việt Phổ Thông 100%)
   if (voiceStyle === 'google_online') {
-    const chunks = chunkTextForTts(cleanText);
     speakWithGoogleTts(chunks, {
       rate: 1.0 * (userRate / 1.05),
-      preservesPitch: true // Giọng nữ tự nhiên, chuẩn mực, rõ chữ
-    }, onComplete);
+      preservesPitch: true
+    }, onComplete, () => {
+      speakWithWebSpeech(cleanText, {
+        rate: 1.0 * (userRate / 1.05),
+        pitch: 1.0
+      }, onComplete);
+    });
     return;
   }
 
   // GIỌNG 3: Cô Tiên Kể Chuyện (Ấm Áp Ru Êm, Chậm Rãi Truyền Cảm - Tiếng Việt 100%)
   if (voiceStyle === 'fairy') {
     playFairyChime();
-    const chunks = chunkTextForTts(cleanText);
-    speakWithGoogleTts(chunks, {
-      rate: 0.88 * (userRate / 1.05),
-      preservesPitch: true // Giọng êm dịu, ấm áp thích hợp cổ tích
-    }, onComplete);
+    speakWithWebSpeech(cleanText, {
+      rate: 0.82 * (userRate / 1.05),
+      pitch: 0.92
+    }, onComplete, () => {
+      speakWithGoogleTts(chunks, {
+        rate: 0.85 * (userRate / 1.05),
+        preservesPitch: true
+      }, onComplete);
+    });
     return;
   }
 
   // GIỌNG 4: Giọng Thiết Bị (Offline Hệ Thống Máy / iPad - Bảo Vệ Tiếng Việt 100%)
   if (voiceStyle === 'device') {
-    const viVoice = getVietnameseVoice();
-    if (viVoice) {
-      speakWithWebSpeech(cleanText, { 
-        rate: 1.0 * (userRate / 1.05), 
-        pitch: 1.05 
-      }, onComplete);
-    } else {
-      // Nếu máy KHÔNG có giọng tiếng Việt: tự động dùng Google TTS Tiếng Việt, TUYỆT ĐỐI không phát tiếng Anh!
-      playDeviceBeep();
-      const chunks = chunkTextForTts(cleanText);
+    playDeviceBeep();
+    speakWithWebSpeech(cleanText, {
+      rate: 1.02 * (userRate / 1.05),
+      pitch: 1.05
+    }, onComplete, () => {
       speakWithGoogleTts(chunks, {
-        rate: 1.08 * (userRate / 1.05),
+        rate: 1.05 * (userRate / 1.05),
         preservesPitch: true
       }, onComplete);
-    }
+    });
+    return;
   }
 }
 
@@ -2886,20 +2974,13 @@ function testVoiceSample(customStyle) {
     personaTitle = 'Cô Tiên Kể Chuyện';
     samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé ngoan ngoãn lắng nghe những câu chuyện cổ tích êm đềm cùng cô nhé... 🧚✨`;
   } else if (selectedVoice === 'device') {
-    const viVoice = getVietnameseVoice();
-    if (viVoice) {
-      personaTitle = `Giọng Thiết Bị (${viVoice.name})`;
-      samplePhrase = `Hệ thống thiết bị xin chào bé ${childName}. Trợ lý học tập đã sẵn sàng hỗ trợ bé khám phá thế giới xung quanh! 📱🤖`;
-    } else {
-      personaTitle = 'Giọng Trợ Lý Tiếng Việt (Tự Động)';
-      samplePhrase = `Hệ thống xin chào bé ${childName}. Thiết bị chưa có gói giọng offline nên Kuromi phát giọng Tiếng Việt trực tuyến cho bé nhé! 📱✨`;
-    }
+    personaTitle = 'Giọng Thiết Bị';
+    samplePhrase = `Hệ thống thiết bị xin chào bé ${childName}. Trợ lý học tập đã sẵn sàng hỗ trợ bé khám phá thế giới xung quanh! 📱🤖`;
   }
 
   if (testBtn) testBtn.classList.add('playing');
   if (statusEl) statusEl.textContent = `Đang phát thử: ${personaTitle} (Tiếng Việt) 🔊...`;
 
-  // Tạm thời chuyển phong cách giọng để phát thử
   const originalStyle = APP_STATE.settings.voiceStyle;
   APP_STATE.settings.voiceStyle = selectedVoice;
 
@@ -2907,7 +2988,25 @@ function testVoiceSample(customStyle) {
     APP_STATE.settings.voiceStyle = originalStyle;
     if (testBtn) testBtn.classList.remove('playing');
     if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe thấy rõ ràng bằng Tiếng Việt chưa nè? 💕`;
-  });
+  }, true);
+}
+
+// Prime Audio trên tương tác đầu tiên của người dùng để tránh trình duyệt di động chặn âm
+if (typeof window !== 'undefined') {
+  const primeAudioOnGesture = () => {
+    try {
+      getAudioContext();
+      if (window.speechSynthesis) {
+        window.speechSynthesis.resume();
+      }
+    } catch (e) {}
+    window.removeEventListener('pointerdown', primeAudioOnGesture, { capture: true });
+    window.removeEventListener('touchstart', primeAudioOnGesture, { capture: true });
+    window.removeEventListener('click', primeAudioOnGesture, { capture: true });
+  };
+  window.addEventListener('pointerdown', primeAudioOnGesture, { capture: true, once: true });
+  window.addEventListener('touchstart', primeAudioOnGesture, { capture: true, once: true });
+  window.addEventListener('click', primeAudioOnGesture, { capture: true, once: true });
 }
 
 // =============================================================================
@@ -4672,7 +4771,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const testVoiceBtn = document.getElementById('testVoiceBtn');
   if (testVoiceBtn) {
     testVoiceBtn.addEventListener('click', () => {
-      playSfx('chime');
       const selectedStyle = document.querySelector('input[name="voiceStyle"]:checked')?.value || 'kuromi_anime';
       testVoiceSample(selectedStyle);
     });
