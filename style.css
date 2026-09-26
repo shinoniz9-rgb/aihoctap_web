@@ -2396,6 +2396,37 @@ body {
   box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
 }
 
+.star-actions-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.reset-star-btn {
+  background: rgba(20, 10, 31, 0.8);
+  border: 1px solid rgba(255, 101, 168, 0.35);
+  color: var(--kuromi-lavender);
+  font-family: var(--font-kid);
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: var(--transition-smooth);
+}
+
+.reset-star-btn:hover {
+  background: rgba(255, 64, 129, 0.25);
+  border-color: #ff4081;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
 .star-rank-badge {
   display: flex;
   align-items: center;
@@ -3021,6 +3052,120 @@ body {
   padding: 4px 10px;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+/* Activity Category Navigation */
+.activity-category-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  scrollbar-width: thin;
+}
+
+.activity-cat-btn {
+  background: rgba(20, 10, 31, 0.7);
+  border: 1.5px solid var(--kuromi-border);
+  color: var(--kuromi-lavender);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-kid);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+
+.activity-cat-btn:hover, .activity-cat-btn.active {
+  background: linear-gradient(135deg, var(--kuromi-pink), var(--kuromi-purple-mid));
+  border-color: #ffeb3b;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(255, 37, 138, 0.4);
+}
+
+/* Homework Interactive Assistant */
+.homework-box {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.homework-input-wrapper {
+  background: rgba(20, 10, 31, 0.85);
+  border: 2px solid var(--kuromi-border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.homework-textarea {
+  width: 100%;
+  min-height: 75px;
+  background: rgba(10, 5, 18, 0.85);
+  border: 1px solid rgba(255, 101, 168, 0.35);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 0.92rem;
+  resize: vertical;
+}
+
+.homework-textarea:focus {
+  outline: none;
+  border-color: var(--kuromi-pink);
+  box-shadow: 0 0 10px rgba(255, 37, 138, 0.4);
+}
+
+.homework-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.homework-samples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.homework-sample-btn {
+  background: rgba(38, 18, 60, 0.88);
+  border: 1.5px solid rgba(255, 152, 0, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: left;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.homework-sample-btn:hover {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: #ffb74d;
+  transform: translateY(-2px);
+}
+
+.science-detail-card {
+  background: rgba(20, 10, 31, 0.88);
+  border: 2px solid var(--kuromi-pink);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeInTab 0.3s ease;
 }
 
 /* ==========================================================================

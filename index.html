@@ -402,9 +402,14 @@
                 <span class="star-unit">sao</span>
               </div>
             </div>
-            <button class="add-star-bonus-btn" id="addStarBonusBtn" title="Kuromi tặng bé thêm 1 sao khích lệ!">
-              <span>✨</span> Tặng sao
-            </button>
+            <div class="star-actions-group">
+              <button class="add-star-bonus-btn" id="addStarBonusBtn" title="Kuromi tặng bé thêm 1 sao khích lệ!">
+                <span>✨</span> Tặng sao
+              </button>
+              <button class="reset-star-btn" id="resetStarBtn" title="Đặt lại số sao của bé">
+                <span>🔄</span> Đặt lại
+              </button>
+            </div>
           </div>
           
           <div class="star-rank-badge">
@@ -798,6 +803,35 @@
       
       <div class="modal-body activity-modal-body" id="activityModalBody">
         <!-- Injected dynamically by app.js based on selected station -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Stars Confirmation Modal -->
+  <div class="modal-overlay hidden" id="resetStarsModal">
+    <div class="modal-window" style="max-width: 440px; text-align: center;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span style="font-size: 1.8rem;">⭐🔄</span>
+          <h3>Đặt Lại Ngôi Sao Bé Ngoan</h3>
+        </div>
+        <button class="close-modal-btn" id="closeResetStarsBtn">✕</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; padding: 18px 8px;">
+        <p style="font-size: 0.95rem; line-height: 1.5; color: #fff;">
+          Ba mẹ hoặc bé <strong class="child-name-val">Bảo Hân</strong> muốn đặt lại số sao để bắt đầu tuần học tập mới không?
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button id="confirmResetStarsZeroBtn" class="station-launch-btn btn-quiz" style="padding: 12px; font-size: 0.95rem;">
+            <span>⭐ Đặt lại về 0 sao (Bắt đầu tuần mới)</span>
+          </button>
+          <button id="confirmResetStarsTenBtn" class="station-launch-btn btn-math" style="padding: 12px; font-size: 0.95rem;">
+            <span>🌟 Đặt lại về 10 sao (Khởi đầu khuyến khích)</span>
+          </button>
+          <button id="cancelResetStarsBtn" class="stage-action-pill" style="margin: 4px auto 0; padding: 8px 20px; font-size: 0.88rem;">
+            <span>✕ Giữ nguyên số sao hiện tại</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

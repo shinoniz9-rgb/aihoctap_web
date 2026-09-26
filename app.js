@@ -560,131 +560,321 @@ const LEARNING_ACTIVITIES = {
   },
 
   english: {
-    title: 'Tiếng Anh Nhí Flashcards',
-    subtitle: 'Học từ vựng con vật, hoa quả & màu sắc có phát âm bản ngữ',
+    title: 'Tiếng Anh Nhí Flashcards (40+ Từ Vựng)',
+    subtitle: 'Học từ vựng con vật, hoa quả, màu sắc & số đếm có phát âm chuẩn bản ngữ',
     icon: '🦁🌈',
     render: (container) => {
-      const cards = [
-        { en: 'Apple', vi: 'Quả Táo', emoji: '🍎' },
-        { en: 'Cat', vi: 'Con Mèo', emoji: '🐱' },
-        { en: 'Dog', vi: 'Con Chó', emoji: '🐶' },
-        { en: 'Sun', vi: 'Mặt Trời', emoji: '☀️' },
-        { en: 'Car', vi: 'Xe Ô Tô', emoji: '🚗' },
-        { en: 'Rainbow', vi: 'Cầu Vồng', emoji: '🌈' },
-        { en: 'Star', vi: 'Ngôi Sao', emoji: '⭐' },
-        { en: 'Butterfly', vi: 'Con Bướm', emoji: '🦋' }
+      const allCards = [
+        // Animals
+        { cat: 'animals', en: 'Lion', vi: 'Con Sư Tử', emoji: '🦁', ipa: '/ˈlaɪ.ən/' },
+        { cat: 'animals', en: 'Elephant', vi: 'Con Voi', emoji: '🐘', ipa: '/ˈel.ɪ.fənt/' },
+        { cat: 'animals', en: 'Monkey', vi: 'Con Khỉ', emoji: '🐵', ipa: '/ˈmʌŋ.ki/' },
+        { cat: 'animals', en: 'Tiger', vi: 'Con Hổ', emoji: '🐯', ipa: '/ˈtaɪ.ɡər/' },
+        { cat: 'animals', en: 'Dolphin', vi: 'Cá Heo', emoji: '🐬', ipa: '/ˈdɒl.fɪn/' },
+        { cat: 'animals', en: 'Rabbit', vi: 'Con Thỏ', emoji: '🐰', ipa: '/ˈræb.ɪt/' },
+        { cat: 'animals', en: 'Cat', vi: 'Con Mèo', emoji: '🐱', ipa: '/kæt/' },
+        { cat: 'animals', en: 'Dog', vi: 'Con Chó', emoji: '🐶', ipa: '/dɒɡ/' },
+        { cat: 'animals', en: 'Duck', vi: 'Con Vịt', emoji: '🦆', ipa: '/dʌk/' },
+        { cat: 'animals', en: 'Butterfly', vi: 'Con Bướm', emoji: '🦋', ipa: '/ˈbʌt.ə.flaɪ/' },
+        
+        // Colors
+        { cat: 'colors', en: 'Pink', vi: 'Màu Hồng', emoji: '🌸', ipa: '/pɪŋk/' },
+        { cat: 'colors', en: 'Red', vi: 'Màu Đỏ', emoji: '❤️', ipa: '/red/' },
+        { cat: 'colors', en: 'Blue', vi: 'Màu Xanh Dương', emoji: '💙', ipa: '/bluː/' },
+        { cat: 'colors', en: 'Yellow', vi: 'Màu Vàng', emoji: '💛', ipa: '/ˈjel.əʊ/' },
+        { cat: 'colors', en: 'Green', vi: 'Màu Xanh Lá', emoji: '💚', ipa: '/ɡriːn/' },
+        { cat: 'colors', en: 'Purple', vi: 'Màu Tím', emoji: '💜', ipa: '/ˈpɜː.pəl/' },
+        { cat: 'colors', en: 'Orange', vi: 'Màu Cam', emoji: '🧡', ipa: '/ˈɒr.ɪndʒ/' },
+        { cat: 'colors', en: 'White', vi: 'Màu Trắng', emoji: '🤍', ipa: '/waɪt/' },
+
+        // Fruits
+        { cat: 'fruits', en: 'Apple', vi: 'Quả Táo', emoji: '🍎', ipa: '/ˈæp.əl/' },
+        { cat: 'fruits', en: 'Banana', vi: 'Quả Chuối', emoji: '🍌', ipa: '/bəˈnɑː.nə/' },
+        { cat: 'fruits', en: 'Strawberry', vi: 'Quả Dâu Tây', emoji: '🍓', ipa: '/ˈstrɔː.bər.i/' },
+        { cat: 'fruits', en: 'Watermelon', vi: 'Quả Dưa Hấu', emoji: '🍉', ipa: '/ˈwɔː.təˌmel.ən/' },
+        { cat: 'fruits', en: 'Orange', vi: 'Quả Cam', emoji: '🍊', ipa: '/ˈɒr.ɪndʒ/' },
+        { cat: 'fruits', en: 'Grape', vi: 'Quả Nho', emoji: '🍇', ipa: '/ɡreɪp/' },
+        { cat: 'fruits', en: 'Mango', vi: 'Quả Xoài', emoji: '🥭', ipa: '/ˈmæŋ.ɡəʊ/' },
+        { cat: 'fruits', en: 'Peach', vi: 'Quả Đào', emoji: '🍑', ipa: '/piːtʃ/' },
+
+        // Vehicles & Objects
+        { cat: 'vehicles', en: 'Car', vi: 'Xe Ô Tô', emoji: '🚗', ipa: '/kɑːr/' },
+        { cat: 'vehicles', en: 'Bus', vi: 'Xe Buýt', emoji: '🚌', ipa: '/bʌs/' },
+        { cat: 'vehicles', en: 'Airplane', vi: 'Máy Bay', emoji: '✈️', ipa: '/ˈeə.pleɪn/' },
+        { cat: 'vehicles', en: 'Train', vi: 'Tàu Hỏa', emoji: '🚂', ipa: '/treɪn/' },
+        { cat: 'vehicles', en: 'Bicycle', vi: 'Xe Đạp', emoji: '🚲', ipa: '/ˈbaɪ.sɪ.kəl/' },
+        { cat: 'vehicles', en: 'Book', vi: 'Quyển Sách', emoji: '📖', ipa: '/bʊk/' },
+        { cat: 'vehicles', en: 'Sun', vi: 'Mặt Trời', emoji: '☀️', ipa: '/sʌn/' },
+        { cat: 'vehicles', en: 'Rainbow', vi: 'Cầu Vồng', emoji: '🌈', ipa: '/ˈreɪn.bəʊ/' },
+
+        // Numbers 1-10
+        { cat: 'numbers', en: 'One', vi: 'Số 1', emoji: '1️⃣', ipa: '/wʌn/' },
+        { cat: 'numbers', en: 'Two', vi: 'Số 2', emoji: '2️⃣', ipa: '/tuː/' },
+        { cat: 'numbers', en: 'Three', vi: 'Số 3', emoji: '3️⃣', ipa: '/θriː/' },
+        { cat: 'numbers', en: 'Four', vi: 'Số 4', emoji: '4️⃣', ipa: '/fɔːr/' },
+        { cat: 'numbers', en: 'Five', vi: 'Số 5', emoji: '5️⃣', ipa: '/faɪv/' },
+        { cat: 'numbers', en: 'Six', vi: 'Số 6', emoji: '6️⃣', ipa: '/sɪks/' },
+        { cat: 'numbers', en: 'Seven', vi: 'Số 7', emoji: '7️⃣', ipa: '/ˈsev.ən/' },
+        { cat: 'numbers', en: 'Eight', vi: 'Số 8', emoji: '8️⃣', ipa: '/eɪt/' },
+        { cat: 'numbers', en: 'Nine', vi: 'Số 9', emoji: '9️⃣', ipa: '/naɪn/' },
+        { cat: 'numbers', en: 'Ten', vi: 'Số 10', emoji: '🔟', ipa: '/ten/' }
       ];
 
-      container.innerHTML = `
-        <div style="text-align: center; margin-bottom: 12px;">
-          <p style="font-size: 0.9rem; color: var(--kuromi-lavender);">
-            Bé bấm vào thẻ bài để Kuromi đọc to từ tiếng Anh và nghĩa tiếng Việt nhé:
-          </p>
-        </div>
-        <div class="flashcards-grid">
-          ${cards.map(card => `
-            <div class="flashcard-item" data-en="${card.en}" data-vi="${card.vi}">
-              <span class="flashcard-emoji">${card.emoji}</span>
-              <span class="flashcard-en">${card.en}</span>
-              <span class="flashcard-vi">${card.vi}</span>
-              <button class="flashcard-speak-btn">🔊 Nghe đọc</button>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      let activeCat = 'all';
 
-      container.querySelectorAll('.flashcard-item').forEach(card => {
-        card.addEventListener('click', () => {
-          playSfx('chime');
-          const en = card.getAttribute('data-en');
-          const vi = card.getAttribute('data-vi');
+      function renderFlashcards() {
+        const filtered = activeCat === 'all' 
+          ? allCards 
+          : allCards.filter(c => c.cat === activeCat);
 
-          if (APP_STATE.ttsEnabled) {
-            speakText(`${en}! Nghĩa là ${vi}!`);
-          }
+        container.innerHTML = `
+          <!-- Category Navigation Tabs -->
+          <div class="activity-category-nav">
+            <button class="activity-cat-btn ${activeCat === 'all' ? 'active' : ''}" data-cat="all">🌟 Tất Cả (${allCards.length})</button>
+            <button class="activity-cat-btn ${activeCat === 'animals' ? 'active' : ''}" data-cat="animals">🐾 Con Vật</button>
+            <button class="activity-cat-btn ${activeCat === 'colors' ? 'active' : ''}" data-cat="colors">🎨 Màu Sắc</button>
+            <button class="activity-cat-btn ${activeCat === 'fruits' ? 'active' : ''}" data-cat="fruits">🍎 Hoa Quả</button>
+            <button class="activity-cat-btn ${activeCat === 'vehicles' ? 'active' : ''}" data-cat="vehicles">🚗 Xe Cộ</button>
+            <button class="activity-cat-btn ${activeCat === 'numbers' ? 'active' : ''}" data-cat="numbers">🔢 Số Đếm (1-10)</button>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 10px;">
+            <p style="font-size: 0.88rem; color: var(--kuromi-lavender);">
+              Bé chạm vào thẻ bài để Kuromi phát âm to rõ và dịch nghĩa nhé:
+            </p>
+          </div>
+
+          <div class="flashcards-grid">
+            ${filtered.map(card => `
+              <div class="flashcard-item" data-en="${card.en}" data-vi="${card.vi}">
+                <span class="flashcard-emoji">${card.emoji}</span>
+                <span class="flashcard-en">${card.en}</span>
+                <span style="font-size: 0.72rem; color: #ffeb3b; font-family: monospace;">${card.ipa}</span>
+                <span class="flashcard-vi">${card.vi}</span>
+                <button class="flashcard-speak-btn">🔊 Nghe đọc</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        // Category filter click
+        container.querySelectorAll('.activity-cat-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            playSfx('pop');
+            activeCat = btn.getAttribute('data-cat');
+            renderFlashcards();
+          });
         });
-      });
+
+        // Flashcard speak click
+        container.querySelectorAll('.flashcard-item').forEach(card => {
+          card.addEventListener('click', () => {
+            playSfx('chime');
+            const en = card.getAttribute('data-en');
+            const vi = card.getAttribute('data-vi');
+
+            if (APP_STATE.ttsEnabled) {
+              speakText(`${en}! Nghĩa tiếng Việt là ${vi}!`);
+            }
+          });
+        });
+      }
+
+      renderFlashcards();
     }
   },
 
   science: {
-    title: 'Khám Phá Tự Nhiên & Khoa Học Diệu Kỳ',
-    subtitle: 'Giải mã hiện tượng thiên nhiên cho bé',
+    title: 'Khám Phá Tự Nhiên & Vì Sao (20+ Đề Tài)',
+    subtitle: 'Giải mã những hiện tượng thiên nhiên kỳ thú quanh bé',
     icon: '🪐🌱',
     render: (container) => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
-      const topics = [
-        { title: '🌧️ Vì sao trời lại có mưa?', prompt: 'Tại sao trời lại có mưa rơi vậy Kuromi?' },
-        { title: '🌈 Cầu vồng 7 sắc màu xuất hiện thế nào?', prompt: 'Vì sao sau cơn mưa lại có cầu vồng 7 màu?' },
-        { title: '🪐 Hệ Mặt Trời và các hành tinh', prompt: 'Kể cho bé nghe về hệ mặt trời và các hành tinh' },
-        { title: '🌿 Vì sao lá cây lại có màu xanh?', prompt: 'Tại sao lá cây lại có màu xanh vậy Kuromi?' }
+      const allTopics = [
+        // Weather
+        { cat: 'weather', title: '🌧️ Vì sao trời lại có mưa rơi?', prompt: 'Tại sao trời lại có mưa rơi vậy Kuromi?', summary: 'Nước ở sông hồ bốc hơi lên mây, khi mây nặng hạt ngưng tụ rơi xuống thành mưa mát lành!' },
+        { cat: 'weather', title: '🌈 Vì sao sau mưa lại có cầu vồng 7 màu?', prompt: 'Vì sao sau cơn mưa lại có cầu vồng 7 màu?', summary: 'Ánh sáng Mặt Trời chiếu qua hàng triệu giọt nước li ti tán sắc thành dải cầu vồng 7 màu tuyệt đẹp!' },
+        { cat: 'weather', title: '⚡ Vì sao lại có sấm chớp trên trời?', prompt: 'Vì sao lại có sấm chớp và sấm sét trong cơn giông?', summary: 'Những đám mây mang điện tích cọ xát vào nhau tạo thành tia chớp sáng chói và tiếng sấm rền vang!' },
+        { cat: 'weather', title: '🌊 Vì sao nước biển lại có vị mặn?', prompt: 'Vì sao nước biển lại có vị mặn vậy Kuromi?', summary: 'Nước mưa hòa tan muối khoáng từ đất đá rồi đổ ra biển qua hàng triệu năm khiến biển có vị mặn!' },
+        { cat: 'weather', title: '❄️ Vì sao tuyết lại có màu trắng và lạnh buốt?', prompt: 'Vì sao tuyết rơi lại trắng tinh và lạnh buốt?', summary: 'Tuyết là những tinh thể băng hình bông hoa 6 cánh lấp lánh phản chiếu toàn bộ ánh sáng trắng!' },
+        { cat: 'weather', title: '🌬️ Gió từ đâu sinh ra vậy Kuromi?', prompt: 'Gió từ đâu thổi đến vậy Kuromi?', summary: 'Không khí nơi nóng bốc lên cao, không khí mát tràn vào lấp chỗ trống tạo thành những làn gió mát rượi!' },
+
+        // Space
+        { cat: 'space', title: '☀️ Vì sao Mặt Trời mọc và lặn mỗi ngày?', prompt: 'Vì sao có ngày và đêm trên Trái Đất?', summary: 'Trái Đất tự quay tròn xung quanh trục, nửa hướng về Mặt Trời là ban ngày, nửa quay đi là ban đêm!' },
+        { cat: 'space', title: '🌙 Vì sao Mặt Trăng lúc tròn lúc khuyết?', prompt: 'Vì sao mặt trăng lúc tròn lúc lưỡi liềm?', summary: 'Khi Mặt Trăng quay quanh Trái Đất, góc nhận ánh sáng Mặt Trời thay đổi tạo nên các hình dạng trăng rằm hay lưỡi liềm!' },
+        { cat: 'space', title: '🪐 Hệ Mặt Trời và 8 hành tinh diệu kỳ', prompt: 'Kể cho bé nghe về hệ mặt trời và các hành tinh', summary: 'Mặt Trời là ngôi sao khổng lồ ở trung tâm, bao quanh là Trái Đất, Sao Hỏa, Sao Mộc, Sao Thổ lung linh!' },
+        { cat: 'space', title: '✨ Vì sao các ngôi sao lại lấp lánh ban đêm?', prompt: 'Tại sao ban đêm nhìn lên trời lại thấy các ngôi sao lấp lánh?', summary: 'Ánh sáng từ các ngôi sao xa xôi đi xuyên qua bầu khí quyển Trái Đất bị chao đảo tạo cảm giác lấp lánh!' },
+        { cat: 'space', title: '🚀 Có người ngoài hành tinh thật không?', prompt: 'Có người ngoài hành tinh thật không Kuromi?', summary: 'Vũ trụ bao la rộng lớn vô tận, các nhà khoa học vẫn đang chế tạo tàu vũ trụ để tìm kiếm sự sống mới!' },
+
+        // Animals & Plants
+        { cat: 'nature', title: '🦖 Vì sao loài khủng long to lớn lại tuyệt chủng?', prompt: 'Vì sao loài khủng long lại tuyệt chủng từ thời tiền sử?', summary: 'Một khối thiên thạch khổng lồ từ vũ trụ va chạm Trái Đất làm thay đổi khí hậu, khiến khủng long không kịp thích nghi!' },
+        { cat: 'nature', title: '🌿 Vì sao lá cây lại có màu xanh lục?', prompt: 'Tại sao lá cây lại có màu xanh vậy Kuromi?', summary: 'Lá cây chứa chất diệp lục màu xanh giúp cây hấp thu ánh nắng để tạo ra oxy trong lành cho chúng mình hít thở!' },
+        { cat: 'nature', title: '🐬 Cá heo thông minh thế nào và ngủ ra sao?', prompt: 'Cá heo thông minh thế nào và có phải là cá không?', summary: 'Cá heo là động vật có vú thở bằng phổi rất thông minh. Khi ngủ, chúng chỉ nhắm 1 mắt và để nửa não nghỉ ngơi!' },
+        { cat: 'nature', title: '🦇 Vì sao loài dơi lại thích ngủ treo ngược?', prompt: 'Vì sao loài dơi lại thích ngủ treo ngược người?', summary: 'Xương chân của dơi rất nhỏ, treo ngược trên trần hang giúp dơi dễ dàng thả mình bay vút vào không trung!' },
+        { cat: 'nature', title: '🐓 Vì sao chú gà trống gáy ò ó o mỗi sáng?', prompt: 'Vì sao gà trống lại gáy vào buổi sáng sớm?', summary: 'Đồng hồ sinh học bên trong cơ thể mách bảo gà trống cất tiếng gáy chào đón bình minh và đánh thức mọi người!' },
+
+        // Body & Habits
+        { cat: 'body', title: '🦷 Vì sao bé phải đánh răng sáng và tối?', prompt: 'Tại sao bé phải đánh răng sáng và tối mỗi ngày?', summary: 'Đánh răng giúp xua đuổi vi khuẩn sâu răng, giữ cho nụ cười của bé luôn trắng sáng và hơi thở thơm tho!' },
+        { cat: 'body', title: '🌙 Vì sao bé phải đi ngủ sớm trước 9 giờ tối?', prompt: 'Tại sao bé phải đi ngủ sớm vậy Kuromi?', summary: 'Khi ngủ say, cơ thể bé tiết ra hormone tăng trưởng giúp bé lớn bổng thông minh và khỏe mạnh!' },
+        { cat: 'body', title: '👀 Vì sao mắt chúng mình phải chớp chớp liên tục?', prompt: 'Tại sao mắt chúng mình lại phải chớp chớp?', summary: 'Mỗi lần chớp mắt, nước mắt sẽ phủ một lớp màng mỏng giữ cho mắt luôn ẩm ướt và sạch bụi bẩn!' },
+        { cat: 'body', title: '💓 Trái tim trong ngực đập thình thịch để làm gì?', prompt: 'Trái tim đập để làm gì vậy Kuromi?', summary: 'Trái tim như một chiếc máy bơm thần kỳ hoạt động suốt ngày đêm đưa máu và dưỡng chất nuôi toàn bộ cơ thể!' }
       ];
 
-      container.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 12px; padding: 6px;">
-          <p style="font-size: 0.92rem; color: #fff; text-align: center;">
-            Bé ${childName} chọn câu hỏi khoa học muốn khám phá cùng tranh vẽ minh họa nhé:
-          </p>
-          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;">
-            ${topics.map(t => `
-              <button class="station-launch-btn btn-science science-topic-btn" data-prompt="${t.prompt}" style="justify-content: flex-start; padding: 14px 16px; font-size: 0.95rem;">
-                ${t.title}
-              </button>
+      let activeCat = 'all';
+
+      function renderScience() {
+        const filtered = activeCat === 'all' 
+          ? allTopics 
+          : allTopics.filter(t => t.cat === activeCat);
+
+        container.innerHTML = `
+          <!-- Category Tabs -->
+          <div class="activity-category-nav">
+            <button class="activity-cat-btn ${activeCat === 'all' ? 'active' : ''}" data-cat="all">🌟 Tất Cả (${allTopics.length})</button>
+            <button class="activity-cat-btn ${activeCat === 'weather' ? 'active' : ''}" data-cat="weather">🌧️ Thời Tiết & Thiên Nhiên</button>
+            <button class="activity-cat-btn ${activeCat === 'space' ? 'active' : ''}" data-cat="space">🪐 Vũ Trụ & Trái Đất</button>
+            <button class="activity-cat-btn ${activeCat === 'nature' ? 'active' : ''}" data-cat="nature">🦖 Động Thực Vật</button>
+            <button class="activity-cat-btn ${activeCat === 'body' ? 'active' : ''}" data-cat="body">🧠 Cơ Thể Của Bé</button>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 12px;">
+            <p style="font-size: 0.88rem; color: #fff;">
+              Bé <strong>${childName}</strong> chọn đề tài muốn khám phá nhé (Kuromi sẽ giải thích ngay):
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px;">
+            ${filtered.map(t => `
+              <div class="science-detail-card" style="padding: 12px; gap: 8px;">
+                <h4 style="font-size: 0.95rem; color: #ffeb3b; line-height: 1.35; margin: 0;">${t.title}</h4>
+                <p style="font-size: 0.82rem; color: var(--kuromi-lavender); line-height: 1.45; margin: 0;">${t.summary}</p>
+                <div style="display: flex; gap: 8px; margin-top: 4px;">
+                  <button class="station-launch-btn btn-science science-speak-btn" data-title="${t.title}" data-summary="${t.summary}" style="flex: 1; padding: 5px 8px; font-size: 0.78rem;">
+                    🔊 Nghe giải thích
+                  </button>
+                  <button class="station-launch-btn btn-math science-chat-btn" data-prompt="${t.prompt}" style="flex: 1; padding: 5px 8px; font-size: 0.78rem;">
+                    💬 Trò chuyện & Xem ảnh
+                  </button>
+                </div>
+              </div>
             `).join('')}
           </div>
-        </div>
-      `;
+        `;
 
-      container.querySelectorAll('.science-topic-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const prompt = btn.getAttribute('data-prompt');
-          closeLearningModal();
-          switchAppMode('chat');
-          handleChildSubmit(prompt);
+        // Category filter click
+        container.querySelectorAll('.activity-cat-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            playSfx('pop');
+            activeCat = btn.getAttribute('data-cat');
+            renderScience();
+          });
         });
-      });
+
+        // Speak summary click
+        container.querySelectorAll('.science-speak-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            playSfx('chime');
+            const summary = btn.getAttribute('data-summary');
+            const title = btn.getAttribute('data-title');
+            if (APP_STATE.ttsEnabled) {
+              speakText(`${title}: ${summary}`);
+            }
+          });
+        });
+
+        // Chat & HD picture click
+        container.querySelectorAll('.science-chat-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const prompt = btn.getAttribute('data-prompt');
+            closeLearningModal();
+            switchAppMode('chat');
+            handleChildSubmit(prompt);
+          });
+        });
+      }
+
+      renderScience();
     }
   },
 
   homework: {
-    title: 'Gia Sư Kuromi - Hướng Dẫn Bài Tập Ở Lớp',
-    subtitle: 'Đồng hành cùng bé giải bài tập cô giáo giao từng bước',
+    title: 'Gia Sư Kuromi - Trợ Lý Bài Tập Lớp 1 & Lớp 2',
+    subtitle: 'Đồng hành cùng bé giải toán, tiếng Việt & câu hỏi tư duy từng bước',
     icon: '🎒✏️',
     render: (container) => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const sampleExercises = [
+        { cat: 'math', title: 'Toán có lời văn', content: 'Mai có 7 bông hoa, Mai tặng bạn Lan 3 bông hoa. Hỏi bạn Mai còn lại bao nhiêu bông hoa?' },
+        { cat: 'math', title: 'Điền dấu so sánh', content: 'Bé hãy điền dấu >, < hoặc = vào phép tính: 8 + 1 ... 10 - 2' },
+        { cat: 'math', title: 'Số liền trước - Số liền sau', content: 'Số liền trước của số 9 là số mấy? Và số liền sau của số 9 là số mấy?' },
+        { cat: 'vietnamese', title: 'Tìm từ ghép vần', content: 'Bé hãy tìm 3 từ có chứa vần "anh" và 3 từ có chứa vần "ach" nhé!' },
+        { cat: 'vietnamese', title: 'Đặt câu với từ cho sẵn', content: 'Bé hãy đặt một câu thật hay có chứa từ "chăm chỉ" để cô giáo khen!' },
+        { cat: 'iq', title: 'Đố tư duy hình học', content: 'Hình vuông có mấy cạnh bằng nhau? Và hình tam giác có mấy góc nhọn?' }
+      ];
+
       container.innerHTML = `
-        <div style="text-align: center; display: flex; flex-direction: column; gap: 16px; padding: 10px;">
-          <div style="font-size: 3rem;">👩‍🏫👑</div>
-          <h4 style="font-size: 1.2rem; color: #fff;">Gia Sư Kuromi Đã Sẵn Sàng Giúp Bé ${childName}!</h4>
-          <p style="font-size: 0.95rem; color: var(--kuromi-lavender); line-height: 1.6;">
-            Cô giáo giao bài toán khó hay bài đọc vần hôm nay?<br>
-            Bé hoặc ba mẹ chỉ cần <strong>bấm nút Micro nơ hồng 🎤</strong> và đọc đề bài,<br>
-            Kuromi sẽ giải thích cặn kẽ và gợi ý từng bước để bé tự tìm ra đáp án!
-          </p>
-          <button id="startHomeworkChatBtn" class="station-launch-btn btn-homework" style="max-width: 320px; margin: 0 auto; padding: 12px 24px; font-size: 1rem;">
-            <span>Hỏi Bài Ngay Với Micro</span> 🎙️
-          </button>
+        <div class="homework-box">
+          <!-- Direct Homework Input Box -->
+          <div class="homework-input-wrapper">
+            <label style="font-size: 0.9rem; font-weight: 700; color: #ffeb3b; display: flex; align-items: center; gap: 6px;">
+              <span>✍️</span> Nhập hoặc đọc đề bài cô giáo giao cho bé ${childName}:
+            </label>
+            <textarea id="homeworkDirectInput" class="homework-textarea" placeholder="Ví dụ: Cô giáo giao bài toán: Có 5 quả táo, mẹ mua thêm 4 quả táo nữa, hỏi có tất cả bao nhiêu quả?..."></textarea>
+            <div class="homework-actions-row">
+              <span style="font-size: 0.78rem; color: var(--kuromi-lavender);">Kuromi sẽ giải thích cặn kẽ từng bước, không giải hộ!</span>
+              <button id="solveHomeworkBtn" class="station-launch-btn btn-homework" style="padding: 8px 18px; font-size: 0.88rem; width: auto;">
+                <span>🚀 Nhờ Kuromi Chỉ Dẫn</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sample Exercise Presets -->
+          <div>
+            <h4 style="font-size: 0.95rem; color: #fff; margin-bottom: 8px;">
+              📚 Hoặc bé bấm chọn bài tập mẫu chuẩn sách giáo khoa dưới đây:
+            </h4>
+            <div class="homework-samples-grid">
+              ${sampleExercises.map(ex => `
+                <button class="homework-sample-btn" data-content="${ex.content}">
+                  <span style="font-weight: 800; color: #ff9800; display: block; margin-bottom: 2px;">📌 ${ex.title}</span>
+                  <span style="font-size: 0.8rem; color: #e1bee7; line-height: 1.35;">"${ex.content}"</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
         </div>
       `;
 
-      container.querySelector('#startHomeworkChatBtn').addEventListener('click', () => {
+      // Solve homework button
+      container.querySelector('#solveHomeworkBtn').addEventListener('click', () => {
+        const input = container.querySelector('#homeworkDirectInput');
+        const question = input.value.trim();
+        if (!question) {
+          alert('Bé hoặc ba mẹ hãy nhập đề bài tập vào ô trước nhé!');
+          input.focus();
+          return;
+        }
+
         closeLearningModal();
         switchAppMode('chat');
-        const input = document.getElementById('childTextInput');
-        if (input) {
-          input.value = 'Kuromi ơi, giảng giúp bé bài tập này ở trường với: ';
-          input.focus();
-        }
-        if (APP_STATE.ttsEnabled) {
-          speakText(`Bé ${childName} nói cho Kuromi nghe bài tập hôm nay cô giáo giao là gì nào!`);
-        }
+        handleChildSubmit(`Kuromi ơi, hãy làm gia sư hướng dẫn bé ${childName} tư duy từng bước để giải bài tập này nhé: ${question}`);
+      });
+
+      // Sample click
+      container.querySelectorAll('.homework-sample-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const content = btn.getAttribute('data-content');
+          closeLearningModal();
+          switchAppMode('chat');
+          handleChildSubmit(`Kuromi ơi, giảng bài tập này cho bé ${childName} với: ${content}`);
+        });
       });
     }
   },
 
   quiz: {
-    title: 'Thử Thách Đố Vui 5 Phút Săn Sao',
-    subtitle: 'Trả lời đúng nhận ngay 2 sao thưởng!',
+    title: 'Thử Thách Đố Vui 5 Phút Săn Sao (20+ Câu Đố IQ)',
+    subtitle: 'Trả lời đúng nhận ngay 2 sao thưởng rực rỡ!',
     icon: '👑🎁',
     render: (container) => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
@@ -699,55 +889,194 @@ const LEARNING_ACTIVITIES = {
           question: "Cái gì bảy sắc hình vòng, bắc ngang qua núi ngỡ lòng cầu mây?",
           options: ["Cầu Tre 🌾", "Cầu Vồng 🌈", "Cột Cờ 🚩"],
           correct: 1,
-          explanation: "Chính xác! Đó chính là chiếc Cầu Vồng 7 sắc màu rực rỡ!"
+          explanation: "Chính xác! Đó chính là chiếc Cầu Vồng 7 sắc màu rực rỡ sau mưa!"
+        },
+        {
+          question: "Chân mang hài lụa, mắt như than hồng, đêm ngày rình chuột, ai ai cũng khen?",
+          options: ["Con Chó 🐶", "Con Mèo 🐱", "Con Gà 🐔"],
+          correct: 1,
+          explanation: "Đúng rồi! Chú Mèo ngoan ngoãn bắt chuột giúp cả nhà!"
+        },
+        {
+          question: "Bốn chân như bốn cột nhà, hai tai ve vẩy, mũi dài thượt ra?",
+          options: ["Con Voi 🐘", "Con Ngựa 🐴", "Con Hươu 🦒"],
+          correct: 0,
+          explanation: "Chính xác! Đó chính là chú Voi khổng lồ hiền lành!"
+        },
+        {
+          question: "Đầu đội mũ đỏ, áo khoác nhiều màu, sớm mai thức dậy gáy vang khắp làng?",
+          options: ["Con Vịt 🦆", "Gà Trống 🐓", "Chim Sâu 🐦"],
+          correct: 1,
+          explanation: "Hoan hô! Chú Gà Trống gáy ò ó o đánh thức bé dậy đi học!"
+        },
+        {
+          question: "Áo ngoài xanh biếc, ruột đỏ ngọt ngào, hạt đen lấm tấm, mùa hè thích ăn?",
+          options: ["Quả Dưa Hấu 🍉", "Quả Cam 🍊", "Quả Táo 🍎"],
+          correct: 0,
+          explanation: "Chính xác! Đó là quả dưa hấu đỏ ngọt mát lạnh!"
+        },
+        {
+          question: "Trái cong cong như vầng trăng khuyết, vỏ màu vàng tươi, khỉ thích mê say?",
+          options: ["Quả Chuối 🍌", "Quả Xoài 🥭", "Quả Dâu 🍓"],
+          correct: 0,
+          explanation: "Đúng rồi! Trái chuối chín vàng thơm ngon giàu vitamin!"
+        },
+        {
+          question: "Có ba kim chạy suốt ngày đêm, tích tắc tích tắc nhắc bé dậy sớm đi học?",
+          options: ["Cái Đồng Hồ ⏰", "Cái Quạt 🪭", "Cái Gương 🪞"],
+          correct: 0,
+          explanation: "Tuyệt vời! Chiếc đồng hồ báo thức chăm chỉ của bé!"
+        },
+        {
+          question: "Mùa hè phe phẩy gió mát rượi, xua tan oi bức cho bé ngủ say?",
+          options: ["Chiếc Quạt 🪭", "Chiếc Gối 🛏️", "Cây Chổi 🧹"],
+          correct: 0,
+          explanation: "Đúng rồi nè! Chiếc quạt mát lành của bé!"
+        },
+        {
+          question: "Lúc đi mưa thì xòe rộng, lúc tạnh mưa thì cụp lại mang về nhà?",
+          options: ["Chiếc Ô (Dù) ☂️", "Chiếc Áo 🧥", "Chiếc Nón 👒"],
+          correct: 0,
+          explanation: "Chính xác! Chiếc ô che mưa che nắng bảo vệ bé!"
+        },
+        {
+          question: "Thân mình bằng sáp, thắp lửa lung linh trên bánh sinh nhật?",
+          options: ["Ngọn Nến 🕯️", "Bóng Đèn 💡", "Cây Bút ✏️"],
+          correct: 0,
+          explanation: "Đúng rồi! Cây nến sinh nhật lung linh cho bé thổi ước mơ!"
+        },
+        {
+          question: "Con gì ngồi đáy giếng kêu ộp ộp, bắt sâu bọ trên cánh đồng?",
+          options: ["Con Ếch 🐸", "Con Cá 🐟", "Con Cua 🦀"],
+          correct: 0,
+          explanation: "Hoan hô! Chú ếch xanh nhảy xa bắt sâu bọ bảo vệ mùa màng!"
+        },
+        {
+          question: "Con gì chăm chỉ bay khắp vườn hoa, làm ra mật ngọt thơm lừng?",
+          options: ["Con Ong 🐝", "Con Ruồi 🪰", "Con Muỗi 🦟"],
+          correct: 0,
+          explanation: "Chính xác! Chú ong chăm chỉ làm mật ngon cho đời!"
+        },
+        {
+          question: "Chở cả ngôi nhà trên lưng, đi đứng chậm chạp nhưng luôn kiên trì?",
+          options: ["Con Rùa 🐢", "Con Ốc 🐌", "Con Nhím 🦔"],
+          correct: 0,
+          explanation: "Đúng rồi! Bạn Rùa kiên trì trong câu chuyện Rùa và Thỏ!"
+        },
+        {
+          question: "Ban ngày chiếu sáng ấm áp cho muôn loài hoa khoe sắc?",
+          options: ["Mặt Trời ☀️", "Mặt Trăng 🌙", "Đèn Pin 🔦"],
+          correct: 0,
+          explanation: "Tuyệt vời! Ông Mặt Trời ấm áp rạng ngời mỗi sớm mai!"
         }
       ];
-      const selected = riddles[Math.floor(Math.random() * riddles.length)];
 
-      container.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;">
-          <div class="math-question-banner" style="border-color: #ff4081;">
-            <span style="font-size: 2.5rem;">💡</span>
-            <h4 style="font-size: 1.15rem; color: #fff; margin-top: 8px; line-height: 1.5;">
-              "${selected.question}"
-            </h4>
-            <p style="font-size: 0.85rem; color: #ff80ab; margin-top: 6px;">Bé ${childName} chọn câu trả lời đúng nhất nhé:</p>
+      let currentIndex = 0;
+      let scoreCorrect = 0;
+      const solvedSet = new Set();
+
+      function renderRiddle() {
+        const q = riddles[currentIndex];
+        container.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; width: 100%;">
+            <!-- Toolbar -->
+            <div class="math-top-toolbar">
+              <div class="math-progress-badge">
+                <span class="math-q-counter">🎯 Câu: ${currentIndex + 1}/${riddles.length}</span>
+                <span class="math-score-pill">⭐ Đúng: ${scoreCorrect} câu</span>
+              </div>
+              <div class="math-toolbar-actions">
+                <button type="button" class="math-tool-btn" id="quizResetBtn" title="Đố lại từ đầu">
+                  <span>🔄</span> Đố lại
+                </button>
+                <button type="button" class="math-tool-btn" id="quizNextBtn" title="Chuyển câu đố khác">
+                  <span>🎲</span> Đổi câu
+                </button>
+              </div>
+            </div>
+
+            <div class="math-question-banner" style="border-color: #ff4081;">
+              <span style="font-size: 2.2rem;">💡</span>
+              <h4 style="font-size: 1.15rem; color: #fff; margin-top: 6px; line-height: 1.5;">
+                "${q.question}"
+              </h4>
+              <p style="font-size: 0.85rem; color: #ff80ab; margin-top: 6px;">Bé ${childName} chọn câu trả lời đúng nhất nhé:</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 380px;">
+              ${q.options.map((opt, idx) => `
+                <button class="station-launch-btn btn-quiz quiz-choice-btn" data-idx="${idx}" style="font-size: 0.98rem; padding: 11px;">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+
+            <div id="quizFeedback" style="font-size: 1.05rem; font-weight: 700; min-height: 28px;"></div>
           </div>
+        `;
 
-          <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 380px;">
-            ${selected.options.map((opt, idx) => `
-              <button class="station-launch-btn btn-quiz quiz-choice-btn" data-idx="${idx}" style="font-size: 1rem; padding: 12px;">
-                ${opt}
-              </button>
-            `).join('')}
-          </div>
+        if (APP_STATE.ttsEnabled) {
+          speakText(`Kuromi đố bé ${childName} nhé: ${q.question}`);
+        }
 
-          <div id="quizFeedback" style="font-size: 1.05rem; font-weight: 700; min-height: 28px;"></div>
-        </div>
-      `;
+        // Reset button
+        const resetBtn = container.querySelector('#quizResetBtn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            playSfx('chime');
+            currentIndex = 0;
+            scoreCorrect = 0;
+            solvedSet.clear();
+            if (APP_STATE.ttsEnabled) {
+              speakText(`Kuromi đã làm mới bộ câu đố rồi, bé ${childName} cùng giải lại nhé!`);
+            }
+            renderRiddle();
+          });
+        }
 
-      if (APP_STATE.ttsEnabled) {
-        speakText(`Kuromi đố bé ${childName} nhé: ${selected.question}`);
+        // Next button
+        const nextBtn = container.querySelector('#quizNextBtn');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            playSfx('pop');
+            currentIndex = (currentIndex + 1) % riddles.length;
+            renderRiddle();
+          });
+        }
+
+        // Options
+        container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-idx'));
+            const feedback = container.querySelector('#quizFeedback');
+
+            if (idx === q.correct) {
+              btn.style.background = 'linear-gradient(135deg, #2e7d32, #4caf50)';
+              if (!solvedSet.has(currentIndex)) {
+                solvedSet.add(currentIndex);
+                scoreCorrect++;
+                const scorePill = container.querySelector('.math-score-pill');
+                if (scorePill) scorePill.textContent = `⭐ Đúng: ${scoreCorrect} câu`;
+              }
+
+              feedback.innerHTML = `🎉 ${q.explanation} Thưởng bé ${childName} 2 sao! ⭐⭐`;
+              feedback.style.color = '#76ff03';
+              playSfx('fanfare');
+              awardLearningStar(2, `${q.explanation} Kuromi thưởng bé ${childName} hai ngôi sao sáng!`);
+
+              setTimeout(() => {
+                currentIndex = (currentIndex + 1) % riddles.length;
+                renderRiddle();
+              }, 2400);
+            } else {
+              feedback.innerHTML = `😅 Chưa chính xác rồi, bé ${childName} chọn lại thử nhé!`;
+              feedback.style.color = '#ff80ab';
+              playSfx('pop');
+            }
+          });
+        });
       }
 
-      container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = parseInt(btn.getAttribute('data-idx'));
-          const feedback = container.querySelector('#quizFeedback');
-
-          if (idx === selected.correct) {
-            btn.style.background = 'linear-gradient(135deg, #2e7d32, #4caf50)';
-            feedback.innerHTML = `🎉 ${selected.explanation} Thưởng bé ${childName} 2 sao! ⭐⭐`;
-            feedback.style.color = '#76ff03';
-            playSfx('fanfare');
-            awardLearningStar(2, `${selected.explanation} Kuromi thưởng bé ${childName} hai ngôi sao sáng!`);
-          } else {
-            feedback.innerHTML = `😅 Chưa chính xác rồi, bé ${childName} chọn lại thử nhé!`;
-            feedback.style.color = '#ff80ab';
-            playSfx('pop');
-          }
-        });
-      });
     }
   }
 };
@@ -3897,6 +4226,68 @@ document.addEventListener('DOMContentLoaded', () => {
   if (addStarBtn) {
     addStarBtn.addEventListener('click', () => {
       awardLearningStar(1);
+    });
+  }
+
+  // Reset Stars Modal Handlers
+  const resetStarBtn = document.getElementById('resetStarBtn');
+  const resetStarsModal = document.getElementById('resetStarsModal');
+  const closeResetStarsBtn = document.getElementById('closeResetStarsBtn');
+  const cancelResetStarsBtn = document.getElementById('cancelResetStarsBtn');
+  const confirmResetZeroBtn = document.getElementById('confirmResetStarsZeroBtn');
+  const confirmResetTenBtn = document.getElementById('confirmResetStarsTenBtn');
+
+  function openResetStarsModal() {
+    playSfx('pop');
+    if (resetStarsModal) resetStarsModal.classList.remove('hidden');
+  }
+
+  function closeResetStarsModal() {
+    playSfx('pop');
+    if (resetStarsModal) resetStarsModal.classList.add('hidden');
+  }
+
+  if (resetStarBtn) {
+    resetStarBtn.addEventListener('click', openResetStarsModal);
+  }
+  if (closeResetStarsBtn) {
+    closeResetStarsBtn.addEventListener('click', closeResetStarsModal);
+  }
+  if (cancelResetStarsBtn) {
+    cancelResetStarsBtn.addEventListener('click', closeResetStarsModal);
+  }
+  if (resetStarsModal) {
+    resetStarsModal.addEventListener('click', (e) => {
+      if (e.target === resetStarsModal) closeResetStarsModal();
+    });
+  }
+
+  if (confirmResetZeroBtn) {
+    confirmResetZeroBtn.addEventListener('click', () => {
+      playSfx('chime');
+      LEARNING_STATE.stars = 0;
+      saveLearningData({ stars: 0 });
+      closeResetStarsModal();
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const msg = `Kuromi đã làm mới bảng sao về 0 rồi! Bé ${childName} cùng tích lũy thật nhiều ngôi sao trong tuần mới nhé! ⭐`;
+      const learnStatus = document.getElementById('learningStatusText');
+      if (learnStatus) learnStatus.textContent = msg;
+      if (APP_STATE.ttsEnabled) speakText(msg);
+    });
+  }
+
+  if (confirmResetTenBtn) {
+    confirmResetTenBtn.addEventListener('click', () => {
+      playSfx('chime');
+      LEARNING_STATE.stars = 10;
+      saveLearningData({ stars: 10 });
+      closeResetStarsModal();
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const msg = `Kuromi đã tặng bé ${childName} 10 ngôi sao khởi đầu! Chúc bé học tập thật chăm chỉ và vui vẻ! 🌟`;
+      const learnStatus = document.getElementById('learningStatusText');
+      if (learnStatus) learnStatus.textContent = msg;
+      if (APP_STATE.ttsEnabled) speakText(msg);
+      triggerStarExplosion();
     });
   }
 
