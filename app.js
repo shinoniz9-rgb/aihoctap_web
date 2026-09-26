@@ -1886,6 +1886,74 @@ const SONGS_LIBRARY = {
       { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
       { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
     ]
+  },
+  'alibaba': {
+    id: 'alibaba',
+    title: 'Alibaba',
+    category: 'Vui nhộn',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'G5b1x_g7kYI',
+    icon: '👳‍♂️',
+    bpm: 135,
+    lyrics: [
+      { text: "Khi xưa Alibaba như vầng trăng sáng chiếu trên trần gian 🌙", duration: 4.0 },
+      { text: "Hôm nay Alibaba như làn mây ấm phiêu du ngàn nơi ✨", duration: 4.0 },
+      { text: "Alibaba, Alibaba, vui tươi đáng yêu ngàn đời! 💖", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }
+    ]
+  },
+  'chiongnau': {
+    id: 'chiongnau',
+    title: 'Chị Ong Nâu Và Em Bé',
+    category: 'Bài hát thiếu nhi',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'mC0B1_X75E8',
+    icon: '🐝',
+    bpm: 125,
+    lyrics: [
+      { text: "Chị ong nâu nâu nâu nâu, chị bay đi đâu đi đâu? 🐝", duration: 4.0 },
+      { text: "Bác gà trống mới gáy, ông mặt trời mới dậy ☀️", duration: 4.0 },
+      { text: "Mà trên những cành hoa em đã thấy chị bay 🌸", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
+    ]
+  },
+  'doithuyen': {
+    id: 'doithuyen',
+    title: 'Em Đi Chơi Thuyền',
+    category: 'Bài hát thiếu nhi',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'P6gVjGfR-uU',
+    icon: '⛵',
+    bpm: 120,
+    lyrics: [
+      { text: "Em đi chơi thuyền trong thảo cầm viên ⛵", duration: 3.5 },
+      { text: "Chim kêu hót mừng chào đón xuân về 🌸", duration: 3.5 },
+      { text: "Thuyền con vịt nó bơi bơi bơi, thuyền con rồng nó bay bay bay! 🦆", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 }
+    ]
+  },
+  'traidatnay': {
+    id: 'traidatnay',
+    title: 'Trái Đất Này Là Của Chúng Mình',
+    category: 'Hòa bình & Bạn bè',
+    singer: 'Tốp ca thiếu nhi',
+    youtubeId: 'k78Jd6s3h9U',
+    icon: '🌍',
+    bpm: 125,
+    lyrics: [
+      { text: "Trái đất này là của chúng mình 🌍", duration: 3.5 },
+      { text: "Quả bóng xanh bay giữa trời xanh 🎈", duration: 3.5 },
+      { text: "Bồ câu ơi tiếng chim gù thương mến, hải âu ơi cánh chim vờn sóng biển! 🕊️", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
+    ]
   }
 };
 
@@ -1908,6 +1976,10 @@ const SONG_ALIASES = {
   'motconvit': ['mot con vit', '1 con vit', 'con vit', 'xoe ra hai cai canh', 'cap cap', 'bi ba bi bom'],
   'bongbongbangbang': ['bong bong bang bang', 'bong bong', 'com vang com bac'],
   'bangocnen': ['ba ngon nen', 'ngon nen', 'ba ngon nen lung linh', 'ba la cay nen vang'],
+  'alibaba': ['alibaba', 'ali ba ba', 'khi xua alibaba'],
+  'chiongnau': ['chi ong nau', 'ong nau', 'chi ong nau nau', 'ong nau va em be'],
+  'doithuyen': ['em di choi thuyen', 'di choi thuyen', 'thuyen con vit'],
+  'traidatnay': ['trai dat nay la cua chung minh', 'trai dat nay', 'qua bong xanh'],
   'meo': ['rua mat nhu meo', 'meo meo', 'con meo', 'meo rua mat', 'meo con'],
   'star': ['ngoi sao nho', 'ngoi sao', 'twinkle', 'little star', 'sao nho'],
   'birthday': ['chuc mung sinh nhat', 'sinh nhat', 'happy birthday', 'birthday'],
@@ -2593,26 +2665,20 @@ function openSingerVideo(songKey, cardElement) {
       externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
     }
 
-    if (song.youtubeId) {
-      iframe.referrerPolicy = 'origin-when-cross-origin';
-      iframe.src = `https://www.youtube-nocookie.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`;
-      iframe.style.display = 'block';
-      videoBox.classList.remove('hidden');
-    } else {
-      // Dynamic song outside 18 presets: open YouTube search directly
-      window.open(ytUrl, '_blank');
-      iframe.src = '';
-      iframe.style.display = 'none';
-      videoBox.classList.add('hidden');
-    }
+    const embedSrc = song.youtubeId 
+      ? `https://www.youtube-nocookie.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`
+      : `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}&autoplay=1&playsinline=1`;
+
+    iframe.referrerPolicy = 'origin-when-cross-origin';
+    iframe.src = embedSrc;
+    iframe.style.display = 'block';
+    videoBox.classList.remove('hidden');
 
     if (realSingerBtn) realSingerBtn.classList.add('active');
     if (kuromiSingBtn) kuromiSingBtn.classList.remove('active');
     if (waveBars) waveBars.classList.add('active');
     if (lyricEl) {
-      lyricEl.textContent = song.youtubeId
-        ? `🎬 Đang phát ca khúc do ${song.singer || 'ca sĩ nhí'} hát cho bé ${childName} nghe!`
-        : `🎬 Kuromi đã mở bài hát "${song.title}" trên YouTube cho bé rồi nhé!`;
+      lyricEl.textContent = `🎬 Đang phát video ca khúc "${song.title}" cho bé ${childName} xem tại đây!`;
     }
   }
 
