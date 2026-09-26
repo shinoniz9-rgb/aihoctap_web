@@ -53,6 +53,12 @@
           <span class="btn-label">Link Online</span>
         </button>
 
+        <!-- Cloud Sync status indicator button -->
+        <button id="cloudSyncHeaderBtn" class="control-btn sync-btn active" title="Trạng thái đồng bộ đám mây Firebase (Mã: baohan2026)">
+          <span class="btn-icon">☁️</span>
+          <span class="btn-label" id="cloudSyncHeaderLabel">Đồng bộ: BẬT</span>
+        </button>
+
         <!-- Parent settings button -->
         <button id="openSettingsBtn" class="control-btn settings-btn" title="Cài đặt cho Ba Mẹ">
           <span class="btn-icon">⚙️</span>
@@ -681,6 +687,31 @@
             <span>Độ cao giọng (Pitch):</span>
             <input type="range" id="ttsPitchSlider" min="0.9" max="1.6" step="0.05" value="1.25">
             <span id="ttsPitchVal">1.25</span>
+          </div>
+        </div>
+
+        <!-- Firebase Cloud Sync Section -->
+        <div class="settings-group cloud-sync-group">
+          <label class="setting-label">
+            <strong>☁️ Đồng Bộ Đám Mây Đa Thiết Bị (Firebase Cloud Sync):</strong>
+            <span class="setting-desc">Tự động đồng bộ số sao học tập, bài học và lịch sử trò chuyện của bé Bảo Hân trên iPad, điện thoại và máy tính.</span>
+          </label>
+          <div class="cloud-sync-card">
+            <div class="cloud-input-row">
+              <span class="cloud-key-icon">🔑</span>
+              <input type="text" id="familySyncCodeInput" value="baohan2026" class="parent-input" placeholder="Nhập mã gia đình (vd: baohan2026)" style="flex: 1; font-weight: 700; letter-spacing: 1px; color: #ffd700;">
+              <button type="button" id="manualSyncBtn" class="sync-now-btn">🔄 Đồng Bộ Ngay</button>
+            </div>
+            <div class="cloud-sync-status-row">
+              <div class="cloud-status-badge" id="syncStatusBadge">
+                <span class="status-dot"></span>
+                <span id="syncStatusText">Đã kết nối Firebase Cloud</span>
+              </div>
+              <span class="cloud-last-sync" id="syncLastTime">Vừa xong</span>
+            </div>
+            <div class="cloud-sync-tip">
+              💡 <strong>Cách dùng cho Ba Mẹ:</strong> Mở link web trên iPad hoặc điện thoại của bé, vào mục <strong>Ba Mẹ</strong> và nhập cùng mã <code>baohan2026</code>. Mọi sao thưởng và bài học sẽ tự động đồng bộ giữa các máy vĩnh viễn!
+            </div>
           </div>
         </div>
 

@@ -17,7 +17,8 @@ const DEFAULT_SETTINGS = {
   ttsPitch: 1.25,
   ttsEnabled: true,
   sfxEnabled: true,
-  voiceStyle: 'kuromi_anime' // 'kuromi_anime', 'google_online', 'fairy', 'device'
+  voiceStyle: 'kuromi_anime', // 'kuromi_anime', 'google_online', 'fairy', 'device'
+  familySyncCode: 'baohan2026'
 };
 
 function loadSettings() {
@@ -61,6 +62,9 @@ function saveSettings(partial = {}) {
     APP_STATE.sfxEnabled = updated.sfxEnabled !== false;
     localStorage.setItem('kuromi_bot_settings', JSON.stringify(updated));
     applyChildNameUi(updated.childName);
+    if (window.KuromiSync) {
+      window.KuromiSync.queuePush('settings', updated);
+    }
     return updated;
   } catch (e) {
     console.warn("Storage save error", e);
@@ -106,6 +110,9 @@ function saveChatHistory(item) {
     list.push(item);
     if (list.length > 60) list.shift();
     localStorage.setItem('kuromi_chat_history', JSON.stringify(list));
+    if (window.KuromiSync) {
+      window.KuromiSync.queuePush('chat_history', list);
+    }
   } catch (e) {
     console.warn("Save chat history error", e);
   }
@@ -163,6 +170,9 @@ function saveLearningData(partial = {}) {
     LEARNING_STATE = updated;
     localStorage.setItem('kuromi_learning_data', JSON.stringify(updated));
     updateLearningUi();
+    if (window.KuromiSync) {
+      window.KuromiSync.queuePush('learning', updated);
+    }
     return updated;
   } catch (e) {
     console.warn("Learning save error", e);
@@ -207,6 +217,254 @@ function updateLearningUi() {
     }
   }
 }
+
+// =============================================================================
+// FIREBASE REALTIME CLOUD SYNC ENGINE (SINGAPORE MULTI-DEVICE INSTANT SYNC)
+// =============================================================================
+const FIREBASE_DB_URL = 'https://aihoctap-4722c-default-rtdb.asia-southeast1.firebasedatabase.app';
+
+const KuromiSync = {
+  activeSse: null,
+  isSyncing: false,
+  debounceTimers: {},
+  suppressOutbound: false,
+
+  getFamilyCode() {
+    const raw = (APP_STATE.settings && APP_STATE.settings.familySyncCode) ? APP_STATE.settings.familySyncCode : 'baohan2026';
+    return raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'baohan2026';
+  },
+
+  updateStatusUi(status, detail) {
+    const badge = document.getElementById('syncStatusBadge');
+    const statusText = document.getElementById('syncStatusText');
+    const headerBtn = document.getElementById('cloudSyncHeaderBtn');
+    const headerLabel = document.getElementById('cloudSyncHeaderLabel');
+    const lastTimeEl = document.getElementById('syncLastTime');
+
+    if (badge && statusText) {
+      badge.classList.remove('syncing', 'error');
+      if (status === 'synced') {
+        statusText.textContent = 'Đã kết nối Firebase Cloud';
+      } else if (status === 'syncing') {
+        badge.classList.add('syncing');
+        statusText.textContent = detail || 'Đang đồng bộ dữ liệu...';
+      } else if (status === 'error') {
+        badge.classList.add('error');
+        statusText.textContent = detail || 'Chưa thể kết nối Firebase';
+      }
+    }
+
+    if (headerBtn && headerLabel) {
+      if (status === 'synced') {
+        headerBtn.classList.add('active');
+        headerLabel.textContent = 'Đồng bộ: BẬT';
+      } else if (status === 'syncing') {
+        headerLabel.textContent = 'Đang đồng bộ...';
+      } else if (status === 'error') {
+        headerBtn.classList.remove('active');
+        headerLabel.textContent = 'Lỗi kết nối';
+      }
+    }
+
+    if (lastTimeEl && status === 'synced') {
+      const now = new Date();
+      const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+      lastTimeEl.textContent = `Vừa xong (${timeStr})`;
+    }
+  },
+
+  async pushData(branch, data) {
+    if (this.suppressOutbound) return;
+    const code = this.getFamilyCode();
+    try {
+      this.updateStatusUi('syncing');
+      const url = `${FIREBASE_DB_URL}/families/${code}/${branch}.json`;
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        this.updateStatusUi('synced');
+      } else {
+        console.warn('Firebase sync HTTP error', res.status);
+        this.updateStatusUi('error', 'Lỗi kết nối Firebase');
+      }
+    } catch (e) {
+      console.warn('Firebase sync push error', branch, e);
+      this.updateStatusUi('error', 'Mất kết nối mạng');
+    }
+  },
+
+  queuePush(branch, data) {
+    if (this.suppressOutbound) return;
+    if (this.debounceTimers[branch]) clearTimeout(this.debounceTimers[branch]);
+    this.debounceTimers[branch] = setTimeout(() => {
+      this.pushData(branch, data);
+    }, 600);
+  },
+
+  async initialPull() {
+    const code = this.getFamilyCode();
+    try {
+      this.updateStatusUi('syncing', 'Đang tải dữ liệu đám mây...');
+      const res = await fetch(`${FIREBASE_DB_URL}/families/${code}.json`);
+      if (!res.ok) {
+        this.updateStatusUi('error');
+        return;
+      }
+      const cloudData = await res.json();
+      
+      if (!cloudData) {
+        console.log("Khởi tạo node đám mây cho mã:", code);
+        await this.pushData('settings', APP_STATE.settings);
+        await this.pushData('learning', LEARNING_STATE);
+        const rawChat = localStorage.getItem('kuromi_chat_history');
+        if (rawChat) {
+          try { await this.pushData('chat_history', JSON.parse(rawChat)); } catch (e) {}
+        }
+        this.updateStatusUi('synced');
+        this.initRealtimeListener();
+        return;
+      }
+
+      this.suppressOutbound = true;
+
+      // 1. Settings Safe Merge
+      if (cloudData.settings) {
+        const merged = {
+          ...DEFAULT_SETTINGS,
+          ...APP_STATE.settings,
+          ...cloudData.settings
+        };
+        APP_STATE.settings = merged;
+        localStorage.setItem('kuromi_bot_settings', JSON.stringify(merged));
+        applyChildNameUi(merged.childName);
+        
+        const syncInput = document.getElementById('familySyncCodeInput');
+        if (syncInput) syncInput.value = merged.familySyncCode || code;
+      }
+
+      // 2. Learning Stars Safe Merge
+      if (cloudData.learning) {
+        const localStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
+        const cloudStars = typeof cloudData.learning.stars === 'number' ? cloudData.learning.stars : 0;
+        const finalStars = Math.max(localStars, cloudStars);
+
+        const localCompleted = Array.isArray(LEARNING_STATE.completedActivities) ? LEARNING_STATE.completedActivities : [];
+        const cloudCompleted = Array.isArray(cloudData.learning.completedActivities) ? cloudData.learning.completedActivities : [];
+        const mergedCompleted = Array.from(new Set([...localCompleted, ...cloudCompleted]));
+
+        LEARNING_STATE = {
+          ...DEFAULT_LEARNING_DATA,
+          ...LEARNING_STATE,
+          ...cloudData.learning,
+          stars: finalStars,
+          completedActivities: mergedCompleted
+        };
+        localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
+        updateLearningUi();
+      }
+
+      // 3. Chat History Merge
+      if (Array.isArray(cloudData.chat_history) && cloudData.chat_history.length > 0) {
+        const localRaw = localStorage.getItem('kuromi_chat_history');
+        const localList = localRaw ? JSON.parse(localRaw) : [];
+        if (localList.length === 0) {
+          localStorage.setItem('kuromi_chat_history', JSON.stringify(cloudData.chat_history));
+          const chatContainer = document.getElementById('chatContainer');
+          if (chatContainer) {
+            cloudData.chat_history.forEach(msg => {
+              if (msg.type === 'child') appendChildMessage(msg.text, false);
+              else if (msg.type === 'kuromi') appendKuromiResponse(msg.data, false);
+            });
+          }
+        }
+      }
+
+      this.suppressOutbound = false;
+      this.updateStatusUi('synced');
+      this.initRealtimeListener();
+    } catch (e) {
+      this.suppressOutbound = false;
+      console.warn("Initial sync pull error", e);
+      this.updateStatusUi('error');
+    }
+  },
+
+  initRealtimeListener() {
+    if (this.activeSse) {
+      try { this.activeSse.close(); } catch (e) {}
+      this.activeSse = null;
+    }
+    const code = this.getFamilyCode();
+    try {
+      this.activeSse = new EventSource(`${FIREBASE_DB_URL}/families/${code}.json`);
+
+      this.activeSse.addEventListener('put', (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          if (!payload) return;
+          const path = payload.path || '/';
+          const data = payload.data;
+
+          this.suppressOutbound = true;
+
+          // Remote Learning update (e.g. Star earned on iPad)
+          if (path === '/' && data && data.learning) {
+            if (typeof data.learning.stars === 'number' && data.learning.stars !== LEARNING_STATE.stars) {
+              LEARNING_STATE.stars = data.learning.stars;
+              LEARNING_STATE.rank = data.learning.rank || LEARNING_STATE.rank;
+              localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
+              updateLearningUi();
+              triggerStarExplosion();
+            }
+          } else if (path === '/learning' && data && typeof data.stars === 'number') {
+            if (data.stars !== LEARNING_STATE.stars) {
+              LEARNING_STATE.stars = data.stars;
+              LEARNING_STATE.rank = data.rank || LEARNING_STATE.rank;
+              localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
+              updateLearningUi();
+              triggerStarExplosion();
+            }
+          } else if (path === '/learning/stars' && typeof data === 'number') {
+            if (data !== LEARNING_STATE.stars) {
+              LEARNING_STATE.stars = data;
+              localStorage.setItem('kuromi_learning_data', JSON.stringify(LEARNING_STATE));
+              updateLearningUi();
+              triggerStarExplosion();
+            }
+          }
+
+          // Remote Settings update (e.g. Name change on iPad)
+          if (path === '/settings/childName' && typeof data === 'string') {
+            APP_STATE.settings.childName = data;
+            localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
+            applyChildNameUi(data);
+          } else if (path === '/settings' && data && data.childName) {
+            APP_STATE.settings = { ...DEFAULT_SETTINGS, ...APP_STATE.settings, ...data };
+            localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
+            applyChildNameUi(data.childName);
+          }
+
+          this.suppressOutbound = false;
+          this.updateStatusUi('synced');
+        } catch (err) {
+          this.suppressOutbound = false;
+          console.warn("Realtime SSE parse error", err);
+        }
+      });
+
+      this.activeSse.onerror = () => {
+        // EventSource handles reconnection automatically
+      };
+    } catch (e) {
+      console.warn("Realtime listener init error", e);
+    }
+  }
+};
+
+window.KuromiSync = KuromiSync;
 
 function switchAppMode(mode, playSoundAndSpeech = true) {
   if (playSoundAndSpeech) playSfx('pop');
@@ -4171,6 +4429,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('childNameInput');
     const newName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : (APP_STATE.settings.childName || 'Bảo Hân');
     const selectedVoice = document.querySelector('input[name="voiceStyle"]:checked')?.value || 'kuromi_anime';
+    const familyCodeInput = document.getElementById('familySyncCodeInput');
+    const syncCode = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan2026';
 
     saveSettings({
       aiMode: selectedMode,
@@ -4179,17 +4439,56 @@ document.addEventListener('DOMContentLoaded', () => {
       ageGroup: APP_STATE.settings.ageGroup || 'preschool',
       voiceStyle: selectedVoice,
       ttsRate: APP_STATE.settings.ttsRate || 1.05,
-      ttsPitch: APP_STATE.settings.ttsPitch || 1.25
+      ttsPitch: APP_STATE.settings.ttsPitch || 1.25,
+      familySyncCode: syncCode
     });
 
     settingsModal.classList.add('hidden');
     document.getElementById('kuromiStatusText').textContent = `Ba Mẹ đã lưu cài đặt thành công! Kuromi sẵn sàng phục vụ bé ${APP_STATE.settings.childName} rồi ạ! 🎀✨`;
   });
 
+  // Manual Cloud Sync button inside parent modal
+  const manualSyncBtn = document.getElementById('manualSyncBtn');
+  if (manualSyncBtn) {
+    manualSyncBtn.addEventListener('click', async () => {
+      playSfx('pop');
+      const familyCodeInput = document.getElementById('familySyncCodeInput');
+      const code = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan2026';
+      APP_STATE.settings.familySyncCode = code;
+      saveSettings({ familySyncCode: code });
+      if (window.KuromiSync) {
+        await window.KuromiSync.initialPull();
+        playSfx('chime');
+      }
+    });
+  }
+
+  // Header Cloud Sync status button (Quick open sync settings)
+  const cloudSyncHeaderBtn = document.getElementById('cloudSyncHeaderBtn');
+  if (cloudSyncHeaderBtn) {
+    cloudSyncHeaderBtn.addEventListener('click', () => {
+      playSfx('pop');
+      const settingsModal = document.getElementById('settingsModal');
+      if (settingsModal) {
+        settingsModal.classList.remove('hidden');
+        const familyCodeInput = document.getElementById('familySyncCodeInput');
+        if (familyCodeInput) {
+          setTimeout(() => {
+            familyCodeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            familyCodeInput.focus();
+          }, 150);
+        }
+      }
+    });
+  }
+
   // Clear Chat History (Non-destructive to settings)
   document.getElementById('clearChatBtn').addEventListener('click', () => {
     if (confirm("Ba mẹ có chắc muốn xóa lịch sử trò chuyện để bắt đầu lại không? (Mọi cài đặt tên bé và tùy chọn vẫn được giữ nguyên vẹn)")) {
       localStorage.removeItem('kuromi_chat_history');
+      if (window.KuromiSync) {
+        window.KuromiSync.pushData('chat_history', []);
+      }
       const container = document.getElementById('chatContainer');
       const initial = container.querySelector('.initial-message');
       container.innerHTML = '';
@@ -4361,6 +4660,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyChildNameUi(APP_STATE.settings.childName);
   loadChatHistory();
+
+  // Populate familySyncCode input if element exists
+  const familyCodeInput = document.getElementById('familySyncCodeInput');
+  if (familyCodeInput) {
+    familyCodeInput.value = APP_STATE.settings.familySyncCode || 'baohan2026';
+  }
+
+  // Initialize Firebase Cloud Sync
+  if (window.KuromiSync) {
+    window.KuromiSync.initialPull();
+  }
 
   setTimeout(() => {
     playSfx('chime');

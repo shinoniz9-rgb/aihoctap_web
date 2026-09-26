@@ -396,6 +396,26 @@ body {
   box-shadow: 0 0 16px rgba(0, 188, 212, 0.6);
 }
 
+.sync-btn {
+  background: rgba(35, 20, 60, 0.85);
+  border-color: #9f7aea;
+}
+
+.sync-btn.active {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #a7f3d0;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+}
+
+.sync-btn.active .btn-icon {
+  animation: cloudPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes cloudPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+}
+
 /* ==========================================================================
    APP MAIN GRID (NATIVE TABLET & DESKTOP 2-COLUMN APP EXPERIENCE)
    ========================================================================== */
@@ -3745,4 +3765,112 @@ body {
   .quiz-choice-text {
     font-size: 0.98rem;
   }
+}
+
+/* ==========================================================================
+   FIREBASE CLOUD SYNC CARD STYLING (AESTHETIC SANRIO GLOW)
+   ========================================================================== */
+.cloud-sync-card {
+  background: rgba(20, 10, 32, 0.75);
+  border: 1.5px solid rgba(159, 122, 234, 0.45);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cloud-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cloud-key-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.sync-now-btn {
+  background: linear-gradient(135deg, #6b46c1, #9f7aea);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-kid);
+  font-weight: 700;
+  font-size: 0.86rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-smooth);
+}
+
+.sync-now-btn:hover {
+  background: linear-gradient(135deg, #805ad5, #b794f4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(159, 122, 234, 0.45);
+}
+
+.cloud-sync-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  padding: 2px 2px;
+}
+
+.cloud-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: dotPulse 2s infinite ease-in-out;
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.7; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.cloud-status-badge.syncing .status-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+}
+
+.cloud-status-badge.error .status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.cloud-last-sync {
+  color: var(--kuromi-lavender);
+  font-size: 0.78rem;
+}
+
+.cloud-sync-tip {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--kuromi-lavender-soft);
+  background: rgba(44, 20, 69, 0.65);
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid #10b981;
+}
+
+.cloud-sync-tip code {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ffd700;
+  font-weight: 700;
 }
