@@ -2327,6 +2327,7 @@ function playRealisticSound(soundType, statusCallback) {
 // Melody Player Manager
 let currentPlaybackTimeouts = [];
 let currentSongVocalAudio = null;
+let currentGlobalAudio = null;
 
 function stopCurrentSong() {
   currentPlaybackTimeouts.forEach(t => clearTimeout(t));
@@ -2337,11 +2338,20 @@ function stopCurrentSong() {
     try {
       currentSongVocalAudio.pause();
       currentSongVocalAudio.src = '';
+      currentSongVocalAudio.load();
     } catch(e) {}
     currentSongVocalAudio = null;
   }
+  if (currentGlobalAudio) {
+    try {
+      currentGlobalAudio.pause();
+      currentGlobalAudio.src = '';
+      currentGlobalAudio.load();
+    } catch(e) {}
+    currentGlobalAudio = null;
+  }
 
-  // Tắt triệt để mọi giọng đọc đang dở
+  // Tắt triệt để mọi giọng đọc đang phát
   if (typeof window !== 'undefined' && window.speechSynthesis) {
     try {
       window.speechSynthesis.cancel();
@@ -2351,14 +2361,17 @@ function stopCurrentSong() {
     try {
       activeTtsAudio.pause();
       activeTtsAudio.src = '';
+      activeTtsAudio.load();
     } catch(e) {}
     activeTtsAudio = null;
   }
 
   // TẮT TOÀN BỘ VIDEO YOUTUBE ĐANG PHÁT TRÊN TOÀN BỘ CARD (TRÁNH LẪN TIẾNG)
   document.querySelectorAll('.singer-video-frame').forEach(iframe => {
-    iframe.src = '';
-    iframe.style.display = 'none';
+    try {
+      iframe.src = 'about:blank';
+      iframe.style.display = 'none';
+    } catch(e) {}
   });
   document.querySelectorAll('.jukebox-video-container').forEach(box => {
     box.classList.add('hidden');
@@ -2384,6 +2397,7 @@ function stopCurrentSong() {
 }
 
 function singVocalLine(cleanVerse, onComplete) {
+  // Dập tắt bất kỳ âm thanh nào đang phát trước đó
   if (currentSongVocalAudio) {
     try {
       currentSongVocalAudio.pause();
@@ -2391,16 +2405,23 @@ function singVocalLine(cleanVerse, onComplete) {
     } catch (e) {}
     currentSongVocalAudio = null;
   }
+  if (currentGlobalAudio) {
+    try {
+      currentGlobalAudio.pause();
+      currentGlobalAudio.src = '';
+    } catch (e) {}
+    currentGlobalAudio = null;
+  }
 
-  let finished = false;
+  let isFinished = false;
   const finishOnce = () => {
-    if (finished) return;
-    finished = true;
+    if (isFinished) return;
+    isFinished = true;
     if (onComplete) onComplete();
   };
 
   const viVoice = getVietnameseVoice();
-  // Nếu có voice tiếng Việt cục bộ (iOS Linh / Android), có thể dùng Web Speech pitch cao lí lắc
+  // Nếu thiết bị có sẵn giọng tiếng Việt cục bộ (iOS Linh / Android)
   if (viVoice && typeof window !== 'undefined' && window.speechSynthesis) {
     try {
       window.speechSynthesis.cancel();
@@ -2410,7 +2431,7 @@ function singVocalLine(cleanVerse, onComplete) {
     u.lang = viVoice.lang || 'vi-VN';
     u.voice = viVoice;
     u.rate = 1.1;
-    u.pitch = 1.35; // Giọng Kuromi hát trong trẻo ngọt ngào
+    u.pitch = 1.35; // Giọng Kuromi hát trong trẻo lí lắc
     u.onend = finishOnce;
     u.onerror = finishOnce;
     window._currentUtterance = u;
@@ -2420,37 +2441,46 @@ function singVocalLine(cleanVerse, onComplete) {
     } catch (e) {}
   }
 
-  // Máy không có voice tiếng Việt -> Dùng Google TTS Tiếng Việt chuẩn 100%
-  const url = buildGoogleTtsUrl(cleanVerse, 0);
-  const audio = new Audio();
-  audio.referrerPolicy = 'no-referrer';
-  audio.src = url;
-  currentSongVocalAudio = audio;
-  audio.playbackRate = 1.15; // Nhịp điệu tươi vui, lí lắc
-  if ('preservesPitch' in audio) audio.preservesPitch = false;
-  if ('mozPreservesPitch' in audio) audio.mozPreservesPitch = false;
-  if ('webkitPreservesPitch' in audio) audio.webkitPreservesPitch = false;
+  // Máy không có giọng tiếng Việt: Dùng Google TTS Tiếng Việt chuẩn 100%
+  // Khóa chốt chống chạy lặp 2 lần gây lẫn 2 tiếng
+  let fallbackHandled = false;
 
-  audio.onended = finishOnce;
-  audio.onerror = () => {
-    // Thử host dự phòng
-    const fbUrl = buildGoogleTtsUrl(cleanVerse, 1);
-    const fbAudio = new Audio();
-    fbAudio.referrerPolicy = 'no-referrer';
-    fbAudio.src = fbUrl;
-    currentSongVocalAudio = fbAudio;
-    fbAudio.playbackRate = 1.15;
-    fbAudio.onended = finishOnce;
-    fbAudio.onerror = finishOnce;
-    fbAudio.play().catch(finishOnce);
-  };
+  function tryHost(hIndex) {
+    if (isFinished) return;
+    fallbackHandled = false;
+    const url = buildGoogleTtsUrl(cleanVerse, hIndex);
+    const audio = new Audio();
+    audio.referrerPolicy = 'no-referrer';
+    audio.src = url;
+    currentSongVocalAudio = audio;
+    currentGlobalAudio = audio;
+    audio.playbackRate = 1.15; // Hát vui tươi, nhí nhảnh
+    if ('preservesPitch' in audio) audio.preservesPitch = false;
+    if ('mozPreservesPitch' in audio) audio.mozPreservesPitch = false;
+    if ('webkitPreservesPitch' in audio) audio.webkitPreservesPitch = false;
 
-  audio.play().catch(audio.onerror);
+    audio.onended = finishOnce;
+
+    const handleSongFallback = () => {
+      if (isFinished || fallbackHandled) return;
+      fallbackHandled = true;
+      if (hIndex + 1 < GOOGLE_TTS_HOSTS.length) {
+        tryHost(hIndex + 1);
+      } else {
+        finishOnce();
+      }
+    };
+
+    audio.onerror = handleSongFallback;
+    audio.play().catch(handleSongFallback);
+  }
+
+  tryHost(0);
 }
 
 function playKuromiVocalSong(songKey, onLyricUpdate) {
+  // DỪNG TOÀN BỘ MỌI ÂM THANH KHÁC TRƯỚC KHI BẮT ĐẦU HÁT!
   stopCurrentSong();
-  stopAllSpeech();
 
   const song = SONGS_LIBRARY[songKey];
   if (!song) return;
@@ -2469,55 +2499,49 @@ function playKuromiVocalSong(songKey, onLyricUpdate) {
   }
 
   const childName = APP_STATE.settings.childName || 'Bảo Hân';
-  const introMsg = `Kuromi cất tiếng hát tặng bé ${childName} bài ${song.title} nè! Bé cùng vỗ tay hát theo Kuromi nhé! 🎀🎶`;
-  document.getElementById('kuromiStatusText').textContent = introMsg;
-  if (onLyricUpdate) onLyricUpdate(introMsg);
+  document.getElementById('kuromiStatusText').textContent = `Kuromi cất tiếng hát bài ${song.title} tặng bé ${childName} nè! 🎶🎀`;
 
-  // Phát lời chào mở màn trước
-  speakText(introMsg, () => {
+  let verseIndex = 0;
+
+  function singNextVerse() {
     if (APP_STATE.currentPlayingSong?.id !== songKey) return;
 
-    let verseIndex = 0;
-
-    function singNextVerse() {
-      if (APP_STATE.currentPlayingSong?.id !== songKey) return;
-
-      if (verseIndex >= song.lyrics.length) {
-        // Kuromi hát xong trọn vẹn bài hát!
-        const endTimeout = setTimeout(() => {
-          stopCurrentSong();
-          document.getElementById('kuromiStatusText').textContent = `Kuromi hát xong bài ${song.title} rồi nè! Bé ${childName} có thích không nào? Bé muốn nghe bài nào nữa không? 🎀`;
-          setKuromiState('happy');
-          playSfx('sparkle');
-        }, 1000);
-        currentPlaybackTimeouts.push(endTimeout);
-        return;
-      }
-
-      const lyric = song.lyrics[verseIndex++];
-      if (onLyricUpdate) onLyricUpdate(lyric.text);
-      document.getElementById('kuromiStatusText').textContent = `Kuromi đang hát: "${lyric.text}" 🎶`;
-
-      const cleanVerse = cleanKidTextForTts(lyric.text);
-      if (!cleanVerse) {
-        singNextVerse();
-        return;
-      }
-
-      // Hát từng câu tuần tự: Câu này dứt điểm mới hát sang câu tiếp theo
-      // ĐẢM BẢO TUYỆT ĐỐI KHÔNG CHỒNG TIẾNG, KHÔNG LẪN LỘN ÂM THANH!
-      singVocalLine(cleanVerse, () => {
-        if (APP_STATE.currentPlayingSong?.id !== songKey) return;
-        const pauseTimer = setTimeout(() => {
-          singNextVerse();
-        }, 450);
-        currentPlaybackTimeouts.push(pauseTimer);
-      });
+    if (verseIndex >= song.lyrics.length) {
+      // Kuromi hát xong trọn vẹn bài hát!
+      const endTimeout = setTimeout(() => {
+        stopCurrentSong();
+        document.getElementById('kuromiStatusText').textContent = `Kuromi hát xong bài ${song.title} rồi nè! Bé ${childName} có thích không nào? 🎀`;
+        setKuromiState('happy');
+        playSfx('sparkle');
+      }, 1000);
+      currentPlaybackTimeouts.push(endTimeout);
+      return;
     }
 
-    const startTimer = setTimeout(singNextVerse, 400);
-    currentPlaybackTimeouts.push(startTimer);
-  }, true);
+    const lyric = song.lyrics[verseIndex++];
+    if (onLyricUpdate) onLyricUpdate(lyric.text);
+    document.getElementById('kuromiStatusText').textContent = `Kuromi đang hát: "${lyric.text}" 🎶`;
+
+    const cleanVerse = cleanKidTextForTts(lyric.text);
+    if (!cleanVerse) {
+      singNextVerse();
+      return;
+    }
+
+    // Hát từng câu tuần tự và CHỈ 1 CÂU DUY NHẤT một thời điểm!
+    // TUYỆT ĐỐI KHÔNG CHỒNG TIẾNG, KHÔNG LẪN LỘN ÂM THANH!
+    singVocalLine(cleanVerse, () => {
+      if (APP_STATE.currentPlayingSong?.id !== songKey) return;
+      const pauseTimer = setTimeout(() => {
+        singNextVerse();
+      }, 500);
+      currentPlaybackTimeouts.push(pauseTimer);
+    });
+  }
+
+  // Bắt đầu ngay câu hát đầu tiên, không có câu chào nói chuyện đè lên!
+  const startTimer = setTimeout(singNextVerse, 200);
+  currentPlaybackTimeouts.push(startTimer);
 }
 
 function openSingerVideo(songKey, cardElement) {
@@ -2897,12 +2921,15 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
 
     function tryHost(hIndex) {
       if (sessionId !== currentTtsSessionId) return;
+      let hostHandled = false;
+
       const url = buildGoogleTtsUrl(chunk, hIndex);
       const audio = new Audio();
       audio.referrerPolicy = 'no-referrer';
       audio.preload = 'auto';
       audio.src = url;
       activeTtsAudio = audio;
+      currentGlobalAudio = audio;
 
       const rate = options.rate || 1.0;
       audio.playbackRate = Math.min(Math.max(rate, 0.7), 1.5);
@@ -2919,7 +2946,9 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
       };
 
       const handleFallback = () => {
-        if (sessionId !== currentTtsSessionId) return;
+        if (sessionId !== currentTtsSessionId || hostHandled) return;
+        hostHandled = true;
+
         if (hIndex + 1 < GOOGLE_TTS_HOSTS.length) {
           tryHost(hIndex + 1);
         } else {
