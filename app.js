@@ -2854,22 +2854,22 @@ function testVoiceSample(customStyle) {
     APP_STATE.settings.voiceStyle || 
     'kuromi_anime';
 
-  let personaTitle = '🎀 Kuromi Hoạt Hình (Nữ Hoạt Hình Lí Lắc)';
+  let personaShort = 'Kuromi Hoạt Hình';
   let samplePhrase = `Hí hí, Kuromi chào bé ${childName} đáng yêu nè! Kuromi chúc bé luôn chăm ngoan và học thật giỏi cùng Kuromi nha!`;
 
   if (selectedVoice === 'google_online') {
-    personaTitle = '👩‍🏫 Cô Giáo Hiền Dịu (Tiếng Việt Chuẩn Mực)';
+    personaShort = 'Cô Giáo Hiền Dịu';
     samplePhrase = `Cô chào bé ${childName} ngoan ngoãn. Chúc bé một ngày học tập thật nhiều niềm vui và khám phá thêm nhiều điều kỳ thú nhé!`;
   } else if (selectedVoice === 'fairy') {
-    personaTitle = '🧚 Cô Tiên Dịu Êm (Ngọt Ngào & Ru Ngủ)';
+    personaShort = 'Cô Tiên Dịu Êm';
     samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé hãy nằm thật ngoan và cùng cô lắng nghe những câu chuyện cổ tích êm đềm nhé...`;
   } else if (selectedVoice === 'device' || selectedVoice === 'hoami_cheerful') {
-    personaTitle = '🐰 Chị Họa Mi Tươi Vui (Trong Trẻo & Năng Động)';
+    personaShort = 'Chị Họa Mi';
     samplePhrase = `Chị Họa Mi chào bé ${childName}! Hôm nay chúng mình cùng giải những câu đố vui và khám phá tri thức thật rộn ràng nào!`;
   }
 
   if (testBtn) testBtn.classList.add('playing');
-  if (statusEl) statusEl.textContent = `Đang phát: ${personaTitle} 🔊...`;
+  if (statusEl) statusEl.textContent = `🔊 Đang phát: ${personaShort}...`;
 
   // Cập nhật và lưu lại giọng đang chọn (Non-destructive safe merge)
   APP_STATE.settings.voiceStyle = selectedVoice;
@@ -2877,7 +2877,7 @@ function testVoiceSample(customStyle) {
 
   speakText(samplePhrase, () => {
     if (testBtn) testBtn.classList.remove('playing');
-    if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe chuẩn xác chữ Bé chưa nè? 💕`;
+    if (statusEl) statusEl.textContent = `✨ Đã phát xong: ${personaShort} 💕`;
   }, true);
 }
 
