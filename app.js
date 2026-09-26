@@ -1105,6 +1105,7 @@ const LEARNING_ACTIVITIES = {
         });
       }
 
+      renderRiddle();
     }
   }
 };
@@ -1125,8 +1126,11 @@ function openLearningModal(stationType) {
   if (subtitleEl) subtitleEl.textContent = activity.subtitle;
   if (iconEl) iconEl.textContent = activity.icon;
 
-  if (bodyEl && activity.render) {
-    activity.render(bodyEl);
+  if (bodyEl) {
+    bodyEl.scrollTop = 0;
+    if (activity.render) {
+      activity.render(bodyEl);
+    }
   }
 
   if (modal) modal.classList.remove('hidden');

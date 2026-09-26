@@ -2680,6 +2680,7 @@ body {
 .learning-activity-window {
   max-width: 800px !important;
   width: 92% !important;
+  min-height: 480px;
   max-height: 88vh;
   display: flex !important;
   flex-direction: column !important;
