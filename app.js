@@ -338,21 +338,33 @@ const KuromiSync = {
       if (cloudData.settings) {
         const localTime = APP_STATE.settings.updatedAt || 0;
         const cloudTime = cloudData.settings.updatedAt || 0;
+        const localKey = (APP_STATE.settings && APP_STATE.settings.geminiApiKey) || '';
+        const cloudKey = cloudData.settings.geminiApiKey || '';
+        const effectiveKey = localKey || cloudKey;
+
         let merged;
         if (cloudTime > localTime) {
           merged = {
             ...DEFAULT_SETTINGS,
             ...APP_STATE.settings,
-            ...cloudData.settings
+            ...cloudData.settings,
+            geminiApiKey: effectiveKey
           };
         } else {
           merged = {
             ...DEFAULT_SETTINGS,
             ...cloudData.settings,
-            ...APP_STATE.settings
+            ...APP_STATE.settings,
+            geminiApiKey: effectiveKey
           };
           this.queuePush('settings', merged);
         }
+
+        // Preserve gemini mode if user configured key or chose gemini
+        if (effectiveKey && (APP_STATE.settings.aiMode === 'gemini' || cloudData.settings.aiMode === 'gemini')) {
+          merged.aiMode = 'gemini';
+        }
+
         APP_STATE.settings = merged;
         localStorage.setItem('kuromi_bot_settings', JSON.stringify(merged));
         applyChildNameUi(merged.childName);
@@ -364,6 +376,19 @@ const KuromiSync = {
         document.querySelectorAll('.age-btn').forEach(card => {
           card.classList.toggle('active', card.getAttribute('data-age') === currentAge);
         });
+
+        // Sync AI Mode radios & API Key
+        const modeGeminiRadio = document.getElementById('modeGemini');
+        const modeLocalRadio = document.getElementById('modeLocal');
+        const apiKeyBlock = document.getElementById('apiKeyBlock');
+        const apiKeyField = document.getElementById('geminiApiKey');
+        if (apiKeyField && effectiveKey) apiKeyField.value = effectiveKey;
+        if (merged.aiMode === 'gemini') {
+          if (modeGeminiRadio) modeGeminiRadio.checked = true;
+          if (apiKeyBlock) apiKeyBlock.classList.remove('hidden');
+        } else {
+          if (modeLocalRadio) modeLocalRadio.checked = true;
+        }
       }
 
       // 2. Learning Stars Safe Merge (Timestamped Synchronization)
@@ -4420,13 +4445,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('input[name="aiMode"]').forEach(radio => {
     radio.addEventListener('change', () => {
-      if (radio.value === 'gemini') {
+      const mode = radio.value;
+      if (mode === 'gemini') {
         document.getElementById('apiKeyBlock').classList.remove('hidden');
       } else {
         document.getElementById('apiKeyBlock').classList.add('hidden');
       }
+      APP_STATE.settings.aiMode = mode;
+      saveSettings({ aiMode: mode });
     });
   });
+
+  // Realtime API key input auto-save
+  const apiKeyField = document.getElementById('geminiApiKey');
+  if (apiKeyField) {
+    apiKeyField.addEventListener('input', (e) => {
+      APP_STATE.settings.geminiApiKey = e.target.value.trim();
+    });
+    apiKeyField.addEventListener('change', (e) => {
+      const val = e.target.value.trim();
+      APP_STATE.settings.geminiApiKey = val;
+      saveSettings({ geminiApiKey: val });
+    });
+  }
 
   // Test API Key Button
   const testApiKeyBtn = document.getElementById('testApiKeyBtn');
@@ -4447,6 +4488,19 @@ document.addEventListener('DOMContentLoaded', () => {
       statusEl.textContent = testRes.msg;
       statusEl.className = `api-key-status-msg ${testRes.ok ? 'success' : 'error'}`;
       playSfx(testRes.ok ? 'chime' : 'pop');
+
+      if (testRes.ok) {
+        // Auto-select Gemini radio and auto-save immediately
+        const geminiRadio = document.getElementById('modeGemini');
+        if (geminiRadio) geminiRadio.checked = true;
+        document.getElementById('apiKeyBlock').classList.remove('hidden');
+        APP_STATE.settings.aiMode = 'gemini';
+        APP_STATE.settings.geminiApiKey = key;
+        saveSettings({
+          aiMode: 'gemini',
+          geminiApiKey: key
+        });
+      }
     });
   }
 

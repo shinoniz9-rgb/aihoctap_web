@@ -43,6 +43,31 @@
   box-sizing: border-box;
 }
 
+/* Custom Sleek Dark Translucent Scrollbars (No more native white Windows scrollbars) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(20, 10, 31, 0.7);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 101, 168, 0.45);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kuromi-pink);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 101, 168, 0.45) rgba(20, 10, 31, 0.7);
+}
+
 /* ==========================================================================
    GLOBAL UTILITY & VISIBILITY CONTROLS (CRITICAL FOR TAB SWITCHING)
    ========================================================================== */
@@ -3126,28 +3151,26 @@ body {
   pointer-events: none;
 }
 
-/* Activity Category Navigation */
+/* Activity Category Navigation - Clean Wrapping with Zero White Scrollbar */
 .activity-category-nav {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 4px 4px 10px;
-  margin-bottom: 4px;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  padding: 4px 4px 8px;
+  margin-bottom: 6px;
   flex-shrink: 0;
   width: 100%;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
 .activity-category-nav::-webkit-scrollbar {
-  height: 4px;
-}
-
-.activity-category-nav::-webkit-scrollbar-thumb {
-  background: var(--kuromi-border);
-  border-radius: 4px;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .activity-cat-btn {
