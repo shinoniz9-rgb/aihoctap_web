@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Lexend:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3.9">
+  <link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body>
   <div class="stars-particle-container" id="starsContainer"></div>
@@ -132,8 +132,8 @@
       <!-- Right Column: Interactive Chat & Multi-Sensory Stream -->
       <section class="chat-display-section">
         
-        <!-- Multi-Sensory Quick Explore Filter Bar with Category Tabs -->
-        <div class="explore-tray-wrapper">
+        <!-- Multi-Sensory Quick Explore Filter Bar with Category Tabs (Đã ẩn theo yêu cầu để khung trò chuyện rộng rãi tối đa) -->
+        <div class="explore-tray-wrapper" style="display: none !important;" aria-hidden="true">
           <div class="explore-header">
             <span class="explore-label">🌟 Bé Bảo Hân muốn khám phá gì hôm nay:</span>
           </div>
@@ -150,142 +150,10 @@
             <button class="cat-tab" data-cat="riddle">💡 Đố Vui &amp; Toán</button>
           </div>
           <div class="quick-explore-carousel" id="quickExploreCarousel">
-            <!-- Dynamically populated or rendered chips -->
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao trời lại có mưa rơi vậy Kuromi?">
-              🌧️ Vì sao trời mưa?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao lá cây lại có màu xanh?">
-              🌿 Vì sao lá cây màu xanh?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Vì sao nước biển lại có vị mặn?">
-              🌊 Vì sao nước biển mặn?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao bé phải đánh răng sáng và tối mỗi ngày?">
-              🦷 Vì sao phải đánh răng?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao bé phải đi ngủ sớm vậy Kuromi?">
-              🌙 Vì sao phải ngủ sớm?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao mắt chúng mình lại phải chớp chớp?">
-              👀 Vì sao mắt chớp?
-            </button>
-            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Trái tim đập để làm gì vậy Kuromi?">
-              💓 Trái tim đập để làm gì?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Con chó thích ăn gì và sủa thế nào vậy Kuromi?">
-              🐶 Con chó thích ăn gì?
-            </button>
-            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng mèo kêu meo meo">
-              🐱 Nghe tiếng mèo kêu
-            </button>
-            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chú chó sủa gâu gâu bảo vệ nhà">
-              🐕 Nghe tiếng chó sủa
-            </button>
-            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chú vịt kêu cạp cạp">
-              🦆 Nghe tiếng vịt kêu
-            </button>
-            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng sư tử gầm dũng mãnh chúa sơn lâm">
-              🦁 Nghe tiếng sư tử
-            </button>
-            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chim hót líu lo chào buổi sáng">
-              🐦 Nghe chim hót líu lo
-            </button>
-            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Con voi có mũi dài để làm gì vậy Kuromi?">
-              🐘 Con voi dùng mũi làm gì?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Cho bé xem hình khủng long bạo chúa T-Rex tiền sử">
-              🦖 Xem hình khủng long
-            </button>
-            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Cá heo thông minh thế nào và có phải là cá không?">
-              🐬 Cá heo thông minh thế nào?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Bạch tuộc có mấy quả tim và mấy cái vòi?">
-              🐙 Bạch tuộc có mấy tim?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Cho bé xem hình đại dương kỳ thú cá voi và rùa biển">
-              🌊 Xem sinh vật đại dương
-            </button>
-            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Xe cứu hỏa có màu gì và làm nhiệm vụ gì vậy Kuromi?">
-              🚒 Xe cứu hỏa làm gì?
-            </button>
-            <button class="explore-chip chip-sound" data-cat="vehicles" data-prompt="Cho bé nghe tiếng còi xe cứu hỏa u o u o">
-              🚨 Nghe còi xe cứu hỏa
-            </button>
-            <button class="explore-chip chip-sound" data-cat="vehicles" data-prompt="Cho bé nghe tiếng còi tàu hỏa tu tu xình xịch">
-              🚂 Nghe tiếng tàu hỏa
-            </button>
-            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Máy bay khổng lồ bay lên trời bằng cách nào?">
-              ✈️ Máy bay bay thế nào?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Tàu ngầm lặn sâu dưới đáy biển bằng cách nào?">
-              🚢 Tàu ngầm lặn thế nào?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="habits" data-prompt="Tại sao bé phải ăn nhiều rau xanh và trái cây mỗi ngày?">
-              🥗 Vì sao phải ăn rau?
-            </button>
-            <button class="explore-chip chip-visual" data-cat="habits" data-prompt="Tại sao bé phải rửa tay bằng xà phòng trước khi ăn?">
-              🧼 Vì sao phải rửa tay?
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Kìa con bướm vàng">
-              🦋 Hát Kìa con bướm vàng
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Chú ếch con">
-              🐸 Hát bài Chú ếch con
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Bắc Kim Thang">
-              🌾 Hát Bắc Kim Thang
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Chú voi con ở Bản Đôn">
-              🐘 Hát Chú voi con ở Bản Đôn
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cả nhà thương nhau">
-              👨‍👩‍👧 Hát Cả nhà thương nhau
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Đi học về">
-              🎒 Hát bài Đi học về
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Con heo đất">
-              🐷 Hát bài Con heo đất
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cháu yêu bà">
-              👵 Hát bài Cháu yêu bà
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Con cào cào khỏe đẹp">
-              🦗 Hát bài Con cào cào
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cháu lên ba">
-              🎒 Hát bài Cháu lên ba
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Baby Shark vui nhộn">
-              🦈 Hát Baby Shark
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát bài Twinkle Twinkle Little Star">
-              ⭐ Hát bài Ngôi sao nhỏ
-            </button>
-            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Happy Birthday chúc mừng sinh nhật">
-              🎂 Hát Chúc mừng sinh nhật
-            </button>
-            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Ba chú heo con chăm chỉ">
-              🐷 Kể Ba chú heo con
-            </button>
-            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Cô bé quàng khăn đỏ">
-              🧣 Kể Cô bé quàng khăn đỏ
-            </button>
-            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Rùa và Thỏ">
-              🐰 Kể chuyện Rùa &amp; Thỏ
-            </button>
-            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Con quạ thông minh uống nước">
-              🦅 Kể Con quạ thông minh
-            </button>
-            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Kuromi đố bé câu đố vui về con vật đi nào!">
-              💡 Đố vui đoán con vật
-            </button>
-            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Màu đỏ pha với màu vàng ra màu gì vậy Kuromi?">
-              🎨 Đỏ pha vàng ra màu gì?
-            </button>
-            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Bé đố Kuromi: 5 cộng 5 bằng mấy?">
-              🔢 5 cộng 5 bằng mấy?
-            </button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao trời lại có mưa rơi vậy Kuromi?">🌧️ Vì sao trời mưa?</button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao lá cây lại có màu xanh?">🌿 Vì sao lá cây màu xanh?</button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Vì sao nước biển lại có vị mặn?">🌊 Vì sao nước biển mặn?</button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao bé phải đánh răng sáng và tối mỗi ngày?">🦷 Vì sao phải đánh răng?</button>
           </div>
         </div>
 

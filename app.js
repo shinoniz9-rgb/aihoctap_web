@@ -1511,7 +1511,7 @@ const SONGS_LIBRARY = {
     title: 'Kìa Con Bướm Vàng',
     category: 'Bài hát thiếu nhi',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'F5Kx9x0y07o',
+    youtubeId: 'UL4lDzpz6yk',
     icon: '🦋',
     bpm: 130,
     lyrics: [
@@ -1536,7 +1536,7 @@ const SONGS_LIBRARY = {
     title: 'Chú Ếch Con',
     category: 'Bài hát thiếu nhi',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'g6f3d-G9jM4',
+    youtubeId: 'k8Qv36HebWY',
     icon: '🐸',
     bpm: 140,
     lyrics: [
@@ -1607,7 +1607,7 @@ const SONGS_LIBRARY = {
     title: 'Cả Nhà Thương Nhau',
     category: 'Tình cảm gia đình',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'kYv9G4fD1sI',
+    youtubeId: 'SIZl1_d17uo',
     icon: '👨‍👩‍👧',
     bpm: 115,
     lyrics: [
@@ -1628,7 +1628,7 @@ const SONGS_LIBRARY = {
     title: 'Con Cào Cào',
     category: 'Vui khỏe mỗi ngày',
     singer: 'Mầm Chồi Lá',
-    youtubeId: 'k_9YwP-9cR0',
+    youtubeId: '3TQqcORbt6c',
     icon: '🦗',
     bpm: 135,
     lyrics: [
@@ -1649,7 +1649,7 @@ const SONGS_LIBRARY = {
     title: 'Cháu Lên Ba',
     category: 'Tuổi thơ ngọt ngào',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'kY0R8V1H-Jc',
+    youtubeId: 'oTW2jBkLnHE',
     icon: '🎒',
     bpm: 128,
     lyrics: [
@@ -1670,7 +1670,7 @@ const SONGS_LIBRARY = {
     title: 'Bé Tập Đánh Răng',
     category: 'Thói quen bé ngoan',
     singer: 'Bé Mai Vy',
-    youtubeId: 'GMWt2chz4OB',
+    youtubeId: 'pw6rw2_ZhCU',
     icon: '🪥',
     bpm: 130,
     lyrics: [
@@ -1691,7 +1691,7 @@ const SONGS_LIBRARY = {
     title: 'Bắc Kim Thang',
     category: 'Đồng dao thiếu nhi',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'rD9jZq9Y3Ew',
+    youtubeId: '5dmAgpLJK7E',
     icon: '🌾',
     bpm: 125,
     lyrics: [
@@ -1710,8 +1710,8 @@ const SONGS_LIBRARY = {
     id: 'chuvoicon',
     title: 'Chú Voi Con Ở Bản Đôn',
     category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'uO7n3VzR6jA',
+    singer: 'Cao Lê Hà Trang',
+    youtubeId: 'QMW4M-03wBo',
     icon: '🐘',
     bpm: 128,
     lyrics: [
@@ -1731,7 +1731,7 @@ const SONGS_LIBRARY = {
     title: 'Đi Học Về',
     category: 'Bài hát lễ phép',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'mB_pZk5_4h4',
+    youtubeId: 'YqVUlQ5Ls1U',
     icon: '🎒',
     bpm: 120,
     lyrics: [
@@ -1748,7 +1748,7 @@ const SONGS_LIBRARY = {
     title: 'Con Heo Đất',
     category: 'Vui tươi rộn ràng',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'dD97x50dKms',
+    youtubeId: 'd_oNWvY8QVA',
     icon: '🐷',
     bpm: 130,
     lyrics: [
@@ -1766,7 +1766,7 @@ const SONGS_LIBRARY = {
     title: 'Cháu Yêu Bà',
     category: 'Tình cảm gia đình',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'o1L5v0i6-uI',
+    youtubeId: '_WPF__SVBn0',
     icon: '👵',
     bpm: 110,
     lyrics: [
@@ -1802,7 +1802,7 @@ const SONGS_LIBRARY = {
     title: 'Một Con Vịt',
     category: 'Bài hát thiếu nhi',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'bN6b4pU6Wl8',
+    youtubeId: 'OcIALhFrt-Q',
     icon: '🦆',
     bpm: 130,
     lyrics: [
@@ -1821,7 +1821,7 @@ const SONGS_LIBRARY = {
     title: 'Bống Bống Bang Bang',
     category: 'Vũ điệu thiếu nhi',
     singer: 'Bé Bào Ngư',
-    youtubeId: 'k5z8qV69j6k',
+    youtubeId: 'GhZML0HSli8',
     icon: '🐟',
     bpm: 135,
     lyrics: [
@@ -1838,8 +1838,8 @@ const SONGS_LIBRARY = {
     id: 'bangocnen',
     title: 'Ba Ngọn Nến Lung Linh',
     category: 'Tình cảm gia đình',
-    singer: 'Gia Đình Cam Cam',
-    youtubeId: 'w7w1p9l5hL0',
+    singer: 'Ngọc Lễ & Phương Thảo',
+    youtubeId: 'CIj9kO9IgzQ',
     icon: '🕯️',
     bpm: 115,
     lyrics: [
@@ -1851,28 +1851,86 @@ const SONGS_LIBRARY = {
       { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
       { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 }
     ]
+  },
+  'meo': {
+    id: 'meo',
+    title: 'Rửa Mặt Như Mèo',
+    category: 'Bài hát thiếu nhi',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'yC9MpeW8qfY',
+    icon: '🐱',
+    bpm: 130,
+    lyrics: [
+      { text: "Meo meo meo, rửa mặt như mèo 🐱", duration: 3.5 },
+      { text: "Xấu xấu lắm chẳng được mẹ yêu! 💖", duration: 3.5 },
+      { text: "Khăn mặt đâu mà ngồi liếm láp ✨", duration: 3.5 },
+      { text: "Đau mắt rồi lại khóc meo meo! 😿", duration: 3.5 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
+      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
+    ]
   }
 };
 
 // =============================================================================
 // DYNAMIC UNLIMITED SONGS ENGINE (MATCH & GENERATE ANY SONG IN THE WORLD)
 // =============================================================================
+// Alias dictionary for instantaneous keyword & typo recognition
+const SONG_ALIASES = {
+  'butterfly': ['con buom', 'buom vang', 'kia con buom vang', 'kia con buom', 'con buom vang'],
+  'frog': ['chu ech', 'ech con', 'chu ech con', 'hai mat tron', 'ho bom'],
+  'family': ['ca nha', 'ca nha thuong nhau', 'ba thuong con', 'thuong yeu nhau', 'me thuong con'],
+  'locust': ['cao cao', 'con cao cao', 'canh xanh xanh', 'khoe dep'],
+  'preschool': ['chau len ba', 'chau len 3', 'di mau giao', 'co thuong chau', 'khong khoc nhe'],
+  'teeth': ['danh rang', 'tap danh rang', 'be tap danh rang', 'rang trang', 'trang tinh'],
+  'backimthang': ['bac kim thang', 'ca lang bi ro', 'chu ban dau', 'chu ban ech'],
+  'chuvoicon': ['chu voi', 'voi con', 'ban don', 'o ban don', 'chu voi con'],
+  'dihocve': ['di hoc ve', 'chao cha me', 'cha khen', 'di hoc'],
+  'conheodat': ['con heo dat', 'heo dat', 'lon dat', 'tien xu', 'i o i o'],
+  'chauyeuba': ['chau yeu ba', 'ba oi ba', 'toc ba trang', 'yeu ba'],
+  'motconvit': ['mot con vit', '1 con vit', 'con vit', 'xoe ra hai cai canh', 'cap cap', 'bi ba bi bom'],
+  'bongbongbangbang': ['bong bong bang bang', 'bong bong', 'com vang com bac'],
+  'bangocnen': ['ba ngon nen', 'ngon nen', 'ba ngon nen lung linh', 'ba la cay nen vang'],
+  'meo': ['rua mat nhu meo', 'meo meo', 'con meo', 'meo rua mat', 'meo con'],
+  'star': ['ngoi sao nho', 'ngoi sao', 'twinkle', 'little star', 'sao nho'],
+  'birthday': ['chuc mung sinh nhat', 'sinh nhat', 'happy birthday', 'birthday'],
+  'babyshark': ['baby shark', 'ca map', 'shark dance', 'pinkfong']
+};
+
 function matchSongKey(songName) {
   if (!songName) return null;
   const norm = removeVietnameseTones(songName).replace(/[.,?!;]/g, '').trim().toLowerCase();
-  const normWords = norm.split(/\s+/).filter(w => !['bai', 'hat', 'cho', 'be', 'nghe', 'o', 'nhac', 'ca', 'khuc'].includes(w));
-  let bestKey = null;
-  let maxMatchedWords = 0;
 
+  // 1. Direct Alias Matching (Instant & Robust)
+  for (const key in SONG_ALIASES) {
+    for (const alias of SONG_ALIASES[key]) {
+      if (norm === alias || norm.includes(alias) || alias.includes(norm)) {
+        return key;
+      }
+    }
+  }
+
+  // 2. Exact or substring match in SONG_LIBRARY titles
   for (const key in SONGS_LIBRARY) {
     const s = SONGS_LIBRARY[key];
     const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
     if (norm === normTitle || norm.includes(normTitle) || normTitle.includes(norm)) {
       return key;
     }
+  }
+
+  // 3. Word intersection match
+  const normWords = norm.split(/\s+/).filter(w => !['bai', 'hat', 'cho', 'be', 'nghe', 'o', 'nhac', 'ca', 'khuc', 'tim', 'kiem', 'tra'].includes(w));
+  let bestKey = null;
+  let maxMatchedWords = 0;
+
+  for (const key in SONGS_LIBRARY) {
+    const s = SONGS_LIBRARY[key];
+    const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
     const titleWords = normTitle.split(/\s+/).filter(w => !['bai', 'hat', 'cho', 'be', 'nghe', 'o', 'nhac', 'ca', 'khuc'].includes(w));
     const matchedCount = normWords.filter(w => titleWords.includes(w)).length;
-    if (matchedCount >= 2 && matchedCount > maxMatchedWords) {
+    if (matchedCount >= 1 && matchedCount > maxMatchedWords) {
       maxMatchedWords = matchedCount;
       bestKey = key;
     }
@@ -1894,7 +1952,7 @@ function getOrCreateSong(songName) {
     title: cleanTitle,
     category: 'Ca khúc thiếu nhi yêu thích',
     singer: 'Ca sĩ thiếu nhi',
-    youtubeId: null, // Dynamic YouTube Search Playlist
+    youtubeId: null, // Dynamic YouTube Search
     youtubeQuery: `${cleanTitle} thiếu nhi`,
     icon: '🎵',
     bpm: 125,
@@ -1915,18 +1973,31 @@ function getOrCreateSong(songName) {
 function extractSongIntent(prompt) {
   if (!prompt) return null;
   const p = prompt.trim();
-  
-  // 1. Direct song title in library
+  const norm = removeVietnameseTones(p).toLowerCase();
+
+  // 1. Direct song title in library or alias
   const directKey = matchSongKey(p);
   if (directKey) {
     return SONGS_LIBRARY[directKey].title;
   }
 
-  // 2. Intent patterns: "Hát cho bé nghe bài [X]", "Hát bài [X]", "Bật bài [X]", "Mở bài [X]", "Nghe bài [X]"
+  // 2. Generic request: "hát đi", "hát một bài", "bật nhạc", "mở nhạc", "nghe nhạc", "hát bài mới", "hát cho bé nghe"
+  if (/^(?:hát(?:\s+đi|\s+nào|\s+cho\s+bé(?:\s+nghe)?|\s+một\s+bài)?|bật\s+nhạc|mở\s+nhạc|nghe\s+nhạc|hát\s+bài\s+mới)$/i.test(norm) ||
+      norm === 'hat' || norm === 'nghe nhac' || norm === 'bat nhac' || norm === 'mo nhac') {
+    const keys = ['frog', 'butterfly', 'motconvit', 'backimthang', 'conheodat', 'babyshark'];
+    const pick = keys[Math.floor(Math.random() * keys.length)];
+    return SONGS_LIBRARY[pick].title;
+  }
+
+  // 3. Search and play intent patterns:
+  // "tìm bài hát [X]", "tìm bài [X]", "kiếm bài [X]", "tra bài [X]", "hát bài [X]", "mở bài [X]", "bật bài [X]", "cho bé nghe bài [X]"
   const patterns = [
-    /(?:hát|nghe|bật|mở|phát)(?:\s+cho\s+bé)?(?:\s+nghe)?\s+bài(?:\s+hát)?\s+([^\.,?!;]+)/i,
-    /(?:hát|nghe|bật|mở|phát)\s+bài\s+([^\.,?!;]+)/i,
-    /bài\s+hát\s+([^\.,?!;]+)/i,
+    /(?:tìm|kiếm|tra|hát|nghe|bật|mở|phát)(?:\s+cho\s+bé)?(?:\s+nghe)?\s+bài(?:\s+hát|\s+ca)?\s+([^\.,?!;]+)/i,
+    /(?:tìm|kiếm|hát|nghe|bật|mở|phát)\s+bài\s+([^\.,?!;]+)/i,
+    /(?:tìm|kiếm|hát|nghe|bật|mở|phát)\s+ca\s+khúc\s+([^\.,?!;]+)/i,
+    /(?:tìm|kiếm|mở|bật|nghe)\s+nhạc\s+([^\.,?!;]+)/i,
+    /bài\s+(?:hát|ca)\s+([^\.,?!;]+)/i,
+    /ca\s+khúc\s+([^\.,?!;]+)/i,
     /hát\s+([^\.,?!;]+)/i
   ];
 
@@ -2000,6 +2071,46 @@ function playSfx(type) {
     osc.start(now);
     osc.stop(now + 0.6);
   }
+}
+
+// Special Voice SFX Signatures
+function playFairyChime() {
+  if (!APP_STATE.sfxEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 fairy sparkle arpeggio
+  freqs.forEach((f, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f, now + i * 0.08);
+    gain.gain.setValueAtTime(0.001, now + i * 0.08);
+    gain.gain.linearRampToValueAtTime(0.14, now + i * 0.08 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.6);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + i * 0.08);
+    osc.stop(now + i * 0.08 + 0.65);
+  });
+}
+
+function playDeviceBeep() {
+  if (!APP_STATE.sfxEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(880, now);
+  osc.frequency.setValueAtTime(1320, now + 0.06);
+  gain.gain.setValueAtTime(0.08, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.16);
 }
 
 // Realistic Audio Synthesizer (Animals, Vehicles, Nature)
@@ -2361,19 +2472,39 @@ function openSingerVideo(songKey, cardElement) {
   const kuromiSingBtn = cardElement.querySelector('.kuromi-sing-btn');
   const lyricEl = cardElement.querySelector('.current-lyric');
   const waveBars = cardElement.querySelector('.jukebox-wave-bars');
+  const externalLink = cardElement.querySelector('.open-external-mv-link');
 
   if (videoBox && iframe) {
+    const ytUrl = song.youtubeId 
+      ? `https://www.youtube.com/watch?v=${song.youtubeId}`
+      : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
+
+    if (externalLink) {
+      externalLink.href = ytUrl;
+      externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
+    }
+
     if (song.youtubeId) {
       iframe.src = `https://www.youtube-nocookie.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`;
+      iframe.style.display = 'block';
     } else {
-      const searchTerms = encodeURIComponent(song.youtubeQuery || (song.title + ' thiếu nhi'));
-      iframe.src = `https://www.youtube-nocookie.com/embed?listType=search&list=${searchTerms}&autoplay=1&playsinline=1&rel=0`;
+      iframe.src = '';
+      iframe.style.display = 'none';
+      // For dynamic songs outside library, have Kuromi start singing immediately!
+      playKuromiVocalSong(songKey, (text) => {
+        if (lyricEl) lyricEl.textContent = `🎤 ${text}`;
+      });
     }
+
     videoBox.classList.remove('hidden');
     if (realSingerBtn) realSingerBtn.classList.add('active');
     if (kuromiSingBtn) kuromiSingBtn.classList.remove('active');
     if (waveBars) waveBars.classList.add('active');
-    if (lyricEl) lyricEl.textContent = `🎬 Đang phát ca khúc do ${song.singer || 'ca sĩ nhí'} hát cho bé ${childName} nghe!`;
+    if (lyricEl) {
+      lyricEl.textContent = song.youtubeId
+        ? `🎬 Đang phát ca khúc do ${song.singer || 'ca sĩ nhí'} hát cho bé ${childName} nghe!`
+        : `🎬 Bé bấm nút "▶️ Mở Xem Trên YouTube" bên dưới nhé! Kuromi cất tiếng hát cùng bé đây!`;
+    }
   }
 
   setKuromiState('singing');
@@ -2614,46 +2745,50 @@ function speakText(text, onComplete) {
   const userRate = APP_STATE.settings.ttsRate || 1.05;
   const userPitch = APP_STATE.settings.ttsPitch || 1.25;
 
-  // Option 1: Kuromi Anime Cartoon Voice (Cheerful, bubbly, slightly fast with raised pitch)
+  // Option 1: Kuromi Anime Cartoon Voice (Cheerful, bubbly, chibi high pitch 1.28x with cute chime)
   if (voiceStyle === 'kuromi_anime') {
+    playSfx('chime');
     const chunks = chunkTextForTts(cleanText);
     speakWithGoogleTts(chunks, {
-      rate: userRate * 1.12,
+      rate: 1.28,
       preservesPitch: false
     }, onComplete);
     return;
   }
 
-  // Option 2: Google Online Standard Voice (Natural 100%, crisp, studio female voice)
+  // Option 2: Google Online Standard Voice (Natural 1.0x studio female voice, pristine & clear)
   if (voiceStyle === 'google_online') {
     const chunks = chunkTextForTts(cleanText);
     speakWithGoogleTts(chunks, {
-      rate: userRate,
+      rate: 1.0,
       preservesPitch: true
     }, onComplete);
     return;
   }
 
-  // Option 3: Fairy Tale Warm Voice (Soft, warm, bedtime storytelling cadence)
+  // Option 3: Fairy Tale Warm Voice (Soft, warm, bedtime storytelling cadence 0.85x, celestial fairy chime)
   if (voiceStyle === 'fairy') {
+    playFairyChime();
     const chunks = chunkTextForTts(cleanText);
     speakWithGoogleTts(chunks, {
-      rate: userRate * 0.92,
+      rate: 0.85,
       preservesPitch: true
     }, onComplete);
     return;
   }
 
-  // Option 4: Device / System Voice (Web Speech API)
+  // Option 4: Device / System Voice (Web Speech API or digital assistant robot tone with tech beep)
   if (voiceStyle === 'device') {
     const viVoice = getVietnameseVoice();
     if (viVoice) {
-      speakWithWebSpeech(cleanText, { rate: userRate, pitch: userPitch }, onComplete);
+      speakWithWebSpeech(cleanText, { rate: 1.0, pitch: 1.05 }, onComplete);
     } else {
-      // System has NO Vietnamese voice installed (e.g. Windows without VN pack)
-      // Fallback gracefully to Google TTS so it doesn't sound like a foreign robot!
+      playDeviceBeep();
       const chunks = chunkTextForTts(cleanText);
-      speakWithGoogleTts(chunks, { rate: userRate, preservesPitch: true }, onComplete);
+      speakWithGoogleTts(chunks, {
+        rate: 1.12,
+        preservesPitch: true
+      }, onComplete);
     }
   }
 }
@@ -2670,14 +2805,21 @@ function testVoiceSample(customStyle) {
     'kuromi_anime';
 
   let personaTitle = 'Kuromi Hoạt Hình';
-  if (selectedVoice === 'google_online') personaTitle = 'Chị Google Trong Trẻo';
-  if (selectedVoice === 'fairy') personaTitle = 'Cô Tiên Kể Chuyện';
-  if (selectedVoice === 'device') personaTitle = 'Giọng Thiết Bị';
+  let samplePhrase = `Kuromi chào bé ${childName}! Kuromi chúc bé một ngày thật vui vẻ, đáng yêu và ngập tràn niềm vui nhé! 💖🎀`;
+
+  if (selectedVoice === 'google_online') {
+    personaTitle = 'Chị Google Trong Trẻo';
+    samplePhrase = `Xin chào bé ${childName}. Chúc bé một buổi học tập thật chăm ngoan, tiến bộ và học thêm nhiều điều hay nhé! 👩‍🏫⭐`;
+  } else if (selectedVoice === 'fairy') {
+    personaTitle = 'Cô Tiên Kể Chuyện';
+    samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé ngoan ngoãn lắng nghe những câu chuyện cổ tích êm đềm cùng cô nhé... 🧚✨`;
+  } else if (selectedVoice === 'device') {
+    personaTitle = 'Giọng Thiết Bị Trợ Lý';
+    samplePhrase = `Hệ thống thiết bị xin chào bé ${childName}. Trợ lý học tập đã sẵn sàng hỗ trợ bé khám phá thế giới xung quanh! 📱🤖`;
+  }
 
   if (testBtn) testBtn.classList.add('playing');
   if (statusEl) statusEl.textContent = `Đang phát thử: ${personaTitle} 🔊...`;
-
-  const samplePhrase = `Kuromi chào bé ${childName}! Kuromi chúc bé một ngày thật vui vẻ và học thêm nhiều điều kỳ diệu nhé! 💖`;
 
   // Temporarily switch voice style for preview
   const originalStyle = APP_STATE.settings.voiceStyle;
@@ -2686,7 +2828,7 @@ function testVoiceSample(customStyle) {
   speakText(samplePhrase, () => {
     APP_STATE.settings.voiceStyle = originalStyle;
     if (testBtn) testBtn.classList.remove('playing');
-    if (statusEl) statusEl.textContent = `Đã phát xong giọng ${personaTitle}! Bé nghe thấy thích không nè? 💕`;
+    if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe thấy khác biệt rõ ràng không nè? 💕`;
   });
 }
 
@@ -4302,6 +4444,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Quick Action: "Hát bài mới"
+  const quickSongBtn = document.getElementById('quickSongBtn');
+  if (quickSongBtn) {
+    quickSongBtn.addEventListener('click', () => {
+      playSfx('pop');
+      const songKeys = Object.keys(SONGS_LIBRARY);
+      const randomKey = songKeys[Math.floor(Math.random() * songKeys.length)];
+      const s = SONGS_LIBRARY[randomKey];
+      handleChildSubmit(`Hát cho bé nghe bài ${s.title}`);
+    });
+  }
+
   // Mini Dock Controls
   document.getElementById('dockStopBtn').addEventListener('click', stopCurrentSong);
   document.getElementById('dockPauseBtn').addEventListener('click', stopCurrentSong);
@@ -4421,6 +4575,9 @@ document.addEventListener('DOMContentLoaded', () => {
       playSfx('pop');
 
       const style = card.getAttribute('data-voice');
+      APP_STATE.settings.voiceStyle = style;
+      saveSettings({ voiceStyle: style });
+
       const voiceHint = document.getElementById('voiceTestStatus');
       const childName = (document.getElementById('childNameInput')?.value || APP_STATE.settings.childName || 'Bảo Hân').trim();
       if (voiceHint) {
@@ -4428,7 +4585,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (style === 'google_online') label = 'Chị Google Trong Trẻo';
         if (style === 'fairy') label = 'Cô Tiên Kể Chuyện';
         if (style === 'device') label = 'Giọng Thiết Bị';
-        voiceHint.textContent = `Đã chọn ${label}. Bấm "Nghe Thử Giọng Này" để nghe giọng mẫu cho bé ${childName}!`;
+        voiceHint.textContent = `Đã chọn: ${label}. Bấm "Nghe Thử Giọng Này" để nghe giọng mẫu cho bé ${childName}!`;
       }
     });
   });
