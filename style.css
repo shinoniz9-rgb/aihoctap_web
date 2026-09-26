@@ -2678,16 +2678,21 @@ body {
    INTERACTIVE LEARNING ACTIVITY MODAL & MINI-GAMES
    ========================================================================== */
 .learning-activity-window {
-  max-width: 780px !important;
+  max-width: 800px !important;
   width: 92% !important;
   max-height: 88vh;
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 2px solid var(--kuromi-pink);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), var(--kuromi-glow);
+  overflow: hidden;
 }
 
 .activity-modal-header {
   border-bottom: 2px solid var(--kuromi-border);
-  padding-bottom: 12px;
+  padding: 14px 20px;
+  flex-shrink: 0;
 }
 
 .activity-modal-icon {
@@ -2720,8 +2725,15 @@ body {
 }
 
 .activity-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
   overflow-y: auto;
-  padding: 18px 8px;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 /* Activity Mini-Game: Math Sweets */
@@ -2981,90 +2993,299 @@ body {
 }
 
 /* Activity Mini-Game: English Flashcards */
+.english-game-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.flashcards-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.flashcards-hint-text {
+  font-size: 0.9rem;
+  color: var(--kuromi-lavender);
+  background: rgba(30, 15, 45, 0.7);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 101, 168, 0.25);
+  text-align: center;
+}
+
 .flashcards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
   gap: 12px;
-  padding: 6px;
+  padding: 4px 2px 14px;
+  width: 100%;
 }
 
 .flashcard-item {
-  background: rgba(30, 15, 45, 0.88);
-  border: 2px solid var(--kuromi-border);
+  background: rgba(30, 15, 45, 0.92);
+  border: 2px solid rgba(255, 101, 168, 0.35);
   border-radius: var(--radius-md);
   padding: 14px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 6px;
   cursor: pointer;
   transition: var(--transition-smooth);
   text-align: center;
+  user-select: none;
+  min-height: 142px;
 }
 
 .flashcard-item:hover {
   transform: translateY(-4px);
   border-color: #00e5ff;
-  box-shadow: 0 0 18px rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.45);
+  background: rgba(45, 20, 70, 0.95);
+}
+
+.flashcard-item:active {
+  transform: scale(0.97);
 }
 
 .flashcard-emoji {
-  font-size: 2.2rem;
+  font-size: 2.3rem;
+  line-height: 1.1;
 }
 
 .flashcard-en {
   font-family: var(--font-display);
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.flashcard-ipa {
+  font-size: 0.76rem;
+  color: #ffeb3b;
+  font-family: monospace;
+  font-weight: 600;
 }
 
 .flashcard-vi {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--kuromi-pink-pastel);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .flashcard-speak-btn {
   background: rgba(255, 255, 255, 0.12);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
   border-radius: var(--radius-full);
   padding: 4px 10px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.74rem;
+  font-weight: 700;
+  margin-top: 2px;
+  pointer-events: none;
 }
 
 /* Activity Category Navigation */
 .activity-category-nav {
   display: flex;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
+  overflow-y: hidden;
+  padding: 4px 4px 10px;
+  margin-bottom: 4px;
   scrollbar-width: thin;
+  flex-shrink: 0;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.activity-category-nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.activity-category-nav::-webkit-scrollbar-thumb {
+  background: var(--kuromi-border);
+  border-radius: 4px;
 }
 
 .activity-cat-btn {
-  background: rgba(20, 10, 31, 0.7);
+  background: rgba(20, 10, 31, 0.85);
   border: 1.5px solid var(--kuromi-border);
   color: var(--kuromi-lavender);
-  padding: 6px 14px;
+  padding: 7px 16px;
+  height: 38px;
+  min-height: 38px;
   border-radius: var(--radius-full);
   font-family: var(--font-kid);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1;
   transition: var(--transition-smooth);
 }
 
 .activity-cat-btn:hover, .activity-cat-btn.active {
   background: linear-gradient(135deg, var(--kuromi-pink), var(--kuromi-purple-mid));
   border-color: #ffeb3b;
-  color: #fff;
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 0 10px rgba(255, 37, 138, 0.4);
+  box-shadow: 0 0 14px rgba(255, 37, 138, 0.5);
+}
+
+/* Activity Mini-Game: Quiz / Đố Vui Săn Sao */
+.quiz-game-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.quiz-question-banner {
+  background: linear-gradient(145deg, rgba(62, 22, 88, 0.94), rgba(30, 10, 48, 0.98));
+  border: 2px solid var(--kuromi-pink);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 101, 168, 0.25);
+}
+
+.quiz-question-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.quiz-question-text {
+  font-family: var(--font-kid);
+  font-size: 1.25rem;
+  color: #ffffff;
+  line-height: 1.5;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.quiz-question-prompt {
+  font-size: 0.9rem;
+  color: #ffafd6;
+  font-weight: 600;
+}
+
+.quiz-choices-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.quiz-choice-btn {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(38, 18, 60, 0.94), rgba(24, 10, 40, 0.98));
+  border: 2px solid rgba(255, 101, 168, 0.4);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+.quiz-choice-btn:hover {
+  border-color: #ffeb3b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 101, 168, 0.4);
+  background: linear-gradient(135deg, rgba(58, 26, 92, 0.96), rgba(38, 16, 62, 0.98));
+}
+
+.quiz-choice-btn:active {
+  transform: scale(0.98);
+}
+
+.quiz-choice-letter {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 101, 168, 0.25);
+  border: 2px solid var(--kuromi-pink);
+  color: #ffeb3b;
+  font-family: var(--font-kid);
+  font-size: 1.05rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition-smooth);
+}
+
+.quiz-choice-text {
+  font-family: var(--font-kid);
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #ffffff;
+  flex: 1;
+}
+
+.quiz-choice-btn.is-correct {
+  background: linear-gradient(135deg, #1b5e20, #4caf50) !important;
+  border-color: #76ff03 !important;
+  box-shadow: 0 0 25px rgba(118, 255, 3, 0.5) !important;
+  transform: scale(1.02);
+}
+
+.quiz-choice-btn.is-correct .quiz-choice-letter {
+  background: #76ff03 !important;
+  color: #140a1f !important;
+  border-color: #ffffff !important;
+}
+
+.quiz-choice-btn.is-wrong {
+  background: linear-gradient(135deg, #b71c1c, #d32f2f) !important;
+  border-color: #ff5252 !important;
+  animation: shake 0.45s ease;
+}
+
+.quiz-feedback-box {
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-height: 30px;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.quiz-feedback-box.is-correct-feedback {
+  color: #76ff03;
+  text-shadow: 0 0 10px rgba(118, 255, 3, 0.4);
+}
+
+.quiz-feedback-box.is-wrong-feedback {
+  color: #ff80ab;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
 }
 
 /* Homework Interactive Assistant */
@@ -3228,6 +3449,17 @@ body {
   .visual-image-wrapper img {
     max-height: 270px;
   }
+
+  .learning-activity-window {
+    max-width: 740px !important;
+    width: 92% !important;
+    max-height: 86vh;
+  }
+
+  .flashcards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
 }
 
 /* 2. Compact Tablets & Split View (601px - 820px) */
@@ -3304,6 +3536,30 @@ body {
 
   .control-btn .btn-label {
     display: none;
+  }
+
+  .learning-activity-window {
+    max-width: 620px !important;
+    width: 94% !important;
+    max-height: 86vh;
+  }
+
+  .activity-modal-body {
+    padding: 14px 12px;
+  }
+
+  .flashcards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 8px;
+  }
+
+  .flashcard-item {
+    min-height: 130px;
+    padding: 10px 6px;
+  }
+
+  .quiz-game-box {
+    max-width: 100%;
   }
 }
 
@@ -3407,5 +3663,85 @@ body {
     justify-content: center;
     font-size: 0.85rem;
     padding: 6px 10px;
+  }
+
+  .learning-activity-window {
+    width: 96% !important;
+    max-height: 92vh !important;
+    border-radius: 20px;
+  }
+
+  .activity-modal-header {
+    padding: 10px 14px;
+  }
+
+  .activity-modal-icon {
+    font-size: 1.6rem;
+  }
+
+  .activity-modal-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .activity-modal-body {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .activity-category-nav {
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+
+  .activity-cat-btn {
+    height: 34px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+  }
+
+  .flashcards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .flashcard-item {
+    min-height: 125px;
+    padding: 10px 6px;
+  }
+
+  .flashcard-emoji {
+    font-size: 2rem;
+  }
+
+  .flashcard-en {
+    font-size: 0.95rem;
+  }
+
+  .flashcard-vi {
+    font-size: 0.8rem;
+  }
+
+  .quiz-question-banner {
+    padding: 12px 14px;
+  }
+
+  .quiz-question-text {
+    font-size: 1.05rem;
+  }
+
+  .quiz-choice-btn {
+    padding: 11px 14px;
+    gap: 10px;
+  }
+
+  .quiz-choice-letter {
+    width: 32px;
+    height: 32px;
+    font-size: 0.95rem;
+  }
+
+  .quiz-choice-text {
+    font-size: 0.98rem;
   }
 }

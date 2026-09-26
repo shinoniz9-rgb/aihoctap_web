@@ -644,32 +644,32 @@ const LEARNING_ACTIVITIES = {
           : allCards.filter(c => c.cat === activeCat);
 
         container.innerHTML = `
-          <!-- Category Navigation Tabs -->
-          <div class="activity-category-nav">
-            <button class="activity-cat-btn ${activeCat === 'all' ? 'active' : ''}" data-cat="all">🌟 Tất Cả (${allCards.length})</button>
-            <button class="activity-cat-btn ${activeCat === 'animals' ? 'active' : ''}" data-cat="animals">🐾 Con Vật</button>
-            <button class="activity-cat-btn ${activeCat === 'colors' ? 'active' : ''}" data-cat="colors">🎨 Màu Sắc</button>
-            <button class="activity-cat-btn ${activeCat === 'fruits' ? 'active' : ''}" data-cat="fruits">🍎 Hoa Quả</button>
-            <button class="activity-cat-btn ${activeCat === 'vehicles' ? 'active' : ''}" data-cat="vehicles">🚗 Xe Cộ</button>
-            <button class="activity-cat-btn ${activeCat === 'numbers' ? 'active' : ''}" data-cat="numbers">🔢 Số Đếm (1-10)</button>
-          </div>
+          <div class="english-game-box">
+            <!-- Category Navigation Tabs -->
+            <div class="activity-category-nav">
+              <button type="button" class="activity-cat-btn ${activeCat === 'all' ? 'active' : ''}" data-cat="all">🌟 Tất Cả (${allCards.length})</button>
+              <button type="button" class="activity-cat-btn ${activeCat === 'animals' ? 'active' : ''}" data-cat="animals">🐾 Con Vật</button>
+              <button type="button" class="activity-cat-btn ${activeCat === 'colors' ? 'active' : ''}" data-cat="colors">🎨 Màu Sắc</button>
+              <button type="button" class="activity-cat-btn ${activeCat === 'fruits' ? 'active' : ''}" data-cat="fruits">🍎 Hoa Quả</button>
+              <button type="button" class="activity-cat-btn ${activeCat === 'vehicles' ? 'active' : ''}" data-cat="vehicles">🚗 Xe Cộ</button>
+              <button type="button" class="activity-cat-btn ${activeCat === 'numbers' ? 'active' : ''}" data-cat="numbers">🔢 Số Đếm</button>
+            </div>
 
-          <div style="text-align: center; margin-bottom: 10px;">
-            <p style="font-size: 0.88rem; color: var(--kuromi-lavender);">
-              Bé chạm vào thẻ bài để Kuromi phát âm to rõ và dịch nghĩa nhé:
-            </p>
-          </div>
+            <div class="flashcards-hint-row">
+              <span class="flashcards-hint-text">💡 Bé chạm vào thẻ bài để Kuromi phát âm to rõ và dịch nghĩa nhé:</span>
+            </div>
 
-          <div class="flashcards-grid">
-            ${filtered.map(card => `
-              <div class="flashcard-item" data-en="${card.en}" data-vi="${card.vi}">
-                <span class="flashcard-emoji">${card.emoji}</span>
-                <span class="flashcard-en">${card.en}</span>
-                <span style="font-size: 0.72rem; color: #ffeb3b; font-family: monospace;">${card.ipa}</span>
-                <span class="flashcard-vi">${card.vi}</span>
-                <button class="flashcard-speak-btn">🔊 Nghe đọc</button>
-              </div>
-            `).join('')}
+            <div class="flashcards-grid">
+              ${filtered.map(card => `
+                <div class="flashcard-item" data-en="${card.en}" data-vi="${card.vi}">
+                  <span class="flashcard-emoji">${card.emoji}</span>
+                  <span class="flashcard-en">${card.en}</span>
+                  <span class="flashcard-ipa">${card.ipa}</span>
+                  <span class="flashcard-vi">${card.vi}</span>
+                  <span class="flashcard-speak-btn">🔊 Nghe đọc</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
         `;
 
@@ -994,7 +994,7 @@ const LEARNING_ACTIVITIES = {
       function renderRiddle() {
         const q = riddles[currentIndex];
         container.innerHTML = `
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; width: 100%;">
+          <div class="quiz-game-box">
             <!-- Toolbar -->
             <div class="math-top-toolbar">
               <div class="math-progress-badge">
@@ -1011,23 +1011,24 @@ const LEARNING_ACTIVITIES = {
               </div>
             </div>
 
-            <div class="math-question-banner" style="border-color: #ff4081;">
-              <span style="font-size: 2.2rem;">💡</span>
-              <h4 style="font-size: 1.15rem; color: #fff; margin-top: 6px; line-height: 1.5;">
+            <div class="quiz-question-banner">
+              <span class="quiz-question-icon">👑💡</span>
+              <h4 class="quiz-question-text">
                 "${q.question}"
               </h4>
-              <p style="font-size: 0.85rem; color: #ff80ab; margin-top: 6px;">Bé ${childName} chọn câu trả lời đúng nhất nhé:</p>
+              <p class="quiz-question-prompt">Bé ${childName} chọn câu trả lời đúng nhất nhé:</p>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 380px;">
+            <div class="quiz-choices-container">
               ${q.options.map((opt, idx) => `
-                <button class="station-launch-btn btn-quiz quiz-choice-btn" data-idx="${idx}" style="font-size: 0.98rem; padding: 11px;">
-                  ${opt}
+                <button type="button" class="quiz-choice-btn" data-idx="${idx}">
+                  <span class="quiz-choice-letter">${['A', 'B', 'C', 'D'][idx] || (idx + 1)}</span>
+                  <span class="quiz-choice-text">${opt}</span>
                 </button>
               `).join('')}
             </div>
 
-            <div id="quizFeedback" style="font-size: 1.05rem; font-weight: 700; min-height: 28px;"></div>
+            <div id="quizFeedback" class="quiz-feedback-box"></div>
           </div>
         `;
 
@@ -1060,14 +1061,17 @@ const LEARNING_ACTIVITIES = {
           });
         }
 
-        // Options
+        // Options click
+        let isAnswering = false;
         container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
           btn.addEventListener('click', () => {
+            if (isAnswering) return;
             const idx = parseInt(btn.getAttribute('data-idx'));
             const feedback = container.querySelector('#quizFeedback');
 
             if (idx === q.correct) {
-              btn.style.background = 'linear-gradient(135deg, #2e7d32, #4caf50)';
+              isAnswering = true;
+              btn.classList.add('is-correct');
               if (!solvedSet.has(currentIndex)) {
                 solvedSet.add(currentIndex);
                 scoreCorrect++;
@@ -1076,18 +1080,26 @@ const LEARNING_ACTIVITIES = {
               }
 
               feedback.innerHTML = `🎉 ${q.explanation} Thưởng bé ${childName} 2 sao! ⭐⭐`;
-              feedback.style.color = '#76ff03';
+              feedback.className = 'quiz-feedback-box is-correct-feedback';
               playSfx('fanfare');
               awardLearningStar(2, `${q.explanation} Kuromi thưởng bé ${childName} hai ngôi sao sáng!`);
 
               setTimeout(() => {
+                isAnswering = false;
                 currentIndex = (currentIndex + 1) % riddles.length;
                 renderRiddle();
-              }, 2400);
+              }, 2200);
             } else {
+              btn.classList.add('is-wrong');
               feedback.innerHTML = `😅 Chưa chính xác rồi, bé ${childName} chọn lại thử nhé!`;
-              feedback.style.color = '#ff80ab';
+              feedback.className = 'quiz-feedback-box is-wrong-feedback';
               playSfx('pop');
+              if (APP_STATE.ttsEnabled) {
+                speakText(`Chưa đúng rồi bé ơi, bé suy nghĩ chọn lại thử nhé!`);
+              }
+              setTimeout(() => {
+                btn.classList.remove('is-wrong');
+              }, 700);
             }
           });
         });
