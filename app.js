@@ -69,7 +69,7 @@ function saveSettings(partial = {}) {
 
 function applyChildNameUi(childName) {
   const name = (childName || 'Bảo Hân').trim();
-  document.title = `Kuromi & Bé ${name} | Trợ Lý AI Đa Giác Quan`;
+  document.title = `Kuromi & Bé ${name} | Trợ Lý AI & Học Tập`;
   
   const logoEl = document.querySelector('.logo-title');
   if (logoEl) logoEl.textContent = `KUROMI & ${name.toUpperCase()}`;
@@ -86,6 +86,16 @@ function applyChildNameUi(childName) {
   const nameInput = document.getElementById('childNameInput');
   if (nameInput && document.activeElement !== nameInput) {
     nameInput.value = name;
+  }
+
+  // Update learning classroom child name elements
+  document.querySelectorAll('.child-name-val').forEach(el => {
+    el.textContent = name;
+  });
+
+  const learnStatus = document.getElementById('learningStatusText');
+  if (learnStatus) {
+    learnStatus.innerHTML = `Hoan hô bé <span class="child-name-val">${name}</span> đã vào lớp học! Hôm nay chúng mình cùng khám phá trạm nào nào? ⭐`;
   }
 }
 
@@ -118,6 +128,658 @@ function loadChatHistory() {
   } catch (e) {
     console.warn("Load chat history error", e);
   }
+}
+
+// =============================================================================
+// LEARNING HUB & CLASSROOM ENGINE (NON-DESTRUCTIVE SAFE MERGE)
+// =============================================================================
+const DEFAULT_LEARNING_DATA = {
+  stars: 12,
+  rank: 'Bé Chăm Chỉ Thông Thái',
+  completedActivities: [],
+  activeFilter: 'all',
+  currentMode: 'chat'
+};
+
+function loadLearningData() {
+  try {
+    const saved = localStorage.getItem('kuromi_learning_data');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return { ...DEFAULT_LEARNING_DATA, ...parsed };
+    }
+  } catch (e) {
+    console.warn("Learning load error", e);
+  }
+  return { ...DEFAULT_LEARNING_DATA };
+}
+
+let LEARNING_STATE = loadLearningData();
+
+function saveLearningData(partial = {}) {
+  try {
+    const current = loadLearningData();
+    const updated = { ...current, ...LEARNING_STATE, ...partial };
+    LEARNING_STATE = updated;
+    localStorage.setItem('kuromi_learning_data', JSON.stringify(updated));
+    updateLearningUi();
+    return updated;
+  } catch (e) {
+    console.warn("Learning save error", e);
+  }
+}
+
+function updateLearningUi() {
+  const starCountEl = document.getElementById('learningStarCount');
+  if (starCountEl) starCountEl.textContent = LEARNING_STATE.stars || 12;
+
+  const modalStarEl = document.getElementById('modalStarCounter');
+  if (modalStarEl) modalStarEl.textContent = LEARNING_STATE.stars || 12;
+
+  const rankEl = document.getElementById('learningRankTitle');
+  if (rankEl) {
+    let rank = 'Bé Chăm Chỉ Thông Thái';
+    const s = LEARNING_STATE.stars || 12;
+    if (s >= 30) rank = 'Trạng Nguyên Tí Hon 👑';
+    else if (s >= 20) rank = 'Thám Tử Nhí Xuất Sắc 🌟';
+    else if (s >= 15) rank = 'Nhà Thông Thái Nhí 🌸';
+    rankEl.textContent = rank;
+  }
+
+  const progressBar = document.getElementById('learningProgressBar');
+  if (progressBar) {
+    const pct = Math.min(100, Math.max(15, ((LEARNING_STATE.stars || 12) % 15) * 6.6 + 25));
+    progressBar.style.width = `${pct}%`;
+  }
+}
+
+function switchAppMode(mode, playSoundAndSpeech = true) {
+  if (playSoundAndSpeech) playSfx('pop');
+  const chatView = document.getElementById('chatMainView');
+  const learnView = document.getElementById('learningMainView');
+  const navChat = document.getElementById('navModeChat');
+  const navLearn = document.getElementById('navModeLearning');
+
+  if (mode === 'learning') {
+    if (chatView) {
+      chatView.classList.add('hidden');
+      chatView.style.setProperty('display', 'none', 'important');
+    }
+    if (learnView) {
+      learnView.classList.remove('hidden');
+      learnView.style.setProperty('display', 'grid', 'important');
+    }
+    if (navChat) navChat.classList.remove('active');
+    if (navLearn) navLearn.classList.add('active');
+
+    LEARNING_STATE.currentMode = 'learning';
+    saveLearningData({ currentMode: 'learning' });
+
+    const childName = APP_STATE.settings.childName || 'Bảo Hân';
+    const learnStatus = document.getElementById('learningStatusText');
+    if (learnStatus) {
+      learnStatus.innerHTML = `Hoan hô bé <span class="child-name-val">${childName}</span> đã vào lớp học! Hôm nay chúng mình cùng khám phá trạm nào nào? ⭐`;
+    }
+
+    if (playSoundAndSpeech && APP_STATE.ttsEnabled) {
+      speakText(`Chào mừng bé ${childName} đến với Lớp Học Kuromi! Hôm nay bé muốn cùng Kuromi khám phá trạm học tập nào nào?`);
+    }
+  } else {
+    if (learnView) {
+      learnView.classList.add('hidden');
+      learnView.style.setProperty('display', 'none', 'important');
+    }
+    if (chatView) {
+      chatView.classList.remove('hidden');
+      chatView.style.setProperty('display', 'grid', 'important');
+    }
+    if (navLearn) navLearn.classList.remove('active');
+    if (navChat) navChat.classList.add('active');
+
+    LEARNING_STATE.currentMode = 'chat';
+    saveLearningData({ currentMode: 'chat' });
+  }
+}
+
+function awardLearningStar(amount = 1, customMsg = '') {
+  playSfx('star');
+  LEARNING_STATE.stars = (LEARNING_STATE.stars || 12) + amount;
+  saveLearningData({ stars: LEARNING_STATE.stars });
+
+  const childName = APP_STATE.settings.childName || 'Bảo Hân';
+  const msg = customMsg || `Kuromi tặng bé ${childName} ${amount} ngôi sao sáng! Bé giỏi quá! ⭐`;
+  if (APP_STATE.ttsEnabled) {
+    speakText(msg);
+  }
+
+  triggerStarExplosion();
+}
+
+function triggerStarExplosion() {
+  const container = document.body;
+  for (let i = 0; i < 15; i++) {
+    const star = document.createElement('div');
+    star.textContent = ['⭐', '✨', '🌟', '💖', '🍭'][Math.floor(Math.random() * 5)];
+    star.style.position = 'fixed';
+    star.style.left = `${50 + (Math.random() * 40 - 20)}vw`;
+    star.style.top = `${50 + (Math.random() * 30 - 15)}vh`;
+    star.style.fontSize = `${20 + Math.random() * 24}px`;
+    star.style.zIndex = '99999';
+    star.style.pointerEvents = 'none';
+    star.style.transition = 'all 1.2s cubic-bezier(0.25, 1, 0.5, 1)';
+    star.style.opacity = '1';
+    container.appendChild(star);
+
+    setTimeout(() => {
+      star.style.transform = `translate(${(Math.random() - 0.5) * 350}px, ${-100 - Math.random() * 250}px) scale(1.6) rotate(${Math.random() * 360}deg)`;
+      star.style.opacity = '0';
+    }, 20);
+
+    setTimeout(() => {
+      star.remove();
+    }, 1300);
+  }
+}
+
+// Interactive Station Activities Content & Logic
+const LEARNING_ACTIVITIES = {
+  math: {
+    title: 'Toán Học Kẹo Ngọt & Đếm Số',
+    subtitle: 'Đếm kẹo & phép cộng trừ siêu dễ hiểu cùng Kuromi',
+    icon: '🍓🧮',
+    render: (container) => {
+      const questions = [
+        {
+          type: 'add',
+          leftIcons: '🍓 🍓',
+          leftCount: 2,
+          rightIcons: '🍓 🍓 🍓',
+          rightCount: 3,
+          op: '+',
+          total: 5,
+          options: [4, 5, 6],
+          fruit: 'quả dâu tây',
+          story: 'Kuromi có 2 quả dâu, mẹ cho thêm 3 quả dâu nữa. Hỏi có tất cả mấy quả dâu tây?'
+        },
+        {
+          type: 'add',
+          leftIcons: '🍭 🍭 🍭 🍭',
+          leftCount: 4,
+          rightIcons: '🍭 🍭',
+          rightCount: 2,
+          op: '+',
+          total: 6,
+          options: [5, 6, 7],
+          fruit: 'cây kẹo mút',
+          story: 'Kuromi có 4 cây kẹo mút, bé mang đến thêm 2 cây kẹo mút. Tổng cộng có bao nhiêu cây kẹo?'
+        },
+        {
+          type: 'sub',
+          leftIcons: '🍇 🍇 🍇 🍇 🍇',
+          leftCount: 5,
+          rightIcons: '🍇 🍇',
+          rightCount: 2,
+          op: '-',
+          total: 3,
+          options: [2, 3, 4],
+          fruit: 'quả nho tím',
+          story: 'Trên đĩa có 5 quả nho, Kuromi ăn mất 2 quả rồi. Trên đĩa còn lại mấy quả nho nào?'
+        },
+        {
+          type: 'add',
+          leftIcons: '🍎 🍎 🍎',
+          leftCount: 3,
+          rightIcons: '🍎 🍎 🍎 🍎',
+          rightCount: 4,
+          op: '+',
+          total: 7,
+          options: [6, 7, 8],
+          fruit: 'quả táo đỏ',
+          story: 'Có 3 quả táo trên bàn, cô giáo tặng thêm 4 quả táo nữa. Hỏi có tất cả mấy quả táo?'
+        },
+        {
+          type: 'sub',
+          leftIcons: '🧁 🧁 🧁 🧁 🧁 🧁',
+          leftCount: 6,
+          rightIcons: '🧁 🧁 🧁',
+          rightCount: 3,
+          op: '-',
+          total: 3,
+          options: [2, 3, 4],
+          fruit: 'chiếc bánh kem',
+          story: 'Có 6 chiếc bánh kem ngon lành, cả nhà cùng ăn 3 chiếc. Hỏi còn lại bao nhiêu chiếc bánh?'
+        },
+        {
+          type: 'add',
+          leftIcons: '⭐ ⭐ ⭐ ⭐',
+          leftCount: 4,
+          rightIcons: '⭐ ⭐ ⭐ ⭐',
+          rightCount: 4,
+          op: '+',
+          total: 8,
+          options: [7, 8, 9],
+          fruit: 'ngôi sao sáng',
+          story: 'Bé nhận được 4 ngôi sao, cô giáo thưởng thêm 4 ngôi sao nữa. Bé có tất cả mấy ngôi sao?'
+        }
+      ];
+
+      let currentQIndex = 0;
+      let scoreCorrect = 0;
+      const solvedSet = new Set();
+
+      function renderQuestion() {
+        const q = questions[currentQIndex];
+        const childName = APP_STATE.settings.childName || 'Bảo Hân';
+        const isSub = q.op === '-';
+        const promptLabel = isSub 
+          ? `Bé ${childName} chọn số quả còn lại sau khi bớt nhé:` 
+          : `Bé ${childName} bấm chọn tổng số quả bên dưới nhé:`;
+
+        container.innerHTML = `
+          <div class="math-game-box">
+            <!-- Top Toolbar with Reset & Question Switcher -->
+            <div class="math-top-toolbar">
+              <div class="math-progress-badge">
+                <span class="math-q-counter">📝 Bài: ${currentQIndex + 1}/${questions.length}</span>
+                <span class="math-score-pill">⭐ Đúng: ${scoreCorrect}</span>
+              </div>
+              <div class="math-toolbar-actions">
+                <button type="button" class="math-tool-btn" id="mathResetBtn" title="Làm lại từ đầu">
+                  <span>🔄</span> Làm lại
+                </button>
+                <button type="button" class="math-tool-btn" id="mathNextQBtn" title="Chuyển bài khác">
+                  <span>🎲</span> Đổi bài
+                </button>
+              </div>
+            </div>
+
+            <!-- Question Banner -->
+            <div class="math-question-banner">
+              <p class="math-story-text">🍬 ${q.story}</p>
+              <div class="math-visual-row">
+                <span class="math-group-box">${q.leftIcons} <small>(${q.leftCount})</small></span>
+                <span class="math-operator">${q.op}</span>
+                <span class="math-group-box">${q.rightIcons} <small>(${q.rightCount})</small></span>
+                <span class="math-operator">=</span>
+                <span class="math-question-mark">?</span>
+              </div>
+              <p class="math-prompt-text">${promptLabel}</p>
+            </div>
+
+            <!-- Choice Options -->
+            <div class="math-options-grid">
+              ${q.options.map(opt => `<button class="math-option-btn" data-val="${opt}">${opt}</button>`).join('')}
+            </div>
+
+            <div id="mathFeedback" class="math-feedback-text"></div>
+          </div>
+        `;
+
+        if (APP_STATE.ttsEnabled) {
+          const speechText = isSub
+            ? `Bé ${childName} tính cùng Kuromi nhé: ${q.leftCount} trừ ${q.rightCount} bằng mấy nào?`
+            : `Bé ${childName} tính cùng Kuromi nhé: ${q.leftCount} cộng ${q.rightCount} bằng mấy nào?`;
+          speakText(speechText);
+        }
+
+        // Attach Reset Handler
+        const resetBtn = container.querySelector('#mathResetBtn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            playSfx('chime');
+            currentQIndex = 0;
+            scoreCorrect = 0;
+            solvedSet.clear();
+            if (APP_STATE.ttsEnabled) {
+              speakText(`Kuromi đã làm mới bài toán rồi! Bé ${childName} làm lại từ đầu cùng tớ nhé!`);
+            }
+            renderQuestion();
+          });
+        }
+
+        // Attach Next Question Handler
+        const nextBtn = container.querySelector('#mathNextQBtn');
+        if (nextBtn) {
+          nextBtn.addEventListener('click', () => {
+            playSfx('pop');
+            currentQIndex = (currentQIndex + 1) % questions.length;
+            renderQuestion();
+          });
+        }
+
+        // Attach Choice Handlers
+        container.querySelectorAll('.math-option-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const chosen = parseInt(btn.getAttribute('data-val'));
+            const feedback = container.querySelector('#mathFeedback');
+
+            if (chosen === q.total) {
+              btn.classList.add('correct');
+              if (!solvedSet.has(currentQIndex)) {
+                solvedSet.add(currentQIndex);
+                scoreCorrect++;
+                const scorePill = container.querySelector('.math-score-pill');
+                if (scorePill) scorePill.textContent = `⭐ Đúng: ${scoreCorrect}`;
+              }
+
+              feedback.innerHTML = `🎉 Chính xác rồi! ${q.leftCount} ${q.op} ${q.rightCount} = ${q.total}. Bé ${childName} giỏi quá! ⭐`;
+              feedback.style.color = '#76ff03';
+              playSfx('fanfare');
+              awardLearningStar(1, `Hoan hô bé ${childName} đã tính đúng! ${q.leftCount} ${q.op === '-' ? 'trừ' : 'cộng'} ${q.rightCount} bằng ${q.total}!`);
+
+              setTimeout(() => {
+                currentQIndex = (currentQIndex + 1) % questions.length;
+                renderQuestion();
+              }, 2200);
+            } else {
+              btn.classList.add('wrong');
+              feedback.innerHTML = `😅 Bé ${childName} đếm lại que tính hoa quả cùng Kuromi một lần nữa nhé!`;
+              feedback.style.color = '#ff80ab';
+              playSfx('pop');
+              if (APP_STATE.ttsEnabled) {
+                speakText(`Chưa đúng rồi bé ơi, bé đếm lại ngón tay cùng Kuromi nhé!`);
+              }
+              setTimeout(() => btn.classList.remove('wrong'), 600);
+            }
+          });
+        });
+      }
+
+      renderQuestion();
+    }
+  },
+
+  vietnamese: {
+    title: 'Bảng Chữ Cái Tiếng Việt & Đánh Vần',
+    subtitle: 'Bé bấm vào từng chữ để Kuromi phát âm tròn vành rõ chữ',
+    icon: '📖🎀',
+    render: (container) => {
+      const alphabet = [
+        { letter: 'A', emoji: '🐟', word: 'Con Cá' },
+        { letter: 'Ă', emoji: '🌕', word: 'Mặt Trăng' },
+        { letter: 'Â', emoji: '🍄', word: 'Cây Nấm' },
+        { letter: 'B', emoji: '⚽', word: 'Quả Bóng' },
+        { letter: 'C', emoji: '🐕', word: 'Con Cún' },
+        { letter: 'D', emoji: '🍉', word: 'Quả Dưa' },
+        { letter: 'Đ', emoji: '💡', word: 'Bóng Đèn' },
+        { letter: 'E', emoji: '👶', word: 'Em Bé' },
+        { letter: 'Ê', emoji: '🐸', word: 'Con Ếch' },
+        { letter: 'G', emoji: '🐓', word: 'Con Gà' },
+        { letter: 'H', emoji: '🌸', word: 'Bông Hoa' },
+        { letter: 'I', emoji: '🦆', word: 'Con Vịt' },
+        { letter: 'K', emoji: '🍬', word: 'Viên Kẹo' },
+        { letter: 'L', emoji: '🍃', word: 'Chiếc Lá' },
+        { letter: 'M', emoji: '🐱', word: 'Con Mèo' },
+        { letter: 'N', emoji: '☀️', word: 'Nắng Ấm' },
+        { letter: 'O', emoji: '🐔', word: 'Con Gà Mái' },
+        { letter: 'Ô', emoji: '🚗', word: 'Ô Tô' },
+        { letter: 'Ơ', emoji: '🚩', word: 'Lá Cờ' },
+        { letter: 'P', emoji: '🎈', word: 'Bong Bóng' },
+        { letter: 'Q', emoji: '🎁', word: 'Hộp Quà' },
+        { letter: 'R', emoji: '🐢', word: 'Con Rùa' },
+        { letter: 'S', emoji: '🦁', word: 'Sư Tử' },
+        { letter: 'T', emojiIcon: '🚂', word: 'Tàu Hỏa' },
+        { letter: 'U', emoji: '🦉', word: 'Con Cú' },
+        { letter: 'Ư', emoji: '🦋', word: 'Bướm Xinh' },
+        { letter: 'V', emoji: '🐘', word: 'Con Voi' },
+        { letter: 'X', emoji: '🚲', word: 'Xe Đạp' },
+        { letter: 'Y', emoji: '🩺', word: 'Y Tế' }
+      ];
+
+      container.innerHTML = `
+        <div style="text-align: center; margin-bottom: 12px;">
+          <p style="font-size: 0.9rem; color: var(--kuromi-lavender);">
+            Bé chạm vào bất kỳ chữ cái nào để nghe Kuromi đọc chuẩn tiếng Việt nhé:
+          </p>
+        </div>
+        <div class="abc-board-grid">
+          ${alphabet.map(item => `
+            <button class="abc-card-btn" data-letter="${item.letter}" data-word="${item.word}">
+              <span class="abc-letter">${item.letter}</span>
+              <span class="abc-emoji">${item.emojiIcon || item.emoji}</span>
+              <span class="abc-word">${item.word}</span>
+            </button>
+          `).join('')}
+        </div>
+      `;
+
+      container.querySelectorAll('.abc-card-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          playSfx('pop');
+          container.querySelectorAll('.abc-card-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const letter = btn.getAttribute('data-letter');
+          const word = btn.getAttribute('data-word');
+
+          if (APP_STATE.ttsEnabled) {
+            speakText(`Chữ ${letter}! ${letter} trong ${word}!`);
+          }
+        });
+      });
+    }
+  },
+
+  english: {
+    title: 'Tiếng Anh Nhí Flashcards',
+    subtitle: 'Học từ vựng con vật, hoa quả & màu sắc có phát âm bản ngữ',
+    icon: '🦁🌈',
+    render: (container) => {
+      const cards = [
+        { en: 'Apple', vi: 'Quả Táo', emoji: '🍎' },
+        { en: 'Cat', vi: 'Con Mèo', emoji: '🐱' },
+        { en: 'Dog', vi: 'Con Chó', emoji: '🐶' },
+        { en: 'Sun', vi: 'Mặt Trời', emoji: '☀️' },
+        { en: 'Car', vi: 'Xe Ô Tô', emoji: '🚗' },
+        { en: 'Rainbow', vi: 'Cầu Vồng', emoji: '🌈' },
+        { en: 'Star', vi: 'Ngôi Sao', emoji: '⭐' },
+        { en: 'Butterfly', vi: 'Con Bướm', emoji: '🦋' }
+      ];
+
+      container.innerHTML = `
+        <div style="text-align: center; margin-bottom: 12px;">
+          <p style="font-size: 0.9rem; color: var(--kuromi-lavender);">
+            Bé bấm vào thẻ bài để Kuromi đọc to từ tiếng Anh và nghĩa tiếng Việt nhé:
+          </p>
+        </div>
+        <div class="flashcards-grid">
+          ${cards.map(card => `
+            <div class="flashcard-item" data-en="${card.en}" data-vi="${card.vi}">
+              <span class="flashcard-emoji">${card.emoji}</span>
+              <span class="flashcard-en">${card.en}</span>
+              <span class="flashcard-vi">${card.vi}</span>
+              <button class="flashcard-speak-btn">🔊 Nghe đọc</button>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      container.querySelectorAll('.flashcard-item').forEach(card => {
+        card.addEventListener('click', () => {
+          playSfx('chime');
+          const en = card.getAttribute('data-en');
+          const vi = card.getAttribute('data-vi');
+
+          if (APP_STATE.ttsEnabled) {
+            speakText(`${en}! Nghĩa là ${vi}!`);
+          }
+        });
+      });
+    }
+  },
+
+  science: {
+    title: 'Khám Phá Tự Nhiên & Khoa Học Diệu Kỳ',
+    subtitle: 'Giải mã hiện tượng thiên nhiên cho bé',
+    icon: '🪐🌱',
+    render: (container) => {
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const topics = [
+        { title: '🌧️ Vì sao trời lại có mưa?', prompt: 'Tại sao trời lại có mưa rơi vậy Kuromi?' },
+        { title: '🌈 Cầu vồng 7 sắc màu xuất hiện thế nào?', prompt: 'Vì sao sau cơn mưa lại có cầu vồng 7 màu?' },
+        { title: '🪐 Hệ Mặt Trời và các hành tinh', prompt: 'Kể cho bé nghe về hệ mặt trời và các hành tinh' },
+        { title: '🌿 Vì sao lá cây lại có màu xanh?', prompt: 'Tại sao lá cây lại có màu xanh vậy Kuromi?' }
+      ];
+
+      container.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 12px; padding: 6px;">
+          <p style="font-size: 0.92rem; color: #fff; text-align: center;">
+            Bé ${childName} chọn câu hỏi khoa học muốn khám phá cùng tranh vẽ minh họa nhé:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px;">
+            ${topics.map(t => `
+              <button class="station-launch-btn btn-science science-topic-btn" data-prompt="${t.prompt}" style="justify-content: flex-start; padding: 14px 16px; font-size: 0.95rem;">
+                ${t.title}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.querySelectorAll('.science-topic-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const prompt = btn.getAttribute('data-prompt');
+          closeLearningModal();
+          switchAppMode('chat');
+          handleChildSubmit(prompt);
+        });
+      });
+    }
+  },
+
+  homework: {
+    title: 'Gia Sư Kuromi - Hướng Dẫn Bài Tập Ở Lớp',
+    subtitle: 'Đồng hành cùng bé giải bài tập cô giáo giao từng bước',
+    icon: '🎒✏️',
+    render: (container) => {
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      container.innerHTML = `
+        <div style="text-align: center; display: flex; flex-direction: column; gap: 16px; padding: 10px;">
+          <div style="font-size: 3rem;">👩‍🏫👑</div>
+          <h4 style="font-size: 1.2rem; color: #fff;">Gia Sư Kuromi Đã Sẵn Sàng Giúp Bé ${childName}!</h4>
+          <p style="font-size: 0.95rem; color: var(--kuromi-lavender); line-height: 1.6;">
+            Cô giáo giao bài toán khó hay bài đọc vần hôm nay?<br>
+            Bé hoặc ba mẹ chỉ cần <strong>bấm nút Micro nơ hồng 🎤</strong> và đọc đề bài,<br>
+            Kuromi sẽ giải thích cặn kẽ và gợi ý từng bước để bé tự tìm ra đáp án!
+          </p>
+          <button id="startHomeworkChatBtn" class="station-launch-btn btn-homework" style="max-width: 320px; margin: 0 auto; padding: 12px 24px; font-size: 1rem;">
+            <span>Hỏi Bài Ngay Với Micro</span> 🎙️
+          </button>
+        </div>
+      `;
+
+      container.querySelector('#startHomeworkChatBtn').addEventListener('click', () => {
+        closeLearningModal();
+        switchAppMode('chat');
+        const input = document.getElementById('childTextInput');
+        if (input) {
+          input.value = 'Kuromi ơi, giảng giúp bé bài tập này ở trường với: ';
+          input.focus();
+        }
+        if (APP_STATE.ttsEnabled) {
+          speakText(`Bé ${childName} nói cho Kuromi nghe bài tập hôm nay cô giáo giao là gì nào!`);
+        }
+      });
+    }
+  },
+
+  quiz: {
+    title: 'Thử Thách Đố Vui 5 Phút Săn Sao',
+    subtitle: 'Trả lời đúng nhận ngay 2 sao thưởng!',
+    icon: '👑🎁',
+    render: (container) => {
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const riddles = [
+        {
+          question: "Con gì đuôi ngắn tai dài, mắt hồng lông mượt, có tài chạy nhanh?",
+          options: ["Con Thỏ 🐰", "Con Rùa 🐢", "Con Mèo 🐱"],
+          correct: 0,
+          explanation: "Hoan hô! Đúng là chú Thỏ trắng đuôi ngắn tai dài rồi nè!"
+        },
+        {
+          question: "Cái gì bảy sắc hình vòng, bắc ngang qua núi ngỡ lòng cầu mây?",
+          options: ["Cầu Tre 🌾", "Cầu Vồng 🌈", "Cột Cờ 🚩"],
+          correct: 1,
+          explanation: "Chính xác! Đó chính là chiếc Cầu Vồng 7 sắc màu rực rỡ!"
+        }
+      ];
+      const selected = riddles[Math.floor(Math.random() * riddles.length)];
+
+      container.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center;">
+          <div class="math-question-banner" style="border-color: #ff4081;">
+            <span style="font-size: 2.5rem;">💡</span>
+            <h4 style="font-size: 1.15rem; color: #fff; margin-top: 8px; line-height: 1.5;">
+              "${selected.question}"
+            </h4>
+            <p style="font-size: 0.85rem; color: #ff80ab; margin-top: 6px;">Bé ${childName} chọn câu trả lời đúng nhất nhé:</p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 380px;">
+            ${selected.options.map((opt, idx) => `
+              <button class="station-launch-btn btn-quiz quiz-choice-btn" data-idx="${idx}" style="font-size: 1rem; padding: 12px;">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+
+          <div id="quizFeedback" style="font-size: 1.05rem; font-weight: 700; min-height: 28px;"></div>
+        </div>
+      `;
+
+      if (APP_STATE.ttsEnabled) {
+        speakText(`Kuromi đố bé ${childName} nhé: ${selected.question}`);
+      }
+
+      container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.getAttribute('data-idx'));
+          const feedback = container.querySelector('#quizFeedback');
+
+          if (idx === selected.correct) {
+            btn.style.background = 'linear-gradient(135deg, #2e7d32, #4caf50)';
+            feedback.innerHTML = `🎉 ${selected.explanation} Thưởng bé ${childName} 2 sao! ⭐⭐`;
+            feedback.style.color = '#76ff03';
+            playSfx('fanfare');
+            awardLearningStar(2, `${selected.explanation} Kuromi thưởng bé ${childName} hai ngôi sao sáng!`);
+          } else {
+            feedback.innerHTML = `😅 Chưa chính xác rồi, bé ${childName} chọn lại thử nhé!`;
+            feedback.style.color = '#ff80ab';
+            playSfx('pop');
+          }
+        });
+      });
+    }
+  }
+};
+
+function openLearningModal(stationType) {
+  playSfx('chime');
+  const modal = document.getElementById('learningActivityModal');
+  const titleEl = document.getElementById('activityModalTitle');
+  const subtitleEl = document.getElementById('activityModalSubtitle');
+  const iconEl = document.getElementById('activityModalIcon');
+  const bodyEl = document.getElementById('activityModalBody');
+  const starCounter = document.getElementById('modalStarCounter');
+
+  if (starCounter) starCounter.textContent = LEARNING_STATE.stars || 12;
+
+  const activity = LEARNING_ACTIVITIES[stationType] || LEARNING_ACTIVITIES.math;
+  if (titleEl) titleEl.textContent = activity.title;
+  if (subtitleEl) subtitleEl.textContent = activity.subtitle;
+  if (iconEl) iconEl.textContent = activity.icon;
+
+  if (bodyEl && activity.render) {
+    activity.render(bodyEl);
+  }
+
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeLearningModal() {
+  playSfx('pop');
+  stopAllSpeech();
+  const modal = document.getElementById('learningActivityModal');
+  if (modal) modal.classList.add('hidden');
 }
 
 // =============================================================================
@@ -648,6 +1310,25 @@ function playSfx(type) {
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
     osc.start(now);
     osc.stop(now + 0.2);
+  } else if (type === 'star') {
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1046.50, now);
+    osc.frequency.exponentialRampToValueAtTime(1567.98, now + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(2093.00, now + 0.35);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  } else if (type === 'fanfare') {
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.setValueAtTime(659.25, now + 0.1);
+    osc.frequency.setValueAtTime(783.99, now + 0.2);
+    osc.frequency.setValueAtTime(1046.50, now + 0.3);
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    osc.start(now);
+    osc.stop(now + 0.6);
   }
 }
 
@@ -3156,6 +3837,99 @@ document.addEventListener('DOMContentLoaded', () => {
       playSfx('pop');
     }
   });
+
+  // ===========================================================================
+  // LEARNING CLASSROOM EVENT LISTENERS
+  // ===========================================================================
+  const navChat = document.getElementById('navModeChat');
+  const navLearn = document.getElementById('navModeLearning');
+
+  if (navChat) {
+    navChat.addEventListener('click', () => switchAppMode('chat'));
+  }
+  if (navLearn) {
+    navLearn.addEventListener('click', () => switchAppMode('learning'));
+  }
+
+  // Station Filter Buttons
+  document.querySelectorAll('.station-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSfx('pop');
+      document.querySelectorAll('.station-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      LEARNING_STATE.activeFilter = filter;
+
+      document.querySelectorAll('.station-card').forEach(card => {
+        const stationType = card.getAttribute('data-station');
+        if (filter === 'all' || stationType === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Station Launch Buttons
+  document.querySelectorAll('.station-launch-btn[data-station-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const stationType = btn.getAttribute('data-station-type');
+      openLearningModal(stationType);
+    });
+  });
+
+  // Close Activity Modal
+  const closeActivityBtn = document.getElementById('closeActivityBtn');
+  if (closeActivityBtn) {
+    closeActivityBtn.addEventListener('click', closeLearningModal);
+  }
+
+  const activityModal = document.getElementById('learningActivityModal');
+  if (activityModal) {
+    activityModal.addEventListener('click', (e) => {
+      if (e.target === activityModal) closeLearningModal();
+    });
+  }
+
+  // Add Bonus Star Button
+  const addStarBtn = document.getElementById('addStarBonusBtn');
+  if (addStarBtn) {
+    addStarBtn.addEventListener('click', () => {
+      awardLearningStar(1);
+    });
+  }
+
+  // Praise Action Button
+  const actionPraiseBtn = document.getElementById('actionPraiseBtn');
+  if (actionPraiseBtn) {
+    actionPraiseBtn.addEventListener('click', () => {
+      playSfx('chime');
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const praises = [
+        `Hoan hô bé ${childName} hôm nay rất chăm chỉ và ngoan ngoãn! Kuromi yêu bé lắm! 💖`,
+        `Bé ${childName} là cô bé thông minh nhất quả đất! Tiếp tục phát huy nhé! 🌟`,
+        `Thầy cô ở lớp chắc chắn sẽ rất khen ngợi bé ${childName} vì bé học giỏi thế này! ✨`
+      ];
+      const msg = praises[Math.floor(Math.random() * praises.length)];
+      const learnStatus = document.getElementById('learningStatusText');
+      if (learnStatus) learnStatus.textContent = msg;
+      if (APP_STATE.ttsEnabled) speakText(msg);
+      triggerStarExplosion();
+    });
+  }
+
+  // Daily Gift Action Button
+  const actionDailyGiftBtn = document.getElementById('actionDailyGiftBtn');
+  if (actionDailyGiftBtn) {
+    actionDailyGiftBtn.addEventListener('click', () => {
+      awardLearningStar(2, `Bất ngờ chưa! Hộp quà hôm nay tặng bé Bảo Hân hẳn 2 ngôi sao lấp lánh! 🎁⭐`);
+    });
+  }
+
+  updateLearningUi();
+  const initialMode = LEARNING_STATE.currentMode || 'chat';
+  switchAppMode(initialMode, false);
 
   applyChildNameUi(APP_STATE.settings.childName);
   loadChatHistory();

@@ -29,7 +29,7 @@
           <span class="skull-icon">💀</span>
           <div class="logo-text-group">
             <h1 class="logo-title">KUROMI &amp; BẢO HÂN</h1>
-            <span class="logo-subtitle">Trợ Lý AI Của Bé Yêu ✨</span>
+            <span class="logo-subtitle">Trợ Lý AI &amp; Góc Học Tập Nhí ✨</span>
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@
         <!-- Remote link button -->
         <button id="remoteLinkBtn" class="control-btn remote-btn" title="Lấy đường dẫn dùng khác mạng Wifi / 4G">
           <span class="btn-icon">🌐</span>
-          <span class="btn-label">Dùng Từ Xa (4G/Khác Wifi)</span>
+          <span class="btn-label">Dùng Từ Xa</span>
         </button>
 
         <!-- Parent settings button -->
@@ -61,8 +61,29 @@
       </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="app-main">
+    <!-- Prominent Dual Mode Navigation Bar (Chuyển đổi Tab Rõ Ràng & Trực Quan) -->
+    <nav class="app-mode-nav-bar" aria-label="Chuyển chế độ hoạt động">
+      <button id="navModeChat" class="mode-tab-pill active" data-mode="chat" title="Bé trò chuyện, nghe kể chuyện, nghe hát ca và hỏi đáp tự do">
+        <span class="tab-pill-icon">🎀</span>
+        <div class="tab-pill-text">
+          <strong class="tab-pill-title">Bạn Nhí Kuromi</strong>
+          <span class="tab-pill-sub">Tâm sự, Ca nhạc &amp; Micro 🎙️</span>
+        </div>
+        <span class="tab-active-dot"></span>
+      </button>
+
+      <button id="navModeLearning" class="mode-tab-pill" data-mode="learning" title="Trường học kẹo ngọt, làm bài tập và tích lũy ngôi sao bé ngoan">
+        <span class="tab-pill-icon">🎒</span>
+        <div class="tab-pill-text">
+          <strong class="tab-pill-title">Trường Học Kuromi</strong>
+          <span class="tab-pill-sub">Toán, Chữ cái, Tiếng Anh &amp; Bài ở lớp</span>
+        </div>
+        <span class="tab-pill-badge">Săn Sao ⭐</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area (Chat & Mascot) -->
+    <main class="app-main" id="chatMainView">
       
       <!-- Left Column / Top Stage: Interactive Kuromi Mascot Stage -->
       <section class="kuromi-stage-card">
@@ -350,6 +371,222 @@
       </section>
     </main>
 
+    <!-- Main Learning View (Trường Học & Góc Học Tập Kuromi) -->
+    <main class="app-main learning-main-view hidden" id="learningMainView">
+      
+      <!-- Left Column / Top Stage: Classroom Mascot Stage & Gamification -->
+      <section class="kuromi-stage-card classroom-stage-card">
+        <div class="stage-ribbon-tag classroom-ribbon">🎒 Trường Học Kuromi 🎒</div>
+        
+        <div class="mascot-display-container">
+          <div class="avatar-halo classroom-halo"></div>
+          <div class="mascot-image-wrapper">
+            <img src="assets/kuromi_normal.jpg" alt="Kuromi Cô Giáo Nhí" class="mascot-img">
+            <div class="emotion-sparkle">🎓</div>
+          </div>
+        </div>
+
+        <div class="mascot-status-bubble classroom-bubble">
+          <span class="bubble-arrow"></span>
+          <p id="learningStatusText">Hoan hô bé <span class="child-name-val">Bảo Hân</span> đã vào lớp học! Hôm nay chúng mình cùng khám phá trạm nào nào? ⭐</p>
+        </div>
+
+        <!-- Star Tracker Card (Bảng Vinh Danh Bé Ngoan) -->
+        <div class="star-reward-panel" id="starRewardPanel">
+          <div class="star-reward-header">
+            <span class="star-big-icon">⭐</span>
+            <div class="star-info-group">
+              <span class="star-count-label">Ngôi Sao Bé Ngoan</span>
+              <div class="star-number-row">
+                <span class="star-number" id="learningStarCount">12</span>
+                <span class="star-unit">sao</span>
+              </div>
+            </div>
+            <button class="add-star-bonus-btn" id="addStarBonusBtn" title="Kuromi tặng bé thêm 1 sao khích lệ!">
+              <span>✨</span> Tặng sao
+            </button>
+          </div>
+          
+          <div class="star-rank-badge">
+            <span class="rank-icon">🏅</span>
+            <span class="rank-title" id="learningRankTitle">Bé Chăm Chỉ Thông Thái</span>
+          </div>
+
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="learningProgressBar" style="width: 65%;"></div>
+          </div>
+          <span class="progress-hint">Hoàn thành bài tập để nhận danh hiệu <strong>Trạng Nguyên Tí Hon 👑</strong></span>
+        </div>
+
+        <!-- Stage Classroom Actions -->
+        <div class="stage-interactions">
+          <button class="stage-action-pill" id="actionPraiseBtn">
+            <span>👏</span> Khen bé
+          </button>
+          <button class="stage-action-pill" id="actionDailyGiftBtn">
+            <span>🎁</span> Quà hôm nay
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Column: Learning Stations Map & Content -->
+      <section class="learning-display-section">
+        
+        <!-- Filter Tabs for Learning Stations -->
+        <div class="explore-tray-wrapper learning-tray-wrapper">
+          <div class="explore-header">
+            <span class="explore-label">🗺️ Bản Đồ Các Trạm Học Tập Bé Yêu Thích:</span>
+          </div>
+          <div class="explore-category-tabs learning-station-tabs">
+            <button class="station-filter-btn active" data-filter="all">🌟 Tất Cả Trạm</button>
+            <button class="station-filter-btn" data-filter="math">🔢 Toán Học</button>
+            <button class="station-filter-btn" data-filter="vietnamese">🔤 Chữ Cái &amp; Vần</button>
+            <button class="station-filter-btn" data-filter="english">🇬🇧 Tiếng Anh Nhí</button>
+            <button class="station-filter-btn" data-filter="science">🔬 Khám Phá</button>
+            <button class="station-filter-btn" data-filter="homework">📝 Bài Ở Lớp</button>
+          </div>
+        </div>
+
+        <!-- Stations Grid Container -->
+        <div class="stations-grid-container" id="stationsGridContainer">
+          
+          <!-- Station 1: Toán Học Kẹo Ngọt -->
+          <div class="station-card" data-station="math">
+            <div class="station-card-ribbon ribbon-purple">🔢 Toán Vui</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">🍓🧮</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Toán Học Kẹo Ngọt &amp; Đếm Số</h3>
+              <p class="station-desc">Bé tập đếm kẹo ngọt, que tính hoa quả, phép cộng trừ hình tượng siêu dễ hiểu cùng Kuromi.</p>
+              <div class="station-tags">
+                <span class="station-tag">🍬 Đếm kẹo</span>
+                <span class="station-tag">➕ Phép cộng trừ</span>
+                <span class="station-tag">✨ Thưởng 1 ⭐</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-math" data-station-type="math">
+                <span>Vào Học Ngay</span> 🚀
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 2: Bảng Chữ Cái & Đánh Vần -->
+          <div class="station-card" data-station="vietnamese">
+            <div class="station-card-ribbon ribbon-pink">🔤 Tiếng Việt</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">📖🎀</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Bảng Chữ Cái &amp; Ghép Vần</h3>
+              <p class="station-desc">29 chữ cái tiếng Việt với giọng Kuromi phát âm tròn vành rõ chữ, kèm tranh minh họa sinh động.</p>
+              <div class="station-tags">
+                <span class="station-tag">🅰️ 29 Chữ cái</span>
+                <span class="station-tag">🗣️ Phát âm chuẩn</span>
+                <span class="station-tag">✨ Thưởng 1 ⭐</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-vietnamese" data-station-type="vietnamese">
+                <span>Khám Phá Chữ</span> 🚀
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 3: Tiếng Anh Nhí Sanrio -->
+          <div class="station-card" data-station="english">
+            <div class="station-card-ribbon ribbon-blue">🇬🇧 Tiếng Anh</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">🦁🌈</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Tiếng Anh Nhí &amp; Flashcards</h3>
+              <p class="station-desc">Từ vựng con vật, màu sắc, trái cây phát âm bản ngữ. Kuromi đồng thanh đọc cùng bé.</p>
+              <div class="station-tags">
+                <span class="station-tag">🎨 Màu sắc</span>
+                <span class="station-tag">🐶 Con vật</span>
+                <span class="station-tag">🔊 Nghe phát âm</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-english" data-station-type="english">
+                <span>Học Từ Mới</span> 🚀
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 4: Khám Phá Khoa Học -->
+          <div class="station-card" data-station="science">
+            <div class="station-card-ribbon ribbon-green">🔬 Khoa Học</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">🪐🌱</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Thế Giới Tự Nhiên &amp; Vì Sao</h3>
+              <p class="station-desc">Giải mã hiện tượng thiên nhiên: Vì sao trời mưa, cầu vồng 7 màu, các hành tinh vũ trụ.</p>
+              <div class="station-tags">
+                <span class="station-tag">🌧️ Vì sao trời mưa</span>
+                <span class="station-tag">🚀 Vũ trụ</span>
+                <span class="station-tag">👀 Tranh minh họa</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-science" data-station-type="science">
+                <span>Khám Phá Ngay</span> 🚀
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 5: Gia Sư Kuromi - Bài Tập Ở Lớp -->
+          <div class="station-card highlight-tutor-card" data-station="homework">
+            <div class="station-card-ribbon ribbon-gold">👑 Gia Sư AI</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">🎒✏️</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Gia Sư Kuromi - Bài Tập Ở Lớp</h3>
+              <p class="station-desc">Bé hoặc ba mẹ nói/nhập bài tập cô giáo giao. Kuromi gợi mở hướng giải từng bước, không cho chép bài!</p>
+              <div class="station-tags">
+                <span class="station-tag">💡 Gợi mở tư duy</span>
+                <span class="station-tag">🗣️ Hỏi bằng micro</span>
+                <span class="station-tag">❤️ Đồng hành 1-1</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-homework" data-station-type="homework">
+                <span>Nhờ Kuromi Chỉ Bài</span> ✍️
+              </button>
+            </div>
+          </div>
+
+          <!-- Station 6: Đố Vui Nhanh 5 Phút Săn Sao -->
+          <div class="station-card" data-station="quiz">
+            <div class="station-card-ribbon ribbon-purple">💡 Đố Vui</div>
+            <div class="station-card-icon-halo">
+              <span class="station-big-emoji">👑🎁</span>
+            </div>
+            <div class="station-card-body">
+              <h3 class="station-title">Thử Thách Đố Vui 5 Phút</h3>
+              <p class="station-desc">3 câu hỏi vui nhộn mỗi ngày kiểm tra trí nhớ và sự thông minh của bé để nhận quà bất ngờ.</p>
+              <div class="station-tags">
+                <span class="station-tag">🎯 3 Câu mỗi ngày</span>
+                <span class="station-tag">⭐ Thưởng 2 sao</span>
+                <span class="station-tag">🎉 Pháo hoa</span>
+              </div>
+            </div>
+            <div class="station-card-footer">
+              <button class="station-launch-btn btn-quiz" data-station-type="quiz">
+                <span>Chơi Đố Vui</span> 🎯
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+
     <!-- Global Persistent Mini Music Player (if playing background tune) -->
     <div class="now-playing-dock hidden" id="nowPlayingDock">
       <div class="dock-left">
@@ -536,6 +773,31 @@
         <div style="font-size: 0.85rem; color: var(--kuromi-lavender); line-height: 1.45;">
           💡 <strong>Mẹo:</strong> Trong thư mục có sẵn tệp <code>aikuromi.bat</code>. Mỗi khi mở máy tính lên, bạn chỉ cần nhấp đúp vào tệp này là đường dẫn online sẽ hoạt động cho bé dùng ở ngoài nhà!
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Learning Activity Modal -->
+  <div class="modal-overlay hidden" id="learningActivityModal">
+    <div class="modal-window learning-activity-window">
+      <div class="modal-header activity-modal-header">
+        <div class="modal-title-group">
+          <span class="activity-modal-icon" id="activityModalIcon">⭐</span>
+          <div>
+            <h3 id="activityModalTitle">Trạm Học Tập Tương Tác</h3>
+            <span class="activity-modal-subtitle" id="activityModalSubtitle">Cùng Kuromi khám phá tri thức nhí</span>
+          </div>
+        </div>
+        <div class="activity-header-badges">
+          <div class="activity-star-badge">
+            <span>⭐</span> <span id="modalStarCounter">12</span> sao
+          </div>
+          <button class="close-modal-btn" id="closeActivityBtn">✕</button>
+        </div>
+      </div>
+      
+      <div class="modal-body activity-modal-body" id="activityModalBody">
+        <!-- Injected dynamically by app.js based on selected station -->
       </div>
     </div>
   </div>
