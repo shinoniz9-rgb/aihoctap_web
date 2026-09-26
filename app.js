@@ -170,26 +170,41 @@ function saveLearningData(partial = {}) {
 }
 
 function updateLearningUi() {
+  const currentStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
+
   const starCountEl = document.getElementById('learningStarCount');
-  if (starCountEl) starCountEl.textContent = LEARNING_STATE.stars || 12;
+  if (starCountEl) starCountEl.textContent = currentStars;
 
   const modalStarEl = document.getElementById('modalStarCounter');
-  if (modalStarEl) modalStarEl.textContent = LEARNING_STATE.stars || 12;
+  if (modalStarEl) modalStarEl.textContent = currentStars;
 
   const rankEl = document.getElementById('learningRankTitle');
   if (rankEl) {
-    let rank = 'Bé Chăm Chỉ Thông Thái';
-    const s = LEARNING_STATE.stars || 12;
-    if (s >= 30) rank = 'Trạng Nguyên Tí Hon 👑';
-    else if (s >= 20) rank = 'Thám Tử Nhí Xuất Sắc 🌟';
-    else if (s >= 15) rank = 'Nhà Thông Thái Nhí 🌸';
+    let rank = 'Bé Chăm Chỉ Khởi Đầu ⭐';
+    if (currentStars >= 30) rank = 'Trạng Nguyên Tí Hon 👑';
+    else if (currentStars >= 20) rank = 'Thám Tử Nhí Xuất Sắc 🌟';
+    else if (currentStars >= 15) rank = 'Nhà Thông Thái Nhí 🌸';
+    else if (currentStars >= 5) rank = 'Bé Chăm Chỉ Thông Thái 💖';
+    else if (currentStars > 0) rank = 'Bé Ngoan Chăm Học 🌱';
+    else rank = 'Bé Chăm Chỉ Khởi Đầu ⭐';
     rankEl.textContent = rank;
   }
 
   const progressBar = document.getElementById('learningProgressBar');
   if (progressBar) {
-    const pct = Math.min(100, Math.max(15, ((LEARNING_STATE.stars || 12) % 15) * 6.6 + 25));
+    const pct = Math.min(100, Math.max(5, Math.round((currentStars / 30) * 100)));
     progressBar.style.width = `${pct}%`;
+  }
+
+  const progressHint = document.getElementById('learningProgressHint');
+  if (progressHint) {
+    if (currentStars >= 30) {
+      progressHint.innerHTML = `Hoan hô bé đã xuất sắc nhận danh hiệu <strong>Trạng Nguyên Tí Hon 👑</strong>`;
+    } else if (currentStars === 0) {
+      progressHint.innerHTML = `Bé hoàn thành bài tập để nhận danh hiệu <strong>Trạng Nguyên Tí Hon 👑</strong>`;
+    } else {
+      progressHint.innerHTML = `Còn <strong>${30 - currentStars}</strong> sao nữa để nhận danh hiệu <strong>Trạng Nguyên Tí Hon 👑</strong>`;
+    }
   }
 }
 
@@ -243,7 +258,8 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
 
 function awardLearningStar(amount = 1, customMsg = '') {
   playSfx('star');
-  LEARNING_STATE.stars = (LEARNING_STATE.stars || 12) + amount;
+  const current = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
+  LEARNING_STATE.stars = current + amount;
   saveLearningData({ stars: LEARNING_STATE.stars });
 
   const childName = APP_STATE.settings.childName || 'Bảo Hân';
@@ -1089,8 +1105,8 @@ function openLearningModal(stationType) {
   const iconEl = document.getElementById('activityModalIcon');
   const bodyEl = document.getElementById('activityModalBody');
   const starCounter = document.getElementById('modalStarCounter');
-
-  if (starCounter) starCounter.textContent = LEARNING_STATE.stars || 12;
+  const currentStars = typeof LEARNING_STATE.stars === 'number' ? LEARNING_STATE.stars : 12;
+  if (starCounter) starCounter.textContent = currentStars;
 
   const activity = LEARNING_ACTIVITIES[stationType] || LEARNING_ACTIVITIES.math;
   if (titleEl) titleEl.textContent = activity.title;
@@ -4271,7 +4287,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
       const msg = `Kuromi đã làm mới bảng sao về 0 rồi! Bé ${childName} cùng tích lũy thật nhiều ngôi sao trong tuần mới nhé! ⭐`;
       const learnStatus = document.getElementById('learningStatusText');
-      if (learnStatus) learnStatus.textContent = msg;
+      if (learnStatus) {
+        learnStatus.innerHTML = `Kuromi đã làm mới bảng sao về 0 rồi! Bé <span class="child-name-val">${childName}</span> cùng tích lũy thật nhiều ngôi sao trong tuần mới nhé! ⭐`;
+      }
       if (APP_STATE.ttsEnabled) speakText(msg);
     });
   }
@@ -4285,7 +4303,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
       const msg = `Kuromi đã tặng bé ${childName} 10 ngôi sao khởi đầu! Chúc bé học tập thật chăm chỉ và vui vẻ! 🌟`;
       const learnStatus = document.getElementById('learningStatusText');
-      if (learnStatus) learnStatus.textContent = msg;
+      if (learnStatus) {
+        learnStatus.innerHTML = `Kuromi đã tặng bé <span class="child-name-val">${childName}</span> 10 ngôi sao khởi đầu! Chúc bé học tập thật chăm chỉ và vui vẻ! 🌟`;
+      }
       if (APP_STATE.ttsEnabled) speakText(msg);
       triggerStarExplosion();
     });
@@ -4314,7 +4334,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const actionDailyGiftBtn = document.getElementById('actionDailyGiftBtn');
   if (actionDailyGiftBtn) {
     actionDailyGiftBtn.addEventListener('click', () => {
-      awardLearningStar(2, `Bất ngờ chưa! Hộp quà hôm nay tặng bé Bảo Hân hẳn 2 ngôi sao lấp lánh! 🎁⭐`);
+      const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      awardLearningStar(2, `Bất ngờ chưa! Hộp quà hôm nay tặng bé ${childName} hẳn 2 ngôi sao lấp lánh! 🎁⭐`);
     });
   }
 
