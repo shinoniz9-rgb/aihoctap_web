@@ -443,16 +443,15 @@
             <span class="explore-label">🗺️ Bản Đồ Các Trạm Học Tập Bé Yêu Thích:</span>
           </div>
           <div class="explore-category-tabs learning-station-tabs">
-            <button class="station-filter-btn active" data-filter="all">🌟 Tất Cả Trạm</button>
+            <button class="station-filter-btn active" data-filter="all">🌟 Tất Cả (4 Trạm)</button>
             <button class="station-filter-btn" data-filter="math">🔢 Toán Học</button>
-            <button class="station-filter-btn" data-filter="vietnamese">🔤 Chữ Cái &amp; Vần</button>
-            <button class="station-filter-btn" data-filter="english">🇬🇧 Tiếng Anh Nhí</button>
-            <button class="station-filter-btn" data-filter="science">🔬 Khám Phá</button>
-            <button class="station-filter-btn" data-filter="homework">📝 Bài Ở Lớp</button>
+            <button class="station-filter-btn" data-filter="vietnamese">🔤 Tiếng Việt</button>
+            <button class="station-filter-btn" data-filter="english">🇬🇧 Tiếng Anh</button>
+            <button class="station-filter-btn" data-filter="quiz">💡 Đố Vui Săn Sao</button>
           </div>
         </div>
 
-        <!-- Stations Grid Container -->
+        <!-- Stations Grid Container (4 Core Learning Stations) -->
         <div class="stations-grid-container" id="stationsGridContainer">
           
           <!-- Station 1: Toán Học Kẹo Ngọt -->
@@ -463,16 +462,16 @@
             </div>
             <div class="station-card-body">
               <h3 class="station-title">Toán Học Kẹo Ngọt &amp; Đếm Số</h3>
-              <p class="station-desc">Bé tập đếm kẹo ngọt, que tính hoa quả, phép cộng trừ hình tượng siêu dễ hiểu cùng Kuromi.</p>
+              <p class="station-desc">Bé tập đếm kẹo ngọt, que tính hoa quả, giải phép cộng trừ hình tượng siêu dễ hiểu cùng Kuromi.</p>
               <div class="station-tags">
-                <span class="station-tag">🍬 Đếm kẹo</span>
-                <span class="station-tag">➕ Phép cộng trừ</span>
-                <span class="station-tag">✨ Thưởng 1 ⭐</span>
+                <span class="station-tag">🍬 Đếm kẹo &amp; trái cây</span>
+                <span class="station-tag">➕ Phép cộng &amp; trừ</span>
+                <span class="station-tag">⭐ Thưởng sao</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-math" data-station-type="math">
-                <span>Vào Học Ngay</span> 🚀
+                <span>Vào Học Toán Ngay</span> 🚀
               </button>
             </div>
           </div>
@@ -489,12 +488,12 @@
               <div class="station-tags">
                 <span class="station-tag">🅰️ 29 Chữ cái</span>
                 <span class="station-tag">🗣️ Phát âm chuẩn</span>
-                <span class="station-tag">✨ Thưởng 1 ⭐</span>
+                <span class="station-tag">✨ Thưởng sao</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-vietnamese" data-station-type="vietnamese">
-                <span>Khám Phá Chữ</span> 🚀
+                <span>Khám Phá Chữ Cái</span> 🚀
               </button>
             </div>
           </div>
@@ -507,82 +506,38 @@
             </div>
             <div class="station-card-body">
               <h3 class="station-title">Tiếng Anh Nhí &amp; Flashcards</h3>
-              <p class="station-desc">Từ vựng con vật, màu sắc, trái cây phát âm bản ngữ. Kuromi đồng thanh đọc cùng bé.</p>
+              <p class="station-desc">Hơn 40+ từ vựng con vật, màu sắc, trái cây, số đếm phát âm bản ngữ. Kuromi đồng thanh đọc cùng bé.</p>
               <div class="station-tags">
-                <span class="station-tag">🎨 Màu sắc</span>
-                <span class="station-tag">🐶 Con vật</span>
+                <span class="station-tag">🎨 Màu sắc &amp; Con vật</span>
+                <span class="station-tag">🍎 Trái cây &amp; Số</span>
                 <span class="station-tag">🔊 Nghe phát âm</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-english" data-station-type="english">
-                <span>Học Từ Mới</span> 🚀
+                <span>Học Từ Tiếng Anh</span> 🚀
               </button>
             </div>
           </div>
 
-          <!-- Station 4: Khám Phá Khoa Học -->
-          <div class="station-card" data-station="science">
-            <div class="station-card-ribbon ribbon-green">🔬 Khoa Học</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">🪐🌱</span>
-            </div>
-            <div class="station-card-body">
-              <h3 class="station-title">Thế Giới Tự Nhiên &amp; Vì Sao</h3>
-              <p class="station-desc">Giải mã hiện tượng thiên nhiên: Vì sao trời mưa, cầu vồng 7 màu, các hành tinh vũ trụ.</p>
-              <div class="station-tags">
-                <span class="station-tag">🌧️ Vì sao trời mưa</span>
-                <span class="station-tag">🚀 Vũ trụ</span>
-                <span class="station-tag">👀 Tranh minh họa</span>
-              </div>
-            </div>
-            <div class="station-card-footer">
-              <button class="station-launch-btn btn-science" data-station-type="science">
-                <span>Khám Phá Ngay</span> 🚀
-              </button>
-            </div>
-          </div>
-
-          <!-- Station 5: Gia Sư Kuromi - Bài Tập Ở Lớp -->
-          <div class="station-card highlight-tutor-card" data-station="homework">
-            <div class="station-card-ribbon ribbon-gold">👑 Gia Sư AI</div>
-            <div class="station-card-icon-halo">
-              <span class="station-big-emoji">🎒✏️</span>
-            </div>
-            <div class="station-card-body">
-              <h3 class="station-title">Gia Sư Kuromi - Bài Tập Ở Lớp</h3>
-              <p class="station-desc">Bé hoặc ba mẹ nói/nhập bài tập cô giáo giao. Kuromi gợi mở hướng giải từng bước, không cho chép bài!</p>
-              <div class="station-tags">
-                <span class="station-tag">💡 Gợi mở tư duy</span>
-                <span class="station-tag">🗣️ Hỏi bằng micro</span>
-                <span class="station-tag">❤️ Đồng hành 1-1</span>
-              </div>
-            </div>
-            <div class="station-card-footer">
-              <button class="station-launch-btn btn-homework" data-station-type="homework">
-                <span>Nhờ Kuromi Chỉ Bài</span> ✍️
-              </button>
-            </div>
-          </div>
-
-          <!-- Station 6: Đố Vui Nhanh 5 Phút Săn Sao -->
+          <!-- Station 4: Đố Vui Nhanh Săn Sao -->
           <div class="station-card" data-station="quiz">
             <div class="station-card-ribbon ribbon-purple">💡 Đố Vui</div>
             <div class="station-card-icon-halo">
               <span class="station-big-emoji">👑🎁</span>
             </div>
             <div class="station-card-body">
-              <h3 class="station-title">Thử Thách Đố Vui 5 Phút</h3>
-              <p class="station-desc">3 câu hỏi vui nhộn mỗi ngày kiểm tra trí nhớ và sự thông minh của bé để nhận quà bất ngờ.</p>
+              <h3 class="station-title">Thử Thách Đố Vui Săn Sao</h3>
+              <p class="station-desc">Hơn 20+ câu đố IQ vui nhộn dân gian và trí tuệ để kiểm tra trí nhớ, nhận quà 2 sao rực rỡ.</p>
               <div class="station-tags">
-                <span class="station-tag">🎯 3 Câu mỗi ngày</span>
+                <span class="station-tag">🎯 20+ Câu đố IQ</span>
                 <span class="station-tag">⭐ Thưởng 2 sao</span>
-                <span class="station-tag">🎉 Pháo hoa</span>
+                <span class="station-tag">🎉 Bắn pháo hoa</span>
               </div>
             </div>
             <div class="station-card-footer">
               <button class="station-launch-btn btn-quiz" data-station-type="quiz">
-                <span>Chơi Đố Vui</span> 🎯
+                <span>Chơi Đố Vui Ngay</span> 🎯
               </button>
             </div>
           </div>

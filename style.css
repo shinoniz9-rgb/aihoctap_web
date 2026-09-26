@@ -2523,14 +2523,14 @@ body {
   box-shadow: 0 0 12px rgba(255, 37, 138, 0.4);
 }
 
-/* Stations Grid - 3 Balanced Columns on Desktop/Laptops */
+/* Stations Grid - 4 Core Balanced Stations in 2x2 Grid */
 .stations-grid-container {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
   overflow-y: auto;
   padding-right: 6px;
-  padding-bottom: 26px;
+  padding-bottom: 24px;
   flex: 1;
   min-height: 0;
   scrollbar-width: thin;
@@ -2550,43 +2550,38 @@ body {
 
 .station-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(38, 18, 60, 0.92), rgba(24, 11, 40, 0.98));
-  border: 1.5px solid rgba(255, 101, 168, 0.32);
-  border-radius: var(--radius-md);
-  padding: 10px 12px 9px;
+  background: linear-gradient(145deg, rgba(42, 20, 68, 0.94), rgba(25, 11, 42, 0.98));
+  border: 2px solid rgba(255, 101, 168, 0.38);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 6px;
+  gap: 12px;
   transition: var(--transition-smooth);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   overflow: hidden;
   box-sizing: border-box;
 }
 
 .station-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--kuromi-pink);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255, 37, 138, 0.3);
-}
-
-.highlight-tutor-card {
-  border-color: rgba(255, 215, 0, 0.6) !important;
-  background: linear-gradient(145deg, rgba(48, 22, 70, 0.94), rgba(30, 15, 50, 0.98)) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 37, 138, 0.35);
 }
 
 .station-card-ribbon {
   position: absolute;
-  top: 7px;
-  right: -24px;
+  top: 10px;
+  right: -28px;
   transform: rotate(45deg);
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 2px 24px;
+  padding: 4px 30px;
   color: #fff;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   z-index: 2;
   pointer-events: none;
 }
@@ -2598,44 +2593,45 @@ body {
 .ribbon-gold   { background: linear-gradient(135deg, #f57f17, #fbc02d); color: #140a1f; }
 
 .station-card-icon-halo {
-  width: 36px;
-  height: 36px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: rgba(255, 101, 168, 0.16);
-  border: 1.5px solid var(--kuromi-border);
+  background: rgba(255, 101, 168, 0.18);
+  border: 2px solid var(--kuromi-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px rgba(255, 101, 168, 0.2);
+  box-shadow: 0 0 14px rgba(255, 101, 168, 0.35);
   flex-shrink: 0;
 }
 
 .station-big-emoji {
-  font-size: 1.25rem;
+  font-size: 1.85rem;
   line-height: 1;
 }
 
 .station-card-body {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6px;
   flex: 1;
 }
 
 .station-title {
   font-family: var(--font-kid);
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   color: #ffffff;
-  line-height: 1.22;
+  line-height: 1.3;
+  letter-spacing: 0.2px;
 }
 
 .station-desc {
-  font-size: 0.74rem;
+  font-size: 1.02rem;
   color: var(--kuromi-lavender);
-  line-height: 1.32;
+  line-height: 1.55;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -2643,47 +2639,49 @@ body {
 .station-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 3px;
-  margin-top: 1px;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .station-tag {
-  background: rgba(20, 10, 31, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 1.5px 6px;
+  background: rgba(20, 10, 31, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  padding: 4px 12px;
   border-radius: var(--radius-sm);
-  font-size: 0.67rem;
+  font-size: 0.88rem;
   color: var(--kuromi-pink-pastel);
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 }
 
 .station-card-footer {
-  margin-top: 3px;
+  margin-top: 8px;
 }
 
 .station-launch-btn {
   width: 100%;
-  padding: 6px 10px;
+  padding: 12px 20px;
   border-radius: var(--radius-full);
   border: none;
   font-family: var(--font-kid);
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 1.12rem;
+  font-weight: 800;
   color: #fff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 8px;
   transition: var(--transition-smooth);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   touch-action: manipulation;
+  letter-spacing: 0.3px;
 }
 
 .station-launch-btn:hover {
   transform: translateY(-2px) scale(1.02);
-  filter: brightness(1.1);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 .btn-math       { background: linear-gradient(135deg, #7b1fa2, #ba68c8); box-shadow: 0 3px 12px rgba(186, 104, 200, 0.4); }
@@ -3228,8 +3226,8 @@ body {
   }
 
   .stations-grid-container {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
     padding-bottom: 24px;
   }
 
