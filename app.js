@@ -2341,10 +2341,39 @@ function stopCurrentSong() {
     currentSongVocalAudio = null;
   }
 
+  // Tắt triệt để mọi giọng đọc đang dở
+  if (typeof window !== 'undefined' && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch(e) {}
+  }
+  if (activeTtsAudio) {
+    try {
+      activeTtsAudio.pause();
+      activeTtsAudio.src = '';
+    } catch(e) {}
+    activeTtsAudio = null;
+  }
+
+  // TẮT TOÀN BỘ VIDEO YOUTUBE ĐANG PHÁT TRÊN TOÀN BỘ CARD (TRÁNH LẪN TIẾNG)
+  document.querySelectorAll('.singer-video-frame').forEach(iframe => {
+    iframe.src = '';
+    iframe.style.display = 'none';
+  });
+  document.querySelectorAll('.jukebox-video-container').forEach(box => {
+    box.classList.add('hidden');
+  });
+  document.querySelectorAll('.real-singer-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelectorAll('.kuromi-sing-btn').forEach(btn => {
+    btn.classList.remove('active', 'playing');
+  });
   document.querySelectorAll('.jukebox-vocal-btn').forEach(btn => {
     btn.classList.remove('active', 'playing');
   });
   document.querySelectorAll('.jukebox-wave-bars').forEach(bar => bar.classList.remove('active'));
+
   const stage = document.getElementById('musicVisualizerStage');
   if (stage) stage.classList.remove('active');
   const mascot = document.getElementById('mascotWrapper');
@@ -2354,7 +2383,7 @@ function stopCurrentSong() {
   setKuromiState('normal');
 }
 
-function singVocalLine(cleanVerse) {
+function singVocalLine(cleanVerse, onComplete) {
   if (currentSongVocalAudio) {
     try {
       currentSongVocalAudio.pause();
@@ -2362,39 +2391,67 @@ function singVocalLine(cleanVerse) {
     } catch (e) {}
     currentSongVocalAudio = null;
   }
-  const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=vi&client=tw-ob&q=${encodeURIComponent(cleanVerse)}`;
+
+  let finished = false;
+  const finishOnce = () => {
+    if (finished) return;
+    finished = true;
+    if (onComplete) onComplete();
+  };
+
+  const viVoice = getVietnameseVoice();
+  // Nếu có voice tiếng Việt cục bộ (iOS Linh / Android), có thể dùng Web Speech pitch cao lí lắc
+  if (viVoice && typeof window !== 'undefined' && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+    } catch (e) {}
+    const u = new SpeechSynthesisUtterance(cleanVerse);
+    u.lang = viVoice.lang || 'vi-VN';
+    u.voice = viVoice;
+    u.rate = 1.1;
+    u.pitch = 1.35; // Giọng Kuromi hát trong trẻo ngọt ngào
+    u.onend = finishOnce;
+    u.onerror = finishOnce;
+    window._currentUtterance = u;
+    try {
+      window.speechSynthesis.speak(u);
+      return;
+    } catch (e) {}
+  }
+
+  // Máy không có voice tiếng Việt -> Dùng Google TTS Tiếng Việt chuẩn 100%
+  const url = buildGoogleTtsUrl(cleanVerse, 0);
   const audio = new Audio();
   audio.referrerPolicy = 'no-referrer';
   audio.src = url;
   currentSongVocalAudio = audio;
-  audio.playbackRate = (APP_STATE.settings.ttsRate || 1.05) * 1.08;
+  audio.playbackRate = 1.15; // Nhịp điệu tươi vui, lí lắc
   if ('preservesPitch' in audio) audio.preservesPitch = false;
+  if ('mozPreservesPitch' in audio) audio.mozPreservesPitch = false;
+  if ('webkitPreservesPitch' in audio) audio.webkitPreservesPitch = false;
 
-  const fallbackToWebSpeech = () => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      try {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.resume();
-      } catch (e) {}
-      const u = new SpeechSynthesisUtterance(cleanVerse);
-      u.lang = 'vi-VN';
-      const viVoice = getVietnameseVoice();
-      if (viVoice) u.voice = viVoice;
-      u.rate = 1.05;
-      u.pitch = 1.35;
-      window._currentUtterance = u;
-      try {
-        window.speechSynthesis.speak(u);
-      } catch (e) {}
-    }
+  audio.onended = finishOnce;
+  audio.onerror = () => {
+    // Thử host dự phòng
+    const fbUrl = buildGoogleTtsUrl(cleanVerse, 1);
+    const fbAudio = new Audio();
+    fbAudio.referrerPolicy = 'no-referrer';
+    fbAudio.src = fbUrl;
+    currentSongVocalAudio = fbAudio;
+    fbAudio.playbackRate = 1.15;
+    fbAudio.onended = finishOnce;
+    fbAudio.onerror = finishOnce;
+    fbAudio.play().catch(finishOnce);
   };
 
-  audio.onerror = fallbackToWebSpeech;
-  audio.play().catch(fallbackToWebSpeech);
+  audio.play().catch(audio.onerror);
 }
 
 function playKuromiVocalSong(songKey, onLyricUpdate) {
   stopCurrentSong();
+  stopAllSpeech();
+
   const song = SONGS_LIBRARY[songKey];
   if (!song) return;
 
@@ -2416,61 +2473,51 @@ function playKuromiVocalSong(songKey, onLyricUpdate) {
   document.getElementById('kuromiStatusText').textContent = introMsg;
   if (onLyricUpdate) onLyricUpdate(introMsg);
 
-  // Soft accompaniment
-  const ctx = getAudioContext();
-  let accumTime = 1.8;
-  const beatSec = 60 / song.bpm;
+  // Phát lời chào mở màn trước
+  speakText(introMsg, () => {
+    if (APP_STATE.currentPlayingSong?.id !== songKey) return;
 
-  if (ctx) {
-    song.notes.forEach(item => {
-      const freq = NOTE_FREQS[item.note] || 440;
-      const durSec = item.dur * beatSec * 1.5;
+    let verseIndex = 0;
 
-      const timeout = setTimeout(() => {
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        gain.gain.setValueAtTime(0.005, now);
-        gain.gain.linearRampToValueAtTime(0.07, now + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
-        osc.start(now);
-        osc.stop(now + durSec + 0.05);
-      }, accumTime * 1000);
-
-      currentPlaybackTimeouts.push(timeout);
-      accumTime += durSec;
-    });
-  }
-
-  // Vocal singing of lyrics aloud
-  let lyricTime = 1.8;
-  song.lyrics.forEach(lyric => {
-    const t = setTimeout(() => {
+    function singNextVerse() {
       if (APP_STATE.currentPlayingSong?.id !== songKey) return;
+
+      if (verseIndex >= song.lyrics.length) {
+        // Kuromi hát xong trọn vẹn bài hát!
+        const endTimeout = setTimeout(() => {
+          stopCurrentSong();
+          document.getElementById('kuromiStatusText').textContent = `Kuromi hát xong bài ${song.title} rồi nè! Bé ${childName} có thích không nào? Bé muốn nghe bài nào nữa không? 🎀`;
+          setKuromiState('happy');
+          playSfx('sparkle');
+        }, 1000);
+        currentPlaybackTimeouts.push(endTimeout);
+        return;
+      }
+
+      const lyric = song.lyrics[verseIndex++];
       if (onLyricUpdate) onLyricUpdate(lyric.text);
       document.getElementById('kuromiStatusText').textContent = `Kuromi đang hát: "${lyric.text}" 🎶`;
-      
+
       const cleanVerse = cleanKidTextForTts(lyric.text);
-      if (cleanVerse) {
-        singVocalLine(cleanVerse);
+      if (!cleanVerse) {
+        singNextVerse();
+        return;
       }
-    }, lyricTime * 1000);
 
-    currentPlaybackTimeouts.push(t);
-    lyricTime += lyric.duration;
-  });
+      // Hát từng câu tuần tự: Câu này dứt điểm mới hát sang câu tiếp theo
+      // ĐẢM BẢO TUYỆT ĐỐI KHÔNG CHỒNG TIẾNG, KHÔNG LẪN LỘN ÂM THANH!
+      singVocalLine(cleanVerse, () => {
+        if (APP_STATE.currentPlayingSong?.id !== songKey) return;
+        const pauseTimer = setTimeout(() => {
+          singNextVerse();
+        }, 450);
+        currentPlaybackTimeouts.push(pauseTimer);
+      });
+    }
 
-  const totalDuration = Math.max(accumTime, lyricTime) + 1.5;
-  const endTimeout = setTimeout(() => {
-    stopCurrentSong();
-    document.getElementById('kuromiStatusText').textContent = `Kuromi hát xong bài ${song.title} rồi nè! Bé ${childName} có thích không nào? Bé muốn nghe bài nào nữa không? 🎀`;
-    setKuromiState('happy');
-  }, totalDuration * 1000);
-  currentPlaybackTimeouts.push(endTimeout);
+    const startTimer = setTimeout(singNextVerse, 400);
+    currentPlaybackTimeouts.push(startTimer);
+  }, true);
 }
 
 function openSingerVideo(songKey, cardElement) {
@@ -2639,32 +2686,49 @@ function buildGoogleTtsUrl(text, hostIndex = 0) {
   return `${host}?ie=UTF-8&tl=vi&client=${client}&q=${encodeURIComponent(text)}`;
 }
 
+// Bộ lọc bảo vệ 100% tiếng Việt chuẩn (Tuyệt đối không nhận nhầm các giọng tiếng Anh có chữ 'an' hay 'siri')
+function isVietnameseVoice(v) {
+  if (!v) return false;
+  const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
+  const name = (v.name || '').toLowerCase();
+
+  // 1. Phải có mã ngôn ngữ là tiếng Việt
+  if (lang.startsWith('vi') || lang === 'vie' || lang.includes('-vn')) {
+    return true;
+  }
+
+  // 2. Hoặc tên voice ghi rõ ràng Tiếng Việt
+  if (name.includes('tiếng việt') || name.includes('vietnamese') || name.includes('vietnam') ||
+      name.includes('vi-vn') || name.includes('vi_vn')) {
+    return true;
+  }
+
+  // 3. Giọng tiếng Việt chuẩn Microsoft đã biết (Hoài My, Nam Minh)
+  if (name.includes('hoaimy') || name.includes('namminh')) {
+    return true;
+  }
+
+  return false;
+}
+
 // Quét và tìm bộ giọng Tiếng Việt của hệ thống
 function refreshAvailableVoices() {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices() || [];
   if (!voices.length) return null;
 
-  // Lọc tất cả giọng tiếng Việt
-  const viVoices = voices.filter(v => {
-    const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
-    const name = (v.name || '').toLowerCase();
-    return lang.startsWith('vi') || lang.includes('-vn') || lang.includes('vie') ||
-           name.includes('vietnam') || name.includes('tiếng việt') || name.includes('vietnamese') ||
-           name.includes('hoaimy') || name.includes('namminh') || name.includes('linh') ||
-           name.includes('an') || name.includes('mai') || name.includes('siri');
-  });
+  const viVoices = voices.filter(isVietnameseVoice);
 
   if (viVoices.length > 0) {
-    // Ưu tiên giọng nữ truyền cảm, tự nhiên
     const femaleOrNatural = viVoices.find(v => {
       const n = v.name.toLowerCase();
       return n.includes('natural') || n.includes('online') || n.includes('hoaimy') || 
-             n.includes('linh') || n.includes('an') || n.includes('female') || n.includes('mai');
+             n.includes('linh') || n.includes('female') || n.includes('mai') || n.includes('nữ');
     });
     cachedVietnameseVoice = femaleOrNatural || viVoices[0];
     return cachedVietnameseVoice;
   }
+
   cachedVietnameseVoice = null;
   return null;
 }
@@ -2677,7 +2741,7 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
 }
 
 function getVietnameseVoice() {
-  if (cachedVietnameseVoice) return cachedVietnameseVoice;
+  if (cachedVietnameseVoice && isVietnameseVoice(cachedVietnameseVoice)) return cachedVietnameseVoice;
   return refreshAvailableVoices();
 }
 
@@ -2714,6 +2778,19 @@ function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
     return;
   }
 
+  const viVoice = getVietnameseVoice();
+  // QUY TẮC CỐT LÕI: NẾU THIẾT BỊ KHÔNG CÓ GIỌNG TIẾNG VIỆT THỰC SỰ
+  // TUYỆT ĐỐI KHÔNG ĐƯỢC ĐỌC (VÌ TRÌNH DUYỆT SẼ LẤY GIỌNG TIẾNG ANH ĐỌC LƠ LỚ, THÔ CỨNG)
+  if (!viVoice) {
+    console.log("Thiết bị không có voice tiếng Việt hợp lệ -> Chuyển sang Google TTS Tiếng Việt 100%");
+    if (onFallback) onFallback();
+    else {
+      const chunks = chunkTextForTts(cleanText, 100);
+      speakWithGoogleTts(chunks, options, onComplete);
+    }
+    return;
+  }
+
   const chunks = chunkTextForTts(cleanText, 100);
   if (!chunks.length) {
     if (onComplete) onComplete();
@@ -2725,7 +2802,6 @@ function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
     window.speechSynthesis.resume();
   } catch (e) {}
 
-  const viVoice = getVietnameseVoice();
   let chunkIndex = 0;
   const sessionId = ++currentTtsSessionId;
   setKuromiState('singing');
@@ -2742,10 +2818,8 @@ function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
 
     const currentText = chunks[chunkIndex++];
     const utterance = new SpeechSynthesisUtterance(currentText);
-    utterance.lang = 'vi-VN';
-    if (viVoice) {
-      utterance.voice = viVoice;
-    }
+    utterance.voice = viVoice;
+    utterance.lang = viVoice.lang || 'vi-VN';
 
     const baseRate = options.rate || APP_STATE.settings.ttsRate || 1.05;
     utterance.rate = Math.min(Math.max(baseRate, 0.6), 1.6);
@@ -2849,13 +2923,17 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
         if (hIndex + 1 < GOOGLE_TTS_HOSTS.length) {
           tryHost(hIndex + 1);
         } else {
-          // Thử sang Web Speech API
-          if (onFallback) {
-            onFallback();
-          } else {
-            console.warn("Google TTS lỗi, chuyển Web Speech...");
+          // Thử sang Web Speech API nếu thiết bị có giọng tiếng Việt thực sự
+          const viVoice = getVietnameseVoice();
+          if (viVoice) {
             const remaining = chunks.slice(index - 1).join('. ');
             speakWithWebSpeech(remaining, options, onComplete);
+          } else if (onFallback) {
+            onFallback();
+          } else {
+            console.warn("Không thể tải Google TTS và máy không có giọng tiếng Việt.");
+            setKuromiState('normal');
+            if (onComplete) onComplete();
           }
         }
       };
@@ -2891,20 +2969,29 @@ function speakText(text, onComplete, force = false) {
 
   const voiceStyle = APP_STATE.settings.voiceStyle || 'kuromi_anime';
   const userRate = APP_STATE.settings.ttsRate || 1.05;
+  const viVoice = getVietnameseVoice();
   const chunks = chunkTextForTts(cleanText, 100);
 
-  // GIỌNG 1: Kuromi Hoạt Hình (Anime Sanrio - Lí lắc, vui tươi, trong trẻo, đáng yêu)
+  // GIỌNG 1: Kuromi Hoạt Hình (Anime Sanrio - Nhí nhảnh, lí lắc, ngọt ngào, đáng yêu cho bé)
   if (voiceStyle === 'kuromi_anime') {
     playSfx('chime');
-    speakWithWebSpeech(cleanText, {
-      rate: 1.15 * (userRate / 1.05),
-      pitch: 1.45
-    }, onComplete, () => {
+    if (viVoice) {
+      speakWithWebSpeech(cleanText, {
+        rate: 1.12 * (userRate / 1.05),
+        pitch: 1.35 // Giọng trong trẻo, lí lắc anime Sanrio
+      }, onComplete, () => {
+        speakWithGoogleTts(chunks, {
+          rate: 1.15 * (userRate / 1.05),
+          preservesPitch: false
+        }, onComplete);
+      });
+    } else {
+      // Máy không có voice tiếng Việt: dùng Google TTS Tiếng Việt chuẩn với cao độ nhí nhảnh
       speakWithGoogleTts(chunks, {
-        rate: 1.18 * (userRate / 1.05),
+        rate: 1.15 * (userRate / 1.05),
         preservesPitch: false
       }, onComplete);
-    });
+    }
     return;
   }
 
@@ -2914,10 +3001,14 @@ function speakText(text, onComplete, force = false) {
       rate: 1.0 * (userRate / 1.05),
       preservesPitch: true
     }, onComplete, () => {
-      speakWithWebSpeech(cleanText, {
-        rate: 1.0 * (userRate / 1.05),
-        pitch: 1.0
-      }, onComplete);
+      if (viVoice) {
+        speakWithWebSpeech(cleanText, {
+          rate: 1.0 * (userRate / 1.05),
+          pitch: 1.0
+        }, onComplete);
+      } else {
+        if (onComplete) onComplete();
+      }
     });
     return;
   }
@@ -2925,30 +3016,44 @@ function speakText(text, onComplete, force = false) {
   // GIỌNG 3: Cô Tiên Kể Chuyện (Ấm Áp Ru Êm, Chậm Rãi Truyền Cảm - Tiếng Việt 100%)
   if (voiceStyle === 'fairy') {
     playFairyChime();
-    speakWithWebSpeech(cleanText, {
-      rate: 0.82 * (userRate / 1.05),
-      pitch: 0.92
-    }, onComplete, () => {
-      speakWithGoogleTts(chunks, {
+    if (viVoice) {
+      speakWithWebSpeech(cleanText, {
         rate: 0.85 * (userRate / 1.05),
+        pitch: 0.95
+      }, onComplete, () => {
+        speakWithGoogleTts(chunks, {
+          rate: 0.88 * (userRate / 1.05),
+          preservesPitch: true
+        }, onComplete);
+      });
+    } else {
+      speakWithGoogleTts(chunks, {
+        rate: 0.88 * (userRate / 1.05),
         preservesPitch: true
       }, onComplete);
-    });
+    }
     return;
   }
 
   // GIỌNG 4: Giọng Thiết Bị (Offline Hệ Thống Máy / iPad - Bảo Vệ Tiếng Việt 100%)
   if (voiceStyle === 'device') {
     playDeviceBeep();
-    speakWithWebSpeech(cleanText, {
-      rate: 1.02 * (userRate / 1.05),
-      pitch: 1.05
-    }, onComplete, () => {
+    if (viVoice) {
+      speakWithWebSpeech(cleanText, {
+        rate: 1.02 * (userRate / 1.05),
+        pitch: 1.05
+      }, onComplete, () => {
+        speakWithGoogleTts(chunks, {
+          rate: 1.02 * (userRate / 1.05),
+          preservesPitch: true
+        }, onComplete);
+      });
+    } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.05 * (userRate / 1.05),
+        rate: 1.02 * (userRate / 1.05),
         preservesPitch: true
       }, onComplete);
-    });
+    }
     return;
   }
 }
@@ -2965,7 +3070,8 @@ function testVoiceSample(customStyle) {
     'kuromi_anime';
 
   let personaTitle = 'Kuromi Hoạt Hình';
-  let samplePhrase = `Kuromi chào bé ${childName}! Kuromi chúc bé một ngày thật vui vẻ, đáng yêu và ngập tràn niềm vui nhé! 💖🎀`;
+  // Câu chào nhí nhảnh, ngọt ngào, đáng yêu đúng chuẩn Kuromi Sanrio:
+  let samplePhrase = `Hí hí, Kuromi chào bé ${childName} đáng yêu nè! Kuromi chúc bé học thật giỏi và luôn cười tươi vui vẻ cùng Kuromi nha! 💖🎀`;
 
   if (selectedVoice === 'google_online') {
     personaTitle = 'Chị Google Trong Trẻo';
@@ -2979,13 +3085,13 @@ function testVoiceSample(customStyle) {
   }
 
   if (testBtn) testBtn.classList.add('playing');
-  if (statusEl) statusEl.textContent = `Đang phát thử: ${personaTitle} (Tiếng Việt) 🔊...`;
+  if (statusEl) statusEl.textContent = `Đang phát: ${personaTitle} (Tiếng Việt) 🔊...`;
 
-  const originalStyle = APP_STATE.settings.voiceStyle;
+  // Cập nhật và lưu lại giọng đang chọn
   APP_STATE.settings.voiceStyle = selectedVoice;
+  saveSettings({ voiceStyle: selectedVoice });
 
   speakText(samplePhrase, () => {
-    APP_STATE.settings.voiceStyle = originalStyle;
     if (testBtn) testBtn.classList.remove('playing');
     if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe thấy rõ ràng bằng Tiếng Việt chưa nè? 💕`;
   }, true);
@@ -4353,13 +4459,6 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
       playSfx('pop');
       closeSingerVideo(msgRow);
     });
-  }
-
-  // When song card is created in response to child's request, auto-open the real singer video!
-  if (shouldSaveAndSpeak && realSingerBtn) {
-    setTimeout(() => {
-      realSingerBtn.click();
-    }, 700);
   }
 
   // Sound FX button
