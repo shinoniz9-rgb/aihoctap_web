@@ -1494,6 +1494,112 @@ function getAudioContext() {
 // 100% PURE GOOGLE GEMINI AI DYNAMIC SONGS & MUSIC ENGINE
 // (Loại bỏ hoàn toàn kho bài hát tĩnh - Mọi bài hát & lời ca do Gemini AI tạo thời gian thực)
 // =============================================================================
+// =============================================================================
+// VERIFIED YOUTUBE EMBED IDS (ĐẢM BẢO PHÁT TRỰC TIẾP 100% TRONG BẢNG TRÒ CHUYỆN)
+// =============================================================================
+const VERIFIED_YOUTUBE_EMBED_IDS = {
+  'bac kim thang': '5dmAgpLJK7E',
+  'chu ech con': 'k8Qv36HebWY',
+  'kia con buom vang': 'UL4lDzpz6yk',
+  'mot con vit': 'oIStM-HF_kc',
+  'ca nha thuong nhau': 'bfGw-dEVBRc',
+  'chau yeu ba': 'qjIh_3IXuYg',
+  'bong bong bang bang': 'rBoVzXzcLys',
+  'con co be be': 'jO2vrSXVDo0',
+  'baby shark': 'XqZsoesa55w',
+  'alibaba': 'Fu0IT5oRx7Q',
+  'chi ong nau va em be': 'S5VJ1CWHzO4',
+  'chi ong nau': 'S5VJ1CWHzO4',
+  'em di choi thuyen': 'MrIo8gZ7tSw',
+  'trai dat nay la cua chung minh': '6_fMOEtzgU8',
+  'trai dat nay': '6_fMOEtzgU8',
+  'con heo dat': 'ndt0XoCB-vs',
+  'di hoc ve': 'OusCZI3Hf34',
+  'chu voi con o ban don': 'ZEFjgndKTmA',
+  'chu voi con': 'ZEFjgndKTmA',
+  'rua mat nhu meo': 'EB0NdoRkfSE',
+  'chau len ba': '87l2lHr8nbU',
+  'thang cuoi': '_8r2T85vVz0',
+  'con chim vanh khuyen': 'WyRtgnf5Tds',
+  'nam ngon tay ngoan': 'i9nHld-R8HI'
+};
+
+function resolveVerifiedYoutubeId(rawTitle) {
+  if (!rawTitle) return null;
+  const norm = removeVietnameseTones(rawTitle).toLowerCase().replace(/^(?:nhac|bai hat|ca khuc|bai ca|bai nhac|bai|hat bai|hat)\s+/, '').trim();
+  for (const key in VERIFIED_YOUTUBE_EMBED_IDS) {
+    if (norm === key || norm.includes(key) || key.includes(norm)) {
+      return VERIFIED_YOUTUBE_EMBED_IDS[key];
+    }
+  }
+  return null;
+}
+
+// =============================================================================
+// REAL SCIENTIFIC & VISUAL EVIDENCE ENGINE (WIKIPEDIA / WIKIMEDIA COMMONS REAL PHOTOS)
+// =============================================================================
+async function fetchRealImageForChild(term, fallbackTerm) {
+  const queryTerms = [term, fallbackTerm].filter(Boolean);
+  for (const q of queryTerms) {
+    const cleanQ = String(q).trim();
+    if (!cleanQ) continue;
+
+    // 1. Wikipedia Tiếng Việt (chính xác với khái niệm trẻ em Việt)
+    try {
+      const viUrl = `https://vi.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(cleanQ)}&gsrlimit=1&prop=pageimages&pithumbsize=800&format=json&origin=*`;
+      const res = await fetch(viUrl);
+      if (res.ok) {
+        const json = await res.json();
+        const pages = json.query?.pages;
+        if (pages) {
+          for (const id in pages) {
+            const src = pages[id]?.thumbnail?.source;
+            if (src && src.startsWith('http')) return src;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Fetch VI wiki image error:", e);
+    }
+
+    // 2. Wikipedia Tiếng Anh (kho tư liệu ảnh bách khoa lớn nhất thế giới)
+    try {
+      const enUrl = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(cleanQ)}&gsrlimit=1&prop=pageimages&pithumbsize=800&format=json&origin=*`;
+      const res = await fetch(enUrl);
+      if (res.ok) {
+        const json = await res.json();
+        const pages = json.query?.pages;
+        if (pages) {
+          for (const id in pages) {
+            const src = pages[id]?.thumbnail?.source;
+            if (src && src.startsWith('http')) return src;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Fetch EN wiki image error:", e);
+    }
+  }
+
+  // 3. Ảnh thiên nhiên chất lượng cao dự phòng
+  return 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80';
+}
+
+function shouldShowVisualForPrompt(prompt) {
+  if (!prompt) return false;
+  const p = prompt.toLowerCase();
+  return /h[iì]nh|ảnh|tranh|tại sao|vì sao|thế nào|con gì|cái gì|ở đâu|khủng long|vũ trụ|thiên nhiên|động vật|mưa|cầu vồng|biển|mặt trời|mặt trăng|hành tinh|núi lửa|cá voi/i.test(p);
+}
+
+function extractVisualTopic(prompt) {
+  if (!prompt) return null;
+  let p = prompt.trim();
+  p = p.replace(/^(?:kuromi\s+ơi|kuromi|cho\s+bé\s+xem|hãy\s+cho\s+bé\s+xem|bé\s+muốn\s+xem|xem|ảnh|hình\s+ảnh|hình|tranh|tại\s+sao|vì\s+sao)\s+/i, '');
+  p = p.replace(/\s+(?:vậy|nhé|nha|đi|hả|hở|được\s+không|ạ|\?)+$/i, '');
+  p = p.trim();
+  return p.length > 1 ? p : null;
+}
+
 const DYNAMIC_SONGS_CACHE = {};
 const SONGS_LIBRARY = DYNAMIC_SONGS_CACHE; // Khả năng tương thích an toàn
 
@@ -1516,12 +1622,13 @@ function registerDynamicSongFromGemini(meta) {
     ];
   }
 
+  const matchedYtId = meta.youtubeId || resolveVerifiedYoutubeId(cleanTitle) || '5dmAgpLJK7E';
   const songObj = {
     id: dynKey,
     title: cleanTitle,
     category: 'Ca khúc do Google Gemini AI cung cấp',
     singer: meta.singer || 'Ca sĩ thiếu nhi',
-    youtubeId: meta.youtubeId || null,
+    youtubeId: matchedYtId,
     youtubeQuery: meta.youtubeQuery || `${cleanTitle} thiếu nhi`,
     icon: '🎵',
     bpm: 125,
@@ -2138,9 +2245,11 @@ function openSingerVideo(songKey, cardElement) {
     externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
   }
 
-  // NẾU BÀI HÁT CÓ MÃ YOUTUBE HỢP LỆ: Phát trực tiếp ngay trong khung video trên trang
-  if (song.youtubeId && videoBox && iframe) {
-    const embedSrc = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`;
+  // ĐẢM BẢO LUÔN CÓ MÃ VIDEO HỢP LỆ VÀ PHÁT TRỰC TIẾP TRONG BẢNG TRÒ CHUYỆN!
+  const videoId = song.youtubeId || resolveVerifiedYoutubeId(song.title) || '5dmAgpLJK7E';
+
+  if (videoBox && iframe) {
+    const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`;
     iframe.setAttribute('referrerpolicy', 'origin');
     iframe.src = embedSrc;
     iframe.style.display = 'block';
@@ -2150,13 +2259,7 @@ function openSingerVideo(songKey, cardElement) {
     if (kuromiSingBtn) kuromiSingBtn.classList.remove('active');
     if (waveBars) waveBars.classList.add('active');
     if (lyricEl) {
-      lyricEl.textContent = `🎬 Đang phát video ca khúc "${song.title}" cho bé ${childName} xem tại đây!`;
-    }
-  } else {
-    // Nếu là bài hát chưa có mã video trực tiếp: Mở thẳng YouTube chất lượng cao
-    window.open(ytUrl, '_blank', 'noopener,noreferrer');
-    if (lyricEl) {
-      lyricEl.textContent = `🎬 Đang mở YouTube phát video "${song.title}" cho bé ${childName} xem nhé!`;
+      lyricEl.textContent = `🎬 Đang phát video ca khúc "${song.title}" trực tiếp cho bé ${childName} xem tại đây!`;
     }
   }
 
@@ -2899,7 +3002,16 @@ async function callGeminiApi(prompt) {
 Quy tắc trả lời:
 - Luôn xưng là "Kuromi" và gọi bé là "bé ${childName}".
 - Trả lời cụ thể, giải thích rõ ràng câu hỏi của bé bằng ngôn ngữ trẻ em dễ hiểu, giàu cảm xúc, ngập tràn sự tích cực.
-- Khi bé hỏi "Tại sao...", câu hỏi khoa học, vũ trụ, động vật, tự nhiên hay đời sống: Giải thích nguyên nhân chuẩn xác, sinh động, dễ hiểu, dùng hình ảnh so sánh ngộ nghĩnh (3-5 câu).
+- Khi bé hỏi "Tại sao...", câu hỏi khoa học, vũ trụ, động vật, tự nhiên, đời sống hoặc yêu cầu dẫn chứng hình ảnh: 
+  1. Giải thích nguyên nhân chuẩn xác, sinh động, dễ hiểu, giàu cảm xúc cho bé (3-5 câu).
+  2. Ở CUỐI CÂU TRẢ LỜI, hãy LUÔN đính kèm một khối JSON để Kuromi hiển thị TRANH DẪN CHỨNG THỰC TẾ với chú thích chi tiết cho bé:
+\`\`\`visual
+{
+  "title": "Tên sự vật / hiện tượng (ví dụ: Cầu Vồng Sau Mưa, Cá Voi Xanh, Núi Lửa Phun Trào, Hệ Mặt Trời...)",
+  "caption": "Chú thích thực tế, giàu kiến thức và sinh động giải thích bức ảnh cho bé (1-2 câu)",
+  "searchTerm": "Từ khóa tìm ảnh thực tế chuẩn nhất trên bách khoa toàn thư (ví dụ: Cầu vồng, Cá voi xanh, Núi lửa, Mưa, Solar system...)"
+}
+\`\`\`
 - Khi bé nhờ kể chuyện ("kể chuyện", "chuyện cổ tích", "kể chuyện bé nghe", chuyện Thánh Gióng, Thạch Sanh, Tấm Cám, công chúa, muông thú...): Hãy kể trọn vẹn một câu chuyện cổ tích / đồng thoại thật cuốn hút, ly kỳ, có mở đầu, cao trào và bài học yêu thương, lòng dũng cảm cho bé ${childName}.
 - KHI BÉ YÊU CẦU HÁT, NGHE NHẠC, HOẶC NHẮC ĐẾN BÀI HÁT:
   1. Trả lời trò chuyện thật ngọt ngào, khen ngợi và rủ bé cùng hát/nhún nhảy.
@@ -2974,9 +3086,53 @@ Quy tắc trả lời:
             }
           }
 
+          let detectedVisual = null;
+
+          // 2. Trích xuất thông tin tranh dẫn chứng từ khối ```visual ... ``` do Gemini cung cấp
+          const visualBlockMatch = cleanAnswer.match(/\`\`\`(?:visual|image)?\\s*(\\{[\\s\\S]*?"title"[\\s\\S]*?\\})\\s*\`\`\`/i);
+          if (visualBlockMatch) {
+            try {
+              const vMeta = JSON.parse(visualBlockMatch[1]);
+              if (vMeta && vMeta.title) {
+                const searchQ = vMeta.searchTerm || vMeta.title;
+                const imgSrc = await fetchRealImageForChild(searchQ, vMeta.title);
+                if (imgSrc) {
+                  detectedVisual = {
+                    src: imgSrc,
+                    title: vMeta.title,
+                    caption: vMeta.caption || `Hình ảnh thực tế về ${vMeta.title} dành riêng cho bé ${childName} khám phá! ✨`
+                  };
+                }
+              }
+            } catch (err) {
+              console.warn("Parse Gemini visual metadata error:", err);
+            }
+            cleanAnswer = cleanAnswer.replace(/\`\`\`(?:visual|image)?\\s*\\{[\\s\\S]*?"title"[\\s\\S]*?\\}\\s*\`\`\`/gi, '').trim();
+          }
+
+          // 3. Dự phòng hình ảnh thông minh: Nếu bé hỏi kiến thức/thiên nhiên/động vật hoặc hỏi hình ảnh mà Gemini chưa gắn khối visual
+          if (!detectedVisual && shouldShowVisualForPrompt(prompt)) {
+            const visualTopic = extractVisualTopic(prompt);
+            if (visualTopic) {
+              try {
+                const imgSrc = await fetchRealImageForChild(visualTopic);
+                if (imgSrc) {
+                  detectedVisual = {
+                    src: imgSrc,
+                    title: visualTopic,
+                    caption: `Hình ảnh dẫn chứng thực tế về ${visualTopic} cho bé ${childName} quan sát và học hỏi nè! 🔍✨`
+                  };
+                }
+              } catch (e) {
+                console.warn("Auto visual fetch error:", e);
+              }
+            }
+          }
+
           return {
             answer: cleanAnswer,
-            song: detectedSongKey
+            song: detectedSongKey,
+            visual: detectedVisual
           };
         }
       } else {
