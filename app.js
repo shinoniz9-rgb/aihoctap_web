@@ -3666,8 +3666,16 @@ function getKidFriendlyLocalAnswer(prompt) {
 // =============================================================================
 async function testGeminiApiKey(apiKey) {
   if (!apiKey) return { ok: false, msg: "Vui lòng nhập API Key trước khi kiểm tra!" };
-  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  const models = [
+    'gemini-3.8-flash',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro'
+  ];
   
+  let lastErrorMessage = '';
+
   for (const model of models) {
     try {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -3679,20 +3687,22 @@ async function testGeminiApiKey(apiKey) {
         })
       });
       if (res.ok) {
-        return { ok: true, msg: `✅ Khóa API chính xác và hoạt động tốt! (Mô hình: ${model})` };
+        return { ok: true, msg: `✅ Khóa API chính xác và hoạt động rất tốt! (Mô hình: ${model})` };
       }
       const data = await res.json();
       if (data.error && data.error.message) {
-        // If not a model-not-found error, return the actual error
-        if (!data.error.message.includes('not found') && !data.error.message.includes('is not supported')) {
-          return { ok: false, msg: `❌ Lỗi API: ${data.error.message}` };
+        lastErrorMessage = data.error.message;
+        // If API key is directly invalid, stop early
+        if (data.error.message.includes('API key not valid') || data.error.message.includes('API_KEY_INVALID')) {
+          return { ok: false, msg: `❌ Khóa API không hợp lệ. Vui lòng kiểm tra lại API Key từ Google AI Studio!` };
         }
+        // If the model is not found, deprecated or not supported, continue trying next model
       }
     } catch (e) {
       console.warn(`Test model ${model} error:`, e);
     }
   }
-  return { ok: false, msg: "❌ Không thể kết nối tới Google Gemini. Vui lòng kiểm tra lại khóa API và kết nối mạng." };
+  return { ok: false, msg: `❌ Lỗi kết nối Google Gemini: ${lastErrorMessage || "Vui lòng kiểm tra lại khóa API và kết nối mạng."}` };
 }
 
 async function callGeminiApi(prompt) {
@@ -3703,7 +3713,13 @@ async function callGeminiApi(prompt) {
 
   const childName = APP_STATE.settings.childName || 'Bảo Hân';
   const ageGroup = APP_STATE.settings.ageGroup || 'preschool';
-  const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  const modelsToTry = [
+    'gemini-3.8-flash',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro'
+  ];
 
   const systemInstruction = `Bạn là Kuromi (nhân vật hoạt hình Sanrio nổi tiếng), đóng vai người bạn thân thiết, vui tính, ngọt ngào và biết tuốt dành riêng cho bé ${childName} (${ageGroup === 'preschool' ? '3-6 tuổi' : '7-12 tuổi'} tại Việt Nam). 
 Quy tắc trả lời:
