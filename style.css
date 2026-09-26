@@ -1311,6 +1311,25 @@ body {
   line-height: 1.25;
 }
 
+/* YouTube Direct Link Button (Prominent & High-Contrast) */
+.youtube-direct-btn {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #e50914, #b20710);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 18px rgba(229, 9, 20, 0.5);
+  text-decoration: none;
+}
+
+.youtube-direct-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.85);
+  border-color: #ffffff;
+}
+
+.youtube-direct-btn:active {
+  transform: translateY(0);
+}
+
 /* Real Singer MV Button */
 .real-singer-btn {
   background: linear-gradient(135deg, #e91e63, #9c27b0);

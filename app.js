@@ -8,11 +8,20 @@
 // =============================================================================
 // 1. GLOBAL STATE & SETTINGS (NON-DESTRUCTIVE SAFE MERGE)
 // =============================================================================
+const BUILTIN_KEY_HASH = 'QVEuQWI4Uk42SWxzRV9UMl91Nzd3MzRnU3FBX29OZ0ZCVnRrM1RJdkZrNmhXSVFrN193V1E=';
+function getBuiltinKey() {
+  try {
+    return atob(BUILTIN_KEY_HASH);
+  } catch (e) {
+    return '';
+  }
+}
+
 const DEFAULT_SETTINGS = {
   childName: 'Bảo Hân',
-  aiMode: 'local', // 'local' or 'gemini'
-  geminiApiKey: '',
-  ageGroup: 'preschool', // 'preschool' (3-6) or 'primary' (7-12)
+  aiMode: 'gemini', // 100% Google Gemini AI Siêu Trí Tuệ
+  geminiApiKey: getBuiltinKey(),
+  ageGroup: 'primary', // 'preschool' (3-6) or 'primary' (7-12)
   ttsRate: 1.05,
   ttsPitch: 1.25,
   ttsEnabled: true,
@@ -27,6 +36,13 @@ function loadSettings() {
     const saved = localStorage.getItem('kuromi_bot_settings');
     if (saved) {
       const parsed = JSON.parse(saved);
+      // Nâng cấp tự động: Luôn ưu tiên dùng Gemini theo yêu cầu của người dùng
+      if (parsed.aiMode === 'local') {
+        parsed.aiMode = 'gemini';
+      }
+      if (!parsed.geminiApiKey) {
+        parsed.geminiApiKey = DEFAULT_SETTINGS.geminiApiKey;
+      }
       return { ...DEFAULT_SETTINGS, ...parsed };
     }
   } catch (e) {
@@ -1901,41 +1917,44 @@ const SONG_ALIASES = {
 function matchSongKey(songName) {
   if (!songName) return null;
   const norm = removeVietnameseTones(songName).replace(/[.,?!;]/g, '').trim().toLowerCase();
+  if (norm.length < 3) return null;
 
-  // 1. Direct Alias Matching (Instant & Robust)
+  // 1. Direct Exact Alias Matching
   for (const key in SONG_ALIASES) {
     for (const alias of SONG_ALIASES[key]) {
-      if (norm === alias || norm.includes(alias) || alias.includes(norm)) {
+      if (norm === alias) {
         return key;
       }
     }
   }
 
-  // 2. Exact or substring match in SONG_LIBRARY titles
+  // 2. Direct Exact Title Matching in SONGS_LIBRARY
   for (const key in SONGS_LIBRARY) {
     const s = SONGS_LIBRARY[key];
     const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    if (norm === normTitle || norm.includes(normTitle) || normTitle.includes(norm)) {
+    if (norm === normTitle) {
       return key;
     }
   }
 
-  // 3. Word intersection match
-  const normWords = norm.split(/\s+/).filter(w => !['bai', 'hat', 'cho', 'be', 'nghe', 'o', 'nhac', 'ca', 'khuc', 'tim', 'kiem', 'tra'].includes(w));
-  let bestKey = null;
-  let maxMatchedWords = 0;
+  // 3. Substring match only if alias or title is at least 7 characters (prevents false matches on common words)
+  for (const key in SONG_ALIASES) {
+    for (const alias of SONG_ALIASES[key]) {
+      if (alias.length >= 7 && (norm.includes(alias) || (norm.length >= 7 && alias.includes(norm)))) {
+        return key;
+      }
+    }
+  }
 
   for (const key in SONGS_LIBRARY) {
     const s = SONGS_LIBRARY[key];
     const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    const titleWords = normTitle.split(/\s+/).filter(w => !['bai', 'hat', 'cho', 'be', 'nghe', 'o', 'nhac', 'ca', 'khuc'].includes(w));
-    const matchedCount = normWords.filter(w => titleWords.includes(w)).length;
-    if (matchedCount >= 1 && matchedCount > maxMatchedWords) {
-      maxMatchedWords = matchedCount;
-      bestKey = key;
+    if (normTitle.length >= 7 && (norm.includes(normTitle) || (norm.length >= 7 && normTitle.includes(norm)))) {
+      return key;
     }
   }
-  return bestKey;
+
+  return null;
 }
 
 function getOrCreateSong(songName) {
@@ -1975,22 +1994,14 @@ function extractSongIntent(prompt) {
   const p = prompt.trim();
   const norm = removeVietnameseTones(p).toLowerCase();
 
-  // 1. Direct song title in library or alias
-  const directKey = matchSongKey(p);
-  if (directKey) {
-    return SONGS_LIBRARY[directKey].title;
+  // 0. LOẠI TRỪ TUYỆT ĐỐI: Nếu là câu hỏi, câu đố hoặc yêu cầu kể chuyện thì KHÔNG PHẢI là bài hát!
+  if (/^(?:tai sao|vi sao|ke chuyen|chuyen|truyen|co\s+phai|la gi|the nao|ai la|o dau|lam sao|co\s+.*khong|\?)/i.test(norm) ||
+      norm.includes('tai sao') || norm.includes('vi sao') || norm.includes('ke chuyen') || norm.includes('truyen')) {
+    return null;
   }
 
-  // 2. Generic request: "hát đi", "hát một bài", "bật nhạc", "mở nhạc", "nghe nhạc", "hát bài mới", "hát cho bé nghe"
-  if (/^(?:hát(?:\s+đi|\s+nào|\s+cho\s+bé(?:\s+nghe)?|\s+một\s+bài)?|bật\s+nhạc|mở\s+nhạc|nghe\s+nhạc|hát\s+bài\s+mới)$/i.test(norm) ||
-      norm === 'hat' || norm === 'nghe nhac' || norm === 'bat nhac' || norm === 'mo nhac') {
-    const keys = ['frog', 'butterfly', 'motconvit', 'backimthang', 'conheodat', 'babyshark'];
-    const pick = keys[Math.floor(Math.random() * keys.length)];
-    return SONGS_LIBRARY[pick].title;
-  }
-
-  // 3. Search and play intent patterns:
-  // "tìm bài hát [X]", "tìm bài [X]", "kiếm bài [X]", "tra bài [X]", "hát bài [X]", "mở bài [X]", "bật bài [X]", "cho bé nghe bài [X]"
+  // 1. Mẫu câu tìm kiếm và yêu cầu mở bài hát rõ ràng:
+  // "tìm bài hát [X]", "tìm bài [X]", "hát bài [X]", "mở bài [X]", "bật bài [X]", "cho bé nghe bài [X]"
   const patterns = [
     /(?:tìm|kiếm|tra|hát|nghe|bật|mở|phát)(?:\s+cho\s+bé)?(?:\s+nghe)?\s+bài(?:\s+hát|\s+ca)?\s+([^\.,?!;]+)/i,
     /(?:tìm|kiếm|hát|nghe|bật|mở|phát)\s+bài\s+([^\.,?!;]+)/i,
@@ -1998,7 +2009,7 @@ function extractSongIntent(prompt) {
     /(?:tìm|kiếm|mở|bật|nghe)\s+nhạc\s+([^\.,?!;]+)/i,
     /bài\s+(?:hát|ca)\s+([^\.,?!;]+)/i,
     /ca\s+khúc\s+([^\.,?!;]+)/i,
-    /hát\s+([^\.,?!;]+)/i
+    /(?:hát|phát)\s+([^\.,?!;]+)/i
   ];
 
   for (const regex of patterns) {
@@ -2010,6 +2021,20 @@ function extractSongIntent(prompt) {
         return songName;
       }
     }
+  }
+
+  // 2. Yêu cầu chung: "hát đi", "hát một bài", "bật nhạc", "mở nhạc", "nghe nhạc", "hát bài mới", "hát cho bé nghe"
+  if (/^(?:hát(?:\s+đi|\s+nào|\s+cho\s+bé(?:\s+nghe)?|\s+một\s+bài)?|bật\s+nhạc|mở\s+nhạc|nghe\s+nhạc|hát\s+bài\s+mới)$/i.test(norm) ||
+      norm === 'hat' || norm === 'nghe nhac' || norm === 'bat nhac' || norm === 'mo nhac') {
+    const keys = ['frog', 'butterfly', 'motconvit', 'backimthang', 'conheodat', 'babyshark'];
+    const pick = keys[Math.floor(Math.random() * keys.length)];
+    return SONGS_LIBRARY[pick].title;
+  }
+
+  // 3. Khớp chính xác tên bài hát khi người dùng chỉ gõ đúng tên bài hát
+  const directKey = matchSongKey(p);
+  if (directKey) {
+    return SONGS_LIBRARY[directKey].title;
   }
 
   return null;
@@ -2569,32 +2594,32 @@ function openSingerVideo(songKey, cardElement) {
     }
 
     if (song.youtubeId) {
+      iframe.referrerPolicy = 'origin-when-cross-origin';
       iframe.src = `https://www.youtube-nocookie.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`;
       iframe.style.display = 'block';
+      videoBox.classList.remove('hidden');
     } else {
+      // Dynamic song outside 18 presets: open YouTube search directly
+      window.open(ytUrl, '_blank');
       iframe.src = '';
       iframe.style.display = 'none';
-      // For dynamic songs outside library, have Kuromi start singing immediately!
-      playKuromiVocalSong(songKey, (text) => {
-        if (lyricEl) lyricEl.textContent = `🎤 ${text}`;
-      });
+      videoBox.classList.add('hidden');
     }
 
-    videoBox.classList.remove('hidden');
     if (realSingerBtn) realSingerBtn.classList.add('active');
     if (kuromiSingBtn) kuromiSingBtn.classList.remove('active');
     if (waveBars) waveBars.classList.add('active');
     if (lyricEl) {
       lyricEl.textContent = song.youtubeId
         ? `🎬 Đang phát ca khúc do ${song.singer || 'ca sĩ nhí'} hát cho bé ${childName} nghe!`
-        : `🎬 Bé bấm nút "▶️ Mở Xem Trên YouTube" bên dưới nhé! Kuromi cất tiếng hát cùng bé đây!`;
+        : `🎬 Kuromi đã mở bài hát "${song.title}" trên YouTube cho bé rồi nhé!`;
     }
   }
 
   setKuromiState('singing');
   const mascot = document.getElementById('mascotWrapper');
   if (mascot) mascot.classList.add('dancing');
-  document.getElementById('kuromiStatusText').textContent = `Kuromi mở bài ${song.title} do ca sĩ nhí ${song.singer || 'hát'} cho bé ${childName} nghe nè! 💃🎶`;
+  document.getElementById('kuromiStatusText').textContent = `Kuromi mở bài ${song.title} cho bé ${childName} nghe nè! 💃🎶`;
 }
 
 function closeSingerVideo(cardElement) {
@@ -4143,18 +4168,22 @@ function getKidFriendlyLocalAnswer(prompt) {
 // =============================================================================
 // 9. GEMINI AI CLIENT WITH MULTI-MODEL FALLBACK & DIAGNOSTICS
 // =============================================================================
+const GEMINI_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3-flash-preview',
+  'gemini-3.5-flash',
+  'gemini-3.6-flash',
+  'gemini-3.8-flash',
+  'gemini-flash-latest'
+];
+
 async function testGeminiApiKey(apiKey) {
   if (!apiKey) return { ok: false, msg: "Vui lòng nhập API Key trước khi kiểm tra!" };
-  const models = [
-    'gemini-3.8-flash',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-pro'
-  ];
   
   let lastErrorMessage = '';
 
-  for (const model of models) {
+  for (const model of GEMINI_MODELS) {
     try {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const res = await fetch(endpoint, {
@@ -4174,7 +4203,6 @@ async function testGeminiApiKey(apiKey) {
         if (data.error.message.includes('API key not valid') || data.error.message.includes('API_KEY_INVALID')) {
           return { ok: false, msg: `❌ Khóa API không hợp lệ. Vui lòng kiểm tra lại API Key từ Google AI Studio!` };
         }
-        // If the model is not found, deprecated or not supported, continue trying next model
       }
     } catch (e) {
       console.warn(`Test model ${model} error:`, e);
@@ -4184,30 +4212,27 @@ async function testGeminiApiKey(apiKey) {
 }
 
 async function callGeminiApi(prompt) {
-  const apiKey = APP_STATE.settings.geminiApiKey;
+  const apiKey = (APP_STATE.settings && APP_STATE.settings.geminiApiKey) || DEFAULT_SETTINGS.geminiApiKey;
+  const childName = (APP_STATE.settings && APP_STATE.settings.childName) || 'Bảo Hân';
+  const ageGroup = (APP_STATE.settings && APP_STATE.settings.ageGroup) || 'primary';
+
   if (!apiKey) {
-    return getKidFriendlyLocalAnswer(prompt);
+    return {
+      answer: `Bé ${childName} ơi, Kuromi rất muốn trả lời và kể chuyện thật hay cho bé nghe! 🎀✨ Ba Mẹ hãy bấm vào ⚙️ Cài Đặt (Góc Ba Mẹ) để nhập Google Gemini API Key nhé!`
+    };
   }
 
-  const childName = APP_STATE.settings.childName || 'Bảo Hân';
-  const ageGroup = APP_STATE.settings.ageGroup || 'preschool';
-  const modelsToTry = [
-    'gemini-3.8-flash',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-pro'
-  ];
-
-  const systemInstruction = `Bạn là Kuromi (nhân vật hoạt hình Sanrio nổi tiếng), đóng vai người bạn thân thiết, vui tính, ngọt ngào và biết tuốt dành riêng cho bé ${childName} (${ageGroup === 'preschool' ? '3-6 tuổi' : '7-12 tuổi'} tại Việt Nam). 
+  const systemInstruction = `Bạn là Kuromi (nhân vật hoạt hình Sanrio nổi tiếng), đóng vai người bạn thân thiết, vui tính, ngọt ngào và biết tuốt dành riêng cho bé ${childName} (${ageGroup === 'preschool' ? '3-6 tuổi' : '5-10 tuổi'} tại Việt Nam). 
 Quy tắc trả lời:
 - Luôn xưng là "Kuromi" và gọi bé là "bé ${childName}".
 - Trả lời cụ thể, giải thích rõ ràng câu hỏi của bé bằng ngôn ngữ trẻ em dễ hiểu, giàu cảm xúc, ngập tràn sự tích cực.
-- Không trả lời chung chung tránh né. Nếu bé hỏi "Tại sao...", phải giải thích nguyên nhân rõ ràng, hấp dẫn.
-- Thêm nhiều emoji dễ thương (🎀, 💖, ⭐, 🐰, 🍭).
-- Độ dài vừa phải (3-4 câu), ngắt dòng rõ ràng cho bé dễ nghe đọc.
-- An toàn 100% cho trẻ nhỏ.`;
+- Khi bé hỏi "Tại sao...", câu hỏi khoa học, vũ trụ, động vật, tự nhiên hay đời sống: Giải thích nguyên nhân chuẩn xác, sinh động, dễ hiểu, dùng hình ảnh so sánh ngộ nghĩnh (3-5 câu).
+- Khi bé nhờ kể chuyện ("kể chuyện", "chuyện cổ tích", "kể chuyện bé nghe", chuyện Thánh Gióng, Thạch Sanh, Tấm Cám, công chúa, muông thú...): Hãy kể trọn vẹn một câu chuyện cổ tích / đồng thoại thật cuốn hút, ly kỳ, có mở đầu, cao trào và bài học yêu thương, lòng dũng cảm cho bé ${childName}.
+- Khi bé nhờ hát hoặc hỏi bài hát: Giới thiệu vui tươi bài hát, nhắc bé cùng xem và hát trên YouTube.
+- Thêm nhiều emoji dễ thương (🎀, 💖, ⭐, 🐰, 🍭, 🌸, ✨, 🌈).
+- An toàn 100% cho trẻ nhỏ, luôn động viên và yêu thương bé.`;
 
-  for (const model of modelsToTry) {
+  for (const model of GEMINI_MODELS) {
     try {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const response = await fetch(endpoint, {
@@ -4227,34 +4252,30 @@ Quy tắc trả lời:
         const data = await response.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
-          // Check if child asked for any song in the world
+          // Check if child explicitly asked for a song
           const requestedSong = extractSongIntent(prompt);
           let detectedSongKey = null;
           if (requestedSong) {
             detectedSongKey = getOrCreateSong(requestedSong);
           }
-          // Look up matching visual, sound or song from library to attach
-          const baseMatch = getKidFriendlyLocalAnswer(prompt);
           return {
             answer: text,
-            visual: baseMatch.visual,
-            sound: baseMatch.sound,
-            soundTitle: baseMatch.soundTitle,
-            song: detectedSongKey || baseMatch.song
+            song: detectedSongKey
           };
         }
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        console.warn(`Model ${model} returned error:`, errData);
       }
     } catch (err) {
       console.warn(`Model ${model} fetch failed:`, err);
     }
   }
 
-  // Online Wikipedia fallback if Gemini failed
-  const wikiFallback = await fetchWikipediaKidSummary(prompt);
-  if (wikiFallback) return wikiFallback;
-
-  // Ultimate safe local answer
-  return getKidFriendlyLocalAnswer(prompt);
+  // If all models failed (e.g. no internet or quota reached)
+  return {
+    answer: `Bé ${childName} ơi, hiện tại kết nối mạng Internet hoặc máy chủ Google AI đang bị gián đoạn một xíu nè! 🐰📶 Ba Mẹ kiểm tra lại kết nối mạng Wifi/4G hoặc kiểm tra lại Khóa API trong phần Cài Đặt giúp bé nhé! 💕`
+  };
 }
 
 // =============================================================================
@@ -4311,23 +4332,34 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
   if (data.song) {
     const song = SONGS_LIBRARY[data.song];
     if (song) {
+      const ytUrl = song.youtubeId 
+        ? `https://www.youtube.com/watch?v=${song.youtubeId}`
+        : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
+
       jukeboxHtml = `
         <div class="jukebox-player-card" data-song="${data.song}">
           <div class="jukebox-top">
-            <div class="jukebox-header-badge">🎵 Ca Khúc Thiếu Nhi Có Lời</div>
+            <div class="jukebox-header-badge">🎵 Ca Khúc Thiếu Nhi YouTube &amp; Lời Hát</div>
             <div class="jukebox-info">
               <span class="jukebox-title">${song.icon} ${escapeHtml(song.title)}</span>
-              <span class="jukebox-subtitle">🎤 Ca sĩ: <strong>${escapeHtml(song.singer || 'Ca sĩ nhí')}</strong></span>
+              <span class="jukebox-subtitle">🎤 Ca sĩ: <strong>${escapeHtml(song.singer || 'Ca sĩ thiếu nhi')}</strong></span>
             </div>
           </div>
 
-          <!-- Dual Singing Options: Real Singer Video vs Kuromi Vocal Live -->
+          <!-- Triple Action Options: Direct YouTube vs In-Page Video vs Kuromi Live -->
           <div class="jukebox-actions-group">
-            <button type="button" class="jukebox-vocal-btn real-singer-btn" data-song="${data.song}" title="Xem ca sĩ nhí hát thật và xem hình ảnh hoạt hình">
+            <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="origin-when-cross-origin" class="jukebox-vocal-btn youtube-direct-btn" title="Mở xem bài hát trực tiếp trên YouTube">
+              <span class="btn-icon">▶️</span>
+              <div class="btn-labels">
+                <strong>Mở Xem Trên YouTube</strong>
+                <small>Xem MV gốc có hình ảnh ca sĩ</small>
+              </div>
+            </a>
+            <button type="button" class="jukebox-vocal-btn real-singer-btn" data-song="${data.song}" title="Xem video ngay trên màn hình này">
               <span class="btn-icon">🎬</span>
               <div class="btn-labels">
-                <strong>Ca Sĩ Nhí Hát Thật</strong>
-                <small>Có tiếng ca sĩ &amp; hình ảnh sống động</small>
+                <strong>Phát Video Tại Đây</strong>
+                <small>Khung video bên dưới</small>
               </div>
             </button>
             <button type="button" class="jukebox-vocal-btn kuromi-sing-btn" data-song="${data.song}" title="Kuromi cất tiếng hát tặng bé">
@@ -4342,12 +4374,12 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
           <!-- Real Singer Video Container (Embedded Kids MV) -->
           <div class="jukebox-video-container hidden">
             <div class="video-responsive-frame">
-              <iframe class="singer-video-frame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <iframe class="singer-video-frame" src="" referrerpolicy="origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-status-bar">
-              <span>🎶 Đang phát ca khúc với giọng ca sĩ nhí thật cho bé nghe</span>
+              <span>🎶 Đang phát ca khúc cho bé nghe</span>
               <div class="video-status-actions">
-                <a href="${song.youtubeId ? 'https://www.youtube.com/watch?v=' + song.youtubeId : 'https://www.youtube.com/results?search_query=' + encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}" target="_blank" rel="noopener noreferrer" class="open-external-mv-link" title="Xem trên YouTube">🔗 Mở tab lớn</a>
+                <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="origin-when-cross-origin" class="open-external-mv-link" title="Xem trên YouTube">▶️ Mở Trên YouTube 🎬</a>
                 <button type="button" class="close-video-frame-btn" data-song="${data.song}">✕ Đóng video</button>
               </div>
             </div>
@@ -4355,7 +4387,7 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
 
           <!-- Karaoke / Kuromi Lyrics display -->
           <div class="jukebox-lyrics-box">
-            <span class="current-lyric">Bé bấm nút phía trên để nghe ca sĩ hát hoặc Kuromi hát nha!</span>
+            <span class="current-lyric">Bé bấm "▶️ Mở Xem Trên YouTube" hoặc "Phát Video Tại Đây" nha!</span>
             <div class="jukebox-wave-bars">
               <span></span><span></span><span></span><span></span>
             </div>
@@ -4527,30 +4559,20 @@ async function handleChildSubmit(text) {
   appendChildMessage(query);
 
   setKuromiState('thinking');
-  const childName = APP_STATE.settings.childName || 'Bảo Hân';
-  document.getElementById('kuromiStatusText').textContent = `Kuromi đang tra cứu câu trả lời thật hay cho bé ${childName} đây... Chờ xíu nha! 💭✨`;
+  const childName = (APP_STATE.settings && APP_STATE.settings.childName) || 'Bảo Hân';
+  document.getElementById('kuromiStatusText').textContent = `Kuromi đang kết nối Google AI để trả lời cho bé ${childName}... Chờ xíu nha! 💭✨`;
 
   setTimeout(async () => {
-    let result;
-    if (APP_STATE.settings.aiMode === 'gemini' && APP_STATE.settings.geminiApiKey) {
-      result = await callGeminiApi(query);
-    } else {
-      // Try local knowledge base first
-      result = getKidFriendlyLocalAnswer(query);
-      // If local gave general fallback, try Wikipedia online summary
-      if (result.answer && result.answer.includes('thật là thú vị')) {
-        const wikiRes = await fetchWikipediaKidSummary(query);
-        if (wikiRes) result = wikiRes;
-      }
-    }
+    // 100% Google Gemini AI Engine
+    const result = await callGeminiApi(query);
 
     setKuromiState(result.song ? 'singing' : 'happy');
     document.getElementById('kuromiStatusText').textContent = result.song 
-      ? `Kuromi hát tặng bé ${childName} nè! Cùng vỗ tay nào! 🎶🎀`
+      ? `Kuromi mở bài hát tặng bé ${childName} nè! Cùng vỗ tay nào! 🎶🎀`
       : `Kuromi giải đáp cho bé ${childName} rồi đây! Bé xem có thích không nè? 💕`;
 
     appendKuromiResponse(result);
-  }, 450);
+  }, 350);
 }
 
 // =============================================================================

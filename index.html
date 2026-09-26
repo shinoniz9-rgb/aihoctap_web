@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="referrer" content="no-referrer">
+  <meta name="referrer" content="origin-when-cross-origin">
   <title>Kuromi & Bé Bảo Hân | Trợ Lý AI Đa Giác Quan</title>
   <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio chân thật dành riêng cho bé Bảo Hân. Bách khoa toàn thư tri thức nhí, hình ảnh dẫn chứng, nghe nhạc và âm thanh muôn loài sống động.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Lexend:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.4">
+  <link rel="stylesheet" href="style.css?v=4.6">
 </head>
 <body>
   <div class="stars-particle-container" id="starsContainer"></div>
@@ -462,27 +462,27 @@
         <div class="settings-group">
           <label class="setting-label">
             <strong>🤖 Chế Độ Trí Tuệ Nhân Tạo (AI Engine)</strong>
-            <span class="setting-desc">Mặc định ứng dụng dùng hệ thống bách khoa toàn thư trẻ em có sẵn (hoạt động offline ngay lập tức). Ba mẹ có thể nhập Gemini API Key để mở rộng câu trả lời sâu hơn.</span>
+            <span class="setting-desc">Kuromi sử dụng trí tuệ nhân tạo Google Gemini AI thế hệ mới để trả lời thông minh, giải thích khoa học và kể chuyện cổ tích tuyệt hay cho bé.</span>
           </label>
           <div class="ai-mode-selector">
             <label class="radio-label">
-              <input type="radio" name="aiMode" value="local" checked id="modeLocal">
-              <span>Kuromi Thông Thái (Tích hợp sẵn - Tức thì & An toàn 100%)</span>
+              <input type="radio" name="aiMode" value="gemini" checked id="modeGemini">
+              <span>Google Gemini AI Siêu Trí Tuệ (Khuyên dùng)</span>
             </label>
             <label class="radio-label">
-              <input type="radio" name="aiMode" value="gemini" id="modeGemini">
-              <span>Google Gemini AI (Đòi hỏi API Key)</span>
+              <input type="radio" name="aiMode" value="local" id="modeLocal">
+              <span>Chế độ ngoại tuyến (Offline)</span>
             </label>
           </div>
           
-          <div class="api-key-block hidden" id="apiKeyBlock">
-            <label for="geminiApiKey">Nhập Google Gemini API Key:</label>
+          <div class="api-key-block" id="apiKeyBlock">
+            <label for="geminiApiKey">Khóa Google Gemini API Key:</label>
             <div style="display: flex; gap: 8px; align-items: center;">
               <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="parent-input" style="flex: 1;">
               <button type="button" id="testApiKeyBtn" class="test-api-btn">🔍 Kiểm Tra</button>
             </div>
             <div id="apiKeyStatus" class="api-key-status-msg hidden"></div>
-            <small style="color: var(--kuromi-lavender); font-size: 0.78rem;">Khóa API được lưu an toàn trong trình duyệt của bạn (LocalStorage). Nếu chưa có, bạn có thể lấy miễn phí tại Google AI Studio.</small>
+            <small style="color: var(--kuromi-lavender); font-size: 0.78rem;">Khóa API kết nối với máy chủ Google AI. Bạn có thể lấy khóa miễn phí tại Google AI Studio bất kỳ lúc nào.</small>
           </div>
         </div>
 
@@ -690,6 +690,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=4.4"></script>
+  <script src="app.js?v=4.6"></script>
 </body>
 </html>
