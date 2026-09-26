@@ -18,7 +18,8 @@ const DEFAULT_SETTINGS = {
   ttsEnabled: true,
   sfxEnabled: true,
   voiceStyle: 'kuromi_anime', // 'kuromi_anime', 'google_online', 'fairy', 'device'
-  familySyncCode: 'baohan0311'
+  familySyncCode: 'baohan0311',
+  updatedAt: 0
 };
 
 function loadSettings() {
@@ -55,7 +56,8 @@ function saveSettings(partial = {}) {
     const updated = {
       ...current,
       ...APP_STATE.settings,
-      ...partial
+      ...partial,
+      updatedAt: Date.now()
     };
     APP_STATE.settings = updated;
     APP_STATE.ttsEnabled = updated.ttsEnabled !== false;
@@ -166,7 +168,7 @@ let LEARNING_STATE = loadLearningData();
 function saveLearningData(partial = {}) {
   try {
     const current = loadLearningData();
-    const updated = { ...current, ...LEARNING_STATE, ...partial };
+    const updated = { ...current, ...LEARNING_STATE, ...partial, updatedAt: Date.now() };
     LEARNING_STATE = updated;
     localStorage.setItem('kuromi_learning_data', JSON.stringify(updated));
     updateLearningUi();
@@ -330,19 +332,36 @@ const KuromiSync = {
 
       this.suppressOutbound = true;
 
-      // 1. Settings Safe Merge
+      // 1. Settings Safe Merge (Smart timestamped comparison)
       if (cloudData.settings) {
-        const merged = {
-          ...DEFAULT_SETTINGS,
-          ...APP_STATE.settings,
-          ...cloudData.settings
-        };
+        const localTime = APP_STATE.settings.updatedAt || 0;
+        const cloudTime = cloudData.settings.updatedAt || 0;
+        let merged;
+        if (cloudTime > localTime) {
+          merged = {
+            ...DEFAULT_SETTINGS,
+            ...APP_STATE.settings,
+            ...cloudData.settings
+          };
+        } else {
+          merged = {
+            ...DEFAULT_SETTINGS,
+            ...cloudData.settings,
+            ...APP_STATE.settings
+          };
+          this.queuePush('settings', merged);
+        }
         APP_STATE.settings = merged;
         localStorage.setItem('kuromi_bot_settings', JSON.stringify(merged));
         applyChildNameUi(merged.childName);
         
         const syncInput = document.getElementById('familySyncCodeInput');
         if (syncInput) syncInput.value = merged.familySyncCode || code;
+
+        const currentAge = merged.ageGroup || 'preschool';
+        document.querySelectorAll('.age-btn').forEach(card => {
+          card.classList.toggle('active', card.getAttribute('data-age') === currentAge);
+        });
       }
 
       // 2. Learning Stars Safe Merge
@@ -4321,6 +4340,18 @@ document.addEventListener('DOMContentLoaded', () => {
       card.classList.toggle('active', card.getAttribute('data-voice') === currentVoiceStyle);
     });
 
+    // Age group sync
+    const currentAge = APP_STATE.settings.ageGroup || 'preschool';
+    document.querySelectorAll('.age-btn').forEach(card => {
+      card.classList.toggle('active', card.getAttribute('data-age') === currentAge);
+    });
+
+    // Family sync code
+    const syncInput = document.getElementById('familySyncCodeInput');
+    if (syncInput) {
+      syncInput.value = APP_STATE.settings.familySyncCode || 'baohan0311';
+    }
+
     const statusEl = document.getElementById('apiKeyStatus');
     if (statusEl) statusEl.classList.add('hidden');
 
@@ -4401,9 +4432,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Age group selector
   document.querySelectorAll('.age-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      playSfx('pop');
       document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      APP_STATE.settings.ageGroup = btn.getAttribute('data-age');
+      const selectedAge = btn.getAttribute('data-age');
+      APP_STATE.settings.ageGroup = selectedAge;
+      saveSettings({ ageGroup: selectedAge });
     });
   });
 
@@ -4431,12 +4465,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedVoice = document.querySelector('input[name="voiceStyle"]:checked')?.value || 'kuromi_anime';
     const familyCodeInput = document.getElementById('familySyncCodeInput');
     const syncCode = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan0311';
+    const activeAgeBtn = document.querySelector('.age-btn.active');
+    const selectedAge = activeAgeBtn ? activeAgeBtn.getAttribute('data-age') : (APP_STATE.settings.ageGroup || 'preschool');
 
     saveSettings({
       aiMode: selectedMode,
       geminiApiKey: key,
       childName: newName,
-      ageGroup: APP_STATE.settings.ageGroup || 'preschool',
+      ageGroup: selectedAge,
       voiceStyle: selectedVoice,
       ttsRate: APP_STATE.settings.ttsRate || 1.05,
       ttsPitch: APP_STATE.settings.ttsPitch || 1.25,
@@ -4666,6 +4702,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (familyCodeInput) {
     familyCodeInput.value = APP_STATE.settings.familySyncCode || 'baohan0311';
   }
+
+  // Sync initial age group buttons
+  const initAge = APP_STATE.settings.ageGroup || 'preschool';
+  document.querySelectorAll('.age-btn').forEach(card => {
+    card.classList.toggle('active', card.getAttribute('data-age') === initAge);
+  });
 
   // Initialize Firebase Cloud Sync
   if (window.KuromiSync) {
