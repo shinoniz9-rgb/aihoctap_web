@@ -1490,680 +1490,79 @@ function getAudioContext() {
   return audioCtx;
 }
 
-const NOTE_FREQS = {
-  'G2': 98.00, 'A2': 110.00, 'B2': 123.47,
-  'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
-  'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
-  'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'B5': 987.77,
-  'C6': 1046.50
-};
-
-// Polyphonic 8 Songs Library with Real Singer Audio/Video & Vocals
-const SONGS_LIBRARY = {
-  'butterfly': {
-    id: 'butterfly',
-    title: 'Kìa Con Bướm Vàng',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'UL4lDzpz6yk',
-    icon: '🦋',
-    bpm: 130,
-    lyrics: [
-      { text: "Kìa con bướm vàng, kìa con bướm vàng 🦋", duration: 4 },
-      { text: "Xòe đôi cánh, xòe đôi cánh ✨", duration: 4 },
-      { text: "Bươm bướm bay lượn khắp vườn hoa 🌸", duration: 4 },
-      { text: "Bé ngắm xem, bé ngắm xem! 💖", duration: 4 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 0.5 },
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 0.5 },
-      { note: 'E4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'G4', dur: 0.25 }, { note: 'A4', dur: 0.25 }, { note: 'G4', dur: 0.25 }, { note: 'F4', dur: 0.25 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 0.5 },
-      { note: 'G4', dur: 0.25 }, { note: 'A4', dur: 0.25 }, { note: 'G4', dur: 0.25 }, { note: 'F4', dur: 0.25 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 0.5 },
-      { note: 'C4', dur: 0.5 }, { note: 'G3', dur: 0.5 }, { note: 'C4', dur: 1.0 },
-      { note: 'C4', dur: 0.5 }, { note: 'G3', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'frog': {
-    id: 'frog',
-    title: 'Chú Ếch Con',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'k8Qv36HebWY',
-    icon: '🐸',
-    bpm: 140,
-    lyrics: [
-      { text: "Kìa chú là chú ếch con có hai là hai mắt tròn 🐸", duration: 4 },
-      { text: "Chú ngồi học bài một mình bên hố bom kề vườn xoan 🍃", duration: 4 },
-      { text: "Bao cô cá trê non cùng bao chú cá rô ron 🐟", duration: 4 },
-      { text: "Tung tăng chiếc vây son nhịp theo tiếng ếch vang dồn! 🎶", duration: 4 }
-    ],
-    notes: [
-      { note: 'G4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 },
-      { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 0.5 },
-      { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'G4', dur: 0.5 },
-      { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'star': {
-    id: 'star',
-    title: 'Ngôi Sao Nhỏ (Twinkle Star)',
-    category: 'Giai điệu diệu kỳ',
-    singer: 'Super Simple Songs',
-    youtubeId: 'yCjJyiqpAuU',
-    icon: '⭐',
-    bpm: 110,
-    lyrics: [
-      { text: "Twinkle, twinkle, little star ⭐", duration: 4 },
-      { text: "How I wonder what you are! ✨", duration: 4 },
-      { text: "Up above the world so high 🌙", duration: 4 },
-      { text: "Like a diamond in the sky! 💎", duration: 4 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'G4', dur: 0.5 },
-      { note: 'A4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'F4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'E4', dur: 0.5 },
-      { note: 'D4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'F4', dur: 0.5 },
-      { note: 'E4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
-      { note: 'C4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'G4', dur: 0.5 },
-      { note: 'A4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 }
-    ]
-  },
-  'birthday': {
-    id: 'birthday',
-    title: 'Chúc Mừng Sinh Nhật (Happy Birthday)',
-    category: 'Bài hát vui nhộn',
-    singer: 'Ca sĩ thiếu nhi Kids TV',
-    youtubeId: '_z-1fTlSDF0',
-    icon: '🎂',
-    bpm: 125,
-    lyrics: [
-      { text: "Happy Birthday to you! 🎂", duration: 3 },
-      { text: "Happy Birthday to you! 🎈", duration: 3 },
-      { text: "Happy Birthday bé yêu của Kuromi! 💖", duration: 4 },
-      { text: "Happy Birthday to you! 🎉", duration: 3 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.35 }, { note: 'C4', dur: 0.15 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'C4', dur: 0.35 }, { note: 'C4', dur: 0.15 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'F4', dur: 1.0 },
-      { note: 'C4', dur: 0.35 }, { note: 'C4', dur: 0.15 }, { note: 'C5', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
-      { note: 'B4', dur: 0.35 }, { note: 'B4', dur: 0.15 }, { note: 'A4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'F4', dur: 1.2 }
-    ]
-  },
-  'family': {
-    id: 'family',
-    title: 'Cả Nhà Thương Nhau',
-    category: 'Tình cảm gia đình',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'SIZl1_d17uo',
-    icon: '👨‍👩‍👧',
-    bpm: 115,
-    lyrics: [
-      { text: "Ba thương con vì con giống mẹ 💖", duration: 3.5 },
-      { text: "Mẹ thương con vì con giống ba 👨‍👩‍👧", duration: 3.5 },
-      { text: "Cả nhà ta cùng thương yêu nhau ✨", duration: 3.5 },
-      { text: "Xa là nhớ, gần nhau là cười! 😊", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'A4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.2 }
-    ]
-  },
-  'locust': {
-    id: 'locust',
-    title: 'Con Cào Cào',
-    category: 'Vui khỏe mỗi ngày',
-    singer: 'Mầm Chồi Lá',
-    youtubeId: '3TQqcORbt6c',
-    icon: '🦗',
-    bpm: 135,
-    lyrics: [
-      { text: "Con cào cào có cái cánh xanh xanh 🦗", duration: 3.5 },
-      { text: "Nó bay rất nhanh từ bụi tre qua lùm bèo ✨", duration: 3.5 },
-      { text: "Bé muốn khỏe đẹp thì hãy tập thể thao! 💪", duration: 3.5 },
-      { text: "Ai muốn khỏe đẹp thì hãy tập thể thao! 🌟", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.2 }
-    ]
-  },
-  'preschool': {
-    id: 'preschool',
-    title: 'Cháu Lên Ba',
-    category: 'Tuổi thơ ngọt ngào',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'oTW2jBkLnHE',
-    icon: '🎒',
-    bpm: 128,
-    lyrics: [
-      { text: "Cháu lên ba cháu đi mẫu giáo 🎒", duration: 3.5 },
-      { text: "Cô thương cháu vì cháu không khóc nhè! 💖", duration: 3.5 },
-      { text: "Không khóc nhè để mẹ trồng cây trái 🌳", duration: 3.5 },
-      { text: "Ba vào nhà máy ông bà vui cấy cày! 🌾", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'G3', dur: 0.5 }, { note: 'C4', dur: 1.2 }
-    ]
-  },
-  'teeth': {
-    id: 'teeth',
-    title: 'Bé Tập Đánh Răng',
-    category: 'Thói quen bé ngoan',
-    singer: 'Bé Mai Vy',
-    youtubeId: 'pw6rw2_ZhCU',
-    icon: '🪥',
-    bpm: 130,
-    lyrics: [
-      { text: "Bé cầm chiếc bàn chải xinh xắn 🪥", duration: 3.5 },
-      { text: "Kem thơm thơm cùng bọt trắng tinh ✨", duration: 3.5 },
-      { text: "Đánh hàm trên rồi lại hàm dưới 🦷", duration: 3.5 },
-      { text: "Răng trắng tinh nụ cười xinh tươi! 💖", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 },
-      { note: 'B4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'F4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'F4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'G3', dur: 0.5 }, { note: 'C4', dur: 1.2 }
-    ]
-  },
-  'backimthang': {
-    id: 'backimthang',
-    title: 'Bắc Kim Thang',
-    category: 'Đồng dao thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: '5dmAgpLJK7E',
-    icon: '🌾',
-    bpm: 125,
-    lyrics: [
-      { text: "Bắc kim thang cà lang bí rợ 🌾", duration: 3.5 },
-      { text: "Cột qua kèo, là kèo qua cột 🪵", duration: 3.5 },
-      { text: "Chú bán dầu qua cầu mà té 🛢️", duration: 3.5 },
-      { text: "Chú bán ếch ở lại làm chi! Con le le đánh trống thổi kèn! 🦆🥁", duration: 4.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 },
-      { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'chuvoicon': {
-    id: 'chuvoicon',
-    title: 'Chú Voi Con Ở Bản Đôn',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Cao Lê Hà Trang',
-    youtubeId: 'QMW4M-03wBo',
-    icon: '🐘',
-    bpm: 128,
-    lyrics: [
-      { text: "Chú voi con ở Bản Đôn, chưa có ngà nên còn trẻ con 🐘", duration: 3.8 },
-      { text: "Từ rừng già chú đến với người, rất ham ăn với lại ham chơi! 🌿", duration: 3.8 },
-      { text: "Voi con ơi, voi con ơi, mau lớn nhanh có đôi ngà to ✨", duration: 3.8 },
-      { text: "Có sức đi khắp miền rừng xa, kéo gỗ cho buôn làng của ta! 🪵💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 1.0 },
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'dihocve': {
-    id: 'dihocve',
-    title: 'Đi Học Về',
-    category: 'Bài hát lễ phép',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'YqVUlQ5Ls1U',
-    icon: '🎒',
-    bpm: 120,
-    lyrics: [
-      { text: "Đi học về là đi học về, em vào nhà em chào cha mẹ 🎒", duration: 3.8 },
-      { text: "Cha em khen rằng em rất ngoan, mẹ âu yếm hôn đôi má em! 💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'E4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'conheodat': {
-    id: 'conheodat',
-    title: 'Con Heo Đất',
-    category: 'Vui tươi rộn ràng',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'd_oNWvY8QVA',
-    icon: '🐷',
-    bpm: 130,
-    lyrics: [
-      { text: "Mẹ mua cho con heo đất, í o i ò 🐷", duration: 3.5 },
-      { text: "Ngày hôm nay em vui lắm, cầm tiền xu em thả vào lưng heo! 🪙", duration: 4.0 },
-      { text: "Heo không đòi ăn cơm, heo chỉ đòi ăn tiền xu thôi nè! ✨", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 }
-    ]
-  },
-  'chauyeuba': {
-    id: 'chauyeuba',
-    title: 'Cháu Yêu Bà',
-    category: 'Tình cảm gia đình',
-    singer: 'Bé Xuân Mai',
-    youtubeId: '_WPF__SVBn0',
-    icon: '👵',
-    bpm: 110,
-    lyrics: [
-      { text: "Bà ơi bà, cháu yêu bà lắm 👵💖", duration: 3.5 },
-      { text: "Tóc bà trắng màu trắng như mây ☁️", duration: 3.5 },
-      { text: "Cháu yêu bà cháu nắm bàn tay, khi cháu vâng lời cháu biết bà vui! ✨", duration: 4.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
-    ]
-  },
-  'babyshark': {
-    id: 'babyshark',
-    title: 'Baby Shark Dance',
-    category: 'Quốc tế vui nhộn',
-    singer: 'Pinkfong Kids',
-    youtubeId: 'XqZsoesa55w',
-    icon: '🦈',
-    bpm: 135,
-    lyrics: [
-      { text: "Baby shark, doo-doo doo-doo doo-doo 🦈", duration: 3.5 },
-      { text: "Baby shark, doo-doo doo-doo doo-doo! 🌊", duration: 3.5 },
-      { text: "Mommy shark, doo-doo doo-doo doo-doo 💖", duration: 3.5 },
-      { text: "Daddy shark, doo-doo doo-doo doo-doo! 💪", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.3 }, { note: 'G4', dur: 0.3 }, { note: 'G4', dur: 0.3 }, { note: 'G4', dur: 0.3 }, { note: 'G4', dur: 0.3 }
-    ]
-  },
-  'motconvit': {
-    id: 'motconvit',
-    title: 'Một Con Vịt',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'OcIALhFrt-Q',
-    icon: '🦆',
-    bpm: 130,
-    lyrics: [
-      { text: "Một con vịt xòe ra hai cái cánh 🦆", duration: 3.5 },
-      { text: "Nó kêu rằng: Cáp cáp cáp, cạp cạp cạp! 💦", duration: 3.5 },
-      { text: "Gặp hồ nước nó bì bà bì bõm 🌊", duration: 3.5 },
-      { text: "Lúc lên bờ vẫy cái cánh cho khô! ✨", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 }
-    ]
-  },
-  'bongbongbangbang': {
-    id: 'bongbongbangbang',
-    title: 'Bống Bống Bang Bang',
-    category: 'Vũ điệu thiếu nhi',
-    singer: 'Bé Bào Ngư',
-    youtubeId: 'GhZML0HSli8',
-    icon: '🐟',
-    bpm: 135,
-    lyrics: [
-      { text: "Bống bống bang bang lên ăn cơm vàng cơm bạc nhà ta 🐟✨", duration: 4.0 },
-      { text: "Chớ ăn cơm hẩm cháo hoa nhà người! 💖", duration: 3.5 },
-      { text: "Bống bống bang bang, bé cùng nhún nhảy theo điệu nhảy siêu vui nhé! 💃", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }, { note: 'C5', dur: 1.0 },
-      { note: 'D5', dur: 0.5 }, { note: 'C5', dur: 0.5 }, { note: 'A4', dur: 1.0 }
-    ]
-  },
-  'bangocnen': {
-    id: 'bangocnen',
-    title: 'Ba Ngọn Nến Lung Linh',
-    category: 'Tình cảm gia đình',
-    singer: 'Ngọc Lễ & Phương Thảo',
-    youtubeId: 'CIj9kO9IgzQ',
-    icon: '🕯️',
-    bpm: 115,
-    lyrics: [
-      { text: "Ba là cây nến vàng, mẹ là cây nến xanh 🕯️", duration: 3.5 },
-      { text: "Con là cây nến hồng, ba ngọn nến lung linh ✨", duration: 3.5 },
-      { text: "Thắp sáng một gia đình, đầm ấm và yêu thương! 💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 },
-      { note: 'A4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 1.0 }
-    ]
-  },
-  'meo': {
-    id: 'meo',
-    title: 'Rửa Mặt Như Mèo',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'yC9MpeW8qfY',
-    icon: '🐱',
-    bpm: 130,
-    lyrics: [
-      { text: "Meo meo meo, rửa mặt như mèo 🐱", duration: 3.5 },
-      { text: "Xấu xấu lắm chẳng được mẹ yêu! 💖", duration: 3.5 },
-      { text: "Khăn mặt đâu mà ngồi liếm láp ✨", duration: 3.5 },
-      { text: "Đau mắt rồi lại khóc meo meo! 😿", duration: 3.5 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
-  },
-  'alibaba': {
-    id: 'alibaba',
-    title: 'Alibaba',
-    category: 'Vui nhộn',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'Fu0IT5oRx7Q',
-    icon: '👳‍♂️',
-    bpm: 135,
-    lyrics: [
-      { text: "Khi xưa Alibaba như vầng trăng sáng chiếu trên trần gian 🌙", duration: 4.0 },
-      { text: "Hôm nay Alibaba như làn mây ấm phiêu du ngàn nơi ✨", duration: 4.0 },
-      { text: "Alibaba, Alibaba, vui tươi đáng yêu ngàn đời! 💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 }
-    ]
-  },
-  'chiongnau': {
-    id: 'chiongnau',
-    title: 'Chị Ong Nâu Và Em Bé',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Mầm Chồi Lá',
-    youtubeId: 'S5VJ1CWHzO4',
-    icon: '🐝',
-    bpm: 125,
-    lyrics: [
-      { text: "Chị ong nâu nâu nâu nâu, chị bay đi đâu đi đâu? 🐝", duration: 4.0 },
-      { text: "Bác gà trống mới gáy, ông mặt trời mới dậy ☀️", duration: 4.0 },
-      { text: "Mà trên những cành hoa em đã thấy chị bay 🌸", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
-    ]
-  },
-  'doithuyen': {
-    id: 'doithuyen',
-    title: 'Em Đi Chơi Thuyền',
-    category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'MrIo8gZ7tSw',
-    icon: '⛵',
-    bpm: 120,
-    lyrics: [
-      { text: "Em đi chơi thuyền trong thảo cầm viên ⛵", duration: 3.5 },
-      { text: "Chim kêu hót mừng chào đón xuân về 🌸", duration: 3.5 },
-      { text: "Thuyền con vịt nó bơi bơi bơi, thuyền con rồng nó bay bay bay! 🦆", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 }
-    ]
-  },
-  'traidatnay': {
-    id: 'traidatnay',
-    title: 'Trái Đất Này Là Của Chúng Mình',
-    category: 'Hòa bình & Bạn bè',
-    singer: 'Bé Mai Vy',
-    youtubeId: '6_fMOEtzgU8',
-    icon: '🌍',
-    bpm: 125,
-    lyrics: [
-      { text: "Trái đất này là của chúng mình 🌍", duration: 3.5 },
-      { text: "Quả bóng xanh bay giữa trời xanh 🎈", duration: 3.5 },
-      { text: "Bồ câu ơi tiếng chim gù thương mến, hải âu ơi cánh chim vờn sóng biển! 🕊️", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
-    ]
-  },
-  'concobebe': {
-    id: 'concobebe',
-    title: 'Con Cò Bé Bé',
-    category: 'Đồng dao tuổi thơ',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'jO2vrSXVDo0',
-    icon: '🕊️',
-    bpm: 120,
-    lyrics: [
-      { text: "Con cò bé bé nó đậu cành tre 🕊️", duration: 3.5 },
-      { text: "Đi không hỏi mẹ biết đi đường nào 🌿", duration: 3.5 },
-      { text: "Khi đi em hỏi, khi về em chào, miệng em chúm chím mẹ có yêu không nào! 💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 }
-    ]
-  },
-  'thangcuoi': {
-    id: 'thangcuoi',
-    title: 'Thằng Cuội',
-    category: 'Đồng dao cổ tích',
-    singer: 'Ca sĩ thiếu nhi',
-    youtubeId: '_8r2T85vVz0',
-    icon: '🌙',
-    bpm: 110,
-    lyrics: [
-      { text: "Bóng trăng trắng ngà, có cây đa to 🌙", duration: 3.5 },
-      { text: "Có thằng Cuội già, ôm một mối mơ 🌟", duration: 3.5 },
-      { text: "Gió mây cùng đùa, trăng sáng lung linh khắp trần gian! ✨", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 }
-    ]
-  },
-  'chimvanhkhuyen': {
-    id: 'chimvanhkhuyen',
-    title: 'Con Chim Vành Khuyên',
-    category: 'Bài hát lễ phép',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'WyRtgnf5Tds',
-    icon: '🐦',
-    bpm: 125,
-    lyrics: [
-      { text: "Có con chim vành khuyên nhỏ, dáng trông thật ngoan ngoãn quá 🐦", duration: 3.5 },
-      { text: "Gọi dạ, bảo vâng, líu lo chào đón mọi người ✨", duration: 3.5 },
-      { text: "Chim gặp bác chào mào chào bác, chim gặp cô sơn ca chào cô! 🌸", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
-    ]
-  },
-  'namngontayngoan': {
-    id: 'namngontayngoan',
-    title: 'Năm Ngón Tay Ngoan',
-    category: 'Bài hát giáo dục',
-    singer: 'Bé Khánh Ngọc',
-    youtubeId: 'i9nHld-R8HI',
-    icon: '🖐️',
-    bpm: 120,
-    lyrics: [
-      { text: "Xòe bàn tay, đếm ngón tay 🖐️", duration: 3.5 },
-      { text: "Một anh béo trông thật đến hay, ngón tay cái là anh cả! ✨", duration: 3.5 },
-      { text: "Cả năm ngón tay đều chăm chỉ, giúp bé làm bao việc tốt mỗi ngày! 💖", duration: 4.0 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 }
-    ]
-  }
-};
-
 // =============================================================================
-// DYNAMIC UNLIMITED SONGS ENGINE (MATCH & GENERATE ANY SONG IN THE WORLD)
+// 100% PURE GOOGLE GEMINI AI DYNAMIC SONGS & MUSIC ENGINE
+// (Loại bỏ hoàn toàn kho bài hát tĩnh - Mọi bài hát & lời ca do Gemini AI tạo thời gian thực)
 // =============================================================================
-// Alias dictionary for instantaneous keyword & typo recognition
-const SONG_ALIASES = {
-  'butterfly': ['con buom', 'buom vang', 'kia con buom vang', 'kia con buom', 'con buom vang', 'nhac con buom', 'nhac kia con buom vang'],
-  'frog': ['chu ech', 'ech con', 'chu ech con', 'hai mat tron', 'ho bom', 'nhac chu ech con', 'nhac ech con'],
-  'family': ['ca nha', 'ca nha thuong nhau', 'ba thuong con', 'thuong yeu nhau', 'me thuong con', 'nhac ca nha thuong nhau'],
-  'locust': ['cao cao', 'con cao cao', 'canh xanh xanh', 'khoe dep', 'nhac con cao cao'],
-  'preschool': ['chau len ba', 'chau len 3', 'di mau giao', 'co thuong chau', 'khong khoc nhe', 'nhac chau len ba'],
-  'teeth': ['danh rang', 'tap danh rang', 'be tap danh rang', 'rang trang', 'trang tinh', 'nhac be tap danh rang'],
-  'backimthang': ['bac kim thang', 'nhac bac kim thang', 'bai hat bac kim thang', 'ca lang bi ro', 'chu ban dau', 'chu ban ech'],
-  'chuvoicon': ['chu voi', 'voi con', 'ban don', 'o ban don', 'chu voi con', 'nhac chu voi con'],
-  'dihocve': ['di hoc ve', 'chao cha me', 'cha khen', 'di hoc', 'nhac di hoc ve'],
-  'conheodat': ['con heo dat', 'heo dat', 'lon dat', 'tien xu', 'i o i o', 'nhac con heo dat'],
-  'chauyeuba': ['chau yeu ba', 'ba oi ba', 'toc ba trang', 'yeu ba', 'nhac chau yeu ba'],
-  'motconvit': ['mot con vit', '1 con vit', 'con vit', 'xoe ra hai cai canh', 'cap cap', 'bi ba bi bom', 'nhac mot con vit'],
-  'bongbongbangbang': ['bong bong bang bang', 'bong bong', 'com vang com bac', 'nhac bong bong bang bang'],
-  'bangocnen': ['ba ngon nen', 'ngon nen', 'ba ngon nen lung linh', 'ba la cay nen vang', 'nhac ba ngon nen lung linh'],
-  'alibaba': ['alibaba', 'ali ba ba', 'khi xua alibaba', 'nhac alibaba'],
-  'chiongnau': ['chi ong nau', 'ong nau', 'chi ong nau nau', 'ong nau va em be', 'nhac chi ong nau'],
-  'doithuyen': ['em di choi thuyen', 'di choi thuyen', 'thuyen con vit', 'nhac em di choi thuyen'],
-  'traidatnay': ['trai dat nay la cua chung minh', 'trai dat nay', 'qua bong xanh', 'nhac trai dat nay'],
-  'concobebe': ['con co be be', 'co be be', 'con co', 'nhac con co be be'],
-  'thangcuoi': ['thang cuoi', 'chu cuoi', 'bong trang trang', 'nhac thang cuoi'],
-  'chimvanhkhuyen': ['chim vanh khuyen', 'con chim vanh khuyen', 'vanh khuyen nho', 'nhac chim vanh khuyen'],
-  'namngontayngoan': ['nam ngon tay ngoan', 'ngon tay ngoan', 'nhac nam ngon tay ngoan'],
-  'meo': ['rua mat nhu meo', 'meo meo', 'con meo', 'meo rua mat', 'meo con', 'nhac rua mat nhu meo'],
-  'star': ['ngoi sao nho', 'ngoi sao', 'twinkle', 'little star', 'sao nho', 'nhac ngoi sao nho'],
-  'birthday': ['chuc mung sinh nhat', 'sinh nhat', 'happy birthday', 'birthday', 'nhac sinh nhat'],
-  'babyshark': ['baby shark', 'ca map', 'shark dance', 'pinkfong', 'nhac baby shark']
-};
+const DYNAMIC_SONGS_CACHE = {};
+const SONGS_LIBRARY = DYNAMIC_SONGS_CACHE; // Khả năng tương thích an toàn
 
-function matchSongKey(songName) {
-  if (!songName) return null;
-  const rawNorm = removeVietnameseTones(songName).replace(/[.,?!;]/g, '').trim().toLowerCase();
-  if (rawNorm.length < 2) return null;
-
-  // Loại bỏ các tiền tố thông dụng như "nhac", "bai hat", "ca khuc", "bai", "hat bai"...
-  const cleanNorm = rawNorm.replace(/^(?:nhac|bai hat|ca khuc|bai ca|bai nhac|bai|hat bai|hat)\s+/, '').trim();
-
-  // 1. Khớp chính xác với từ khóa Alias (cả dạng gốc lẫn dạng đã làm sạch tiền tố)
-  for (const key in SONG_ALIASES) {
-    for (const alias of SONG_ALIASES[key]) {
-      if (rawNorm === alias || cleanNorm === alias) {
-        return key;
-      }
-    }
+function registerDynamicSongFromGemini(meta) {
+  if (!meta || !meta.title) return null;
+  const cleanTitle = String(meta.title).trim();
+  const dynKey = 'gemini_song_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+  
+  let formattedLyrics = [];
+  if (Array.isArray(meta.lyrics) && meta.lyrics.length > 0) {
+    formattedLyrics = meta.lyrics
+      .map(line => ({ text: String(line).trim(), duration: 4 }))
+      .filter(l => l.text.length > 0);
+  }
+  
+  if (formattedLyrics.length === 0) {
+    formattedLyrics = [
+      { text: `Bé cùng vỗ tay nhún nhảy theo bài hát "${cleanTitle}" nhé! 🎶`, duration: 4 },
+      { text: `Kuromi chúc bé nghe nhạc thật vui và ngập tràn nụ cười! 💖✨`, duration: 4 }
+    ];
   }
 
-  // 2. Khớp chính xác với Tên Bài Hát trong thư viện
-  for (const key in SONGS_LIBRARY) {
-    const s = SONGS_LIBRARY[key];
-    const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    if (rawNorm === normTitle || cleanNorm === normTitle) {
-      return key;
-    }
-  }
-
-  // 3. Khớp cụm từ phụ (Substring matching)
-  for (const key in SONG_ALIASES) {
-    for (const alias of SONG_ALIASES[key]) {
-      if (alias.length >= 5 && (rawNorm.includes(alias) || cleanNorm.includes(alias) || (cleanNorm.length >= 5 && alias.includes(cleanNorm)))) {
-        return key;
-      }
-    }
-  }
-
-  for (const key in SONGS_LIBRARY) {
-    const s = SONGS_LIBRARY[key];
-    const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    if (normTitle.length >= 5 && (rawNorm.includes(normTitle) || cleanNorm.includes(normTitle) || (cleanNorm.length >= 5 && normTitle.includes(cleanNorm)))) {
-      return key;
-    }
-  }
-
-  return null;
-}
-
-function getOrCreateSong(songName) {
-  const matchedKey = matchSongKey(songName);
-  if (matchedKey) return matchedKey;
-
-  // Clean title for dynamic song
-  let rawTitle = songName.trim();
-  rawTitle = rawTitle.replace(/^(?:nhạc|bài\s+hát|bài\s+ca|bài\s+nhạc|bài|ca\s+khúc|hát\s+bài|hát)\s+/i, '').trim();
-  const cleanTitle = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
-  const dynKey = 'dyn_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
-
-  SONGS_LIBRARY[dynKey] = {
+  const songObj = {
     id: dynKey,
     title: cleanTitle,
-    category: 'Ca khúc thiếu nhi yêu thích',
-    singer: 'Ca sĩ thiếu nhi',
-    youtubeId: null, // Dynamic YouTube Search
-    youtubeQuery: `${cleanTitle} thiếu nhi`,
+    category: 'Ca khúc do Google Gemini AI cung cấp',
+    singer: meta.singer || 'Ca sĩ thiếu nhi',
+    youtubeId: meta.youtubeId || null,
+    youtubeQuery: meta.youtubeQuery || `${cleanTitle} thiếu nhi`,
     icon: '🎵',
     bpm: 125,
-    lyrics: [
-      { text: `Đang mở ca khúc "${cleanTitle}" cho bé nghe nè! 🎶`, duration: 4 },
-      { text: `Bé cùng vỗ tay nhún nhảy thật vui theo điệu nhạc nhé! 💖✨`, duration: 4 },
-      { text: `Kuromi chúc bé nghe nhạc vui vẻ và tràn ngập tiếng cười! 🌸🎀`, duration: 4 }
-    ],
-    notes: [
-      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 0.5 },
-      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'C4', dur: 1.0 }
-    ]
+    lyrics: formattedLyrics
   };
 
+  DYNAMIC_SONGS_CACHE[dynKey] = songObj;
   return dynKey;
 }
 
-function extractSongIntent(prompt) {
+function extractSongTitleFromPrompt(prompt) {
   if (!prompt) return null;
   const p = prompt.trim();
   const norm = removeVietnameseTones(p).toLowerCase();
 
-  // 0. LOẠI TRỪ TUYỆT ĐỐI: Nếu là câu hỏi, câu đố hoặc yêu cầu kể chuyện thì KHÔNG PHẢI là bài hát!
+  // Loại trừ câu hỏi thông thường, giải thích khoa học, kể chuyện
   if (/^(?:tai sao|vi sao|ke chuyen|chuyen|truyen|co\s+phai|la gi|the nao|ai la|o dau|lam sao|co\s+.*khong|\?)/i.test(norm) ||
       norm.includes('tai sao') || norm.includes('vi sao') || norm.includes('ke chuyen') || norm.includes('truyen')) {
     return null;
   }
 
-  // 1. Mẫu câu tìm kiếm và yêu cầu mở bài hát rõ ràng:
-  // "tìm bài hát [X]", "tìm bài [X]", "hát bài [X]", "mở bài [X]", "bật bài [X]", "cho bé nghe bài [X]"
   const patterns = [
     /(?:tìm|kiếm|tra|hát|nghe|bật|mở|phát)(?:\s+cho\s+bé)?(?:\s+nghe)?\s+bài(?:\s+hát|\s+ca)?\s+([^\.,?!;]+)/i,
     /(?:tìm|kiếm|hát|nghe|bật|mở|phát)\s+bài\s+([^\.,?!;]+)/i,
     /(?:tìm|kiếm|hát|nghe|bật|mở|phát)\s+ca\s+khúc\s+([^\.,?!;]+)/i,
     /(?:tìm|kiếm|mở|bật|nghe)\s+nhạc\s+([^\.,?!;]+)/i,
     /bài\s+(?:hát|ca)\s+([^\.,?!;]+)/i,
-    /ca\s+khúc\s+([^\.,?!;]+)/i,
-    /(?:hát|phát)\s+([^\.,?!;]+)/i
+    /ca\s+khúc\s+([^\.,?!;]+)/i
   ];
 
   for (const regex of patterns) {
     const m = p.match(regex);
     if (m && m[1]) {
-      let songName = m[1].trim();
-      songName = songName.replace(/\s+(đi|nào|với|nhé|nha|ạ|cho\s+bé|vui\s+nhộn|được\s+không).*$/i, '').trim();
-      songName = songName.replace(/^(?:nhạc|bài\s+hát|bài\s+ca|bài\s+nhạc|bài|ca\s+khúc|hát\s+bài|hát)\s+/i, '').trim();
-      if (songName.length > 1) {
-        return songName;
+      let title = m[1].trim();
+      title = title.replace(/\s+(đi|nào|với|nhé|nha|ạ|cho\s+bé|vui\s+nhộn|được\s+không).*$/i, '').trim();
+      title = title.replace(/^(?:nhạc|bài\s+hát|bài\s+ca|bài\s+nhạc|bài|ca\s+khúc|hát\s+bài|hát)\s+/i, '').trim();
+      if (title.length > 1) {
+        return title.charAt(0).toUpperCase() + title.slice(1);
       }
     }
   }
-
-  // 2. Yêu cầu chung: "hát đi", "hát một bài", "bật nhạc", "mở nhạc", "nghe nhạc", "hát bài mới", "hát cho bé nghe"
-  if (/^(?:hát(?:\s+đi|\s+nào|\s+cho\s+bé(?:\s+nghe)?|\s+một\s+bài)?|bật\s+nhạc|mở\s+nhạc|nghe\s+nhạc|hát\s+bài\s+mới)$/i.test(norm) ||
-      norm === 'hat' || norm === 'nghe nhac' || norm === 'bat nhac' || norm === 'mo nhac') {
-    const keys = ['frog', 'butterfly', 'motconvit', 'backimthang', 'conheodat', 'babyshark'];
-    const pick = keys[Math.floor(Math.random() * keys.length)];
-    return SONGS_LIBRARY[pick].title;
-  }
-
-  // 3. Khớp chính xác tên bài hát khi người dùng chỉ gõ đúng tên bài hát
-  const directKey = matchSongKey(p);
-  if (directKey) {
-    return SONGS_LIBRARY[directKey].title;
-  }
-
   return null;
 }
 
@@ -3502,7 +2901,22 @@ Quy tắc trả lời:
 - Trả lời cụ thể, giải thích rõ ràng câu hỏi của bé bằng ngôn ngữ trẻ em dễ hiểu, giàu cảm xúc, ngập tràn sự tích cực.
 - Khi bé hỏi "Tại sao...", câu hỏi khoa học, vũ trụ, động vật, tự nhiên hay đời sống: Giải thích nguyên nhân chuẩn xác, sinh động, dễ hiểu, dùng hình ảnh so sánh ngộ nghĩnh (3-5 câu).
 - Khi bé nhờ kể chuyện ("kể chuyện", "chuyện cổ tích", "kể chuyện bé nghe", chuyện Thánh Gióng, Thạch Sanh, Tấm Cám, công chúa, muông thú...): Hãy kể trọn vẹn một câu chuyện cổ tích / đồng thoại thật cuốn hút, ly kỳ, có mở đầu, cao trào và bài học yêu thương, lòng dũng cảm cho bé ${childName}.
-- Khi bé nhờ hát hoặc hỏi bài hát: Giới thiệu vui tươi bài hát, nhắc bé cùng xem và hát trên YouTube.
+- KHI BÉ YÊU CẦU HÁT, NGHE NHẠC, HOẶC NHẮC ĐẾN BÀI HÁT:
+  1. Trả lời trò chuyện thật ngọt ngào, khen ngợi và rủ bé cùng hát/nhún nhảy.
+  2. Ở CUỐI CÙNG của câu trả lời, hãy đính kèm một khối JSON đúng cấu trúc sau để Kuromi cất tiếng hát và tạo thẻ bài hát cho bé:
+\`\`\`song
+{
+  "title": "Tên bài hát",
+  "singer": "Tên ca sĩ hoặc 'Ca sĩ thiếu nhi'",
+  "youtubeQuery": "Từ khóa tìm kiếm YouTube chuẩn nhất",
+  "lyrics": [
+    "Câu hát 1",
+    "Câu hát 2",
+    "Câu hát 3",
+    "Câu hát 4"
+  ]
+}
+\`\`\`
 - Thêm nhiều emoji dễ thương (🎀, 💖, ⭐, 🐰, 🍭, 🌸, ✨, 🌈).
 - An toàn 100% cho trẻ nhỏ, luôn động viên và yêu thương bé.`;
 
@@ -3526,14 +2940,42 @@ Quy tắc trả lời:
         const data = await response.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
-          // Check if child explicitly asked for a song
-          const requestedSong = extractSongIntent(prompt);
+          let cleanAnswer = text;
           let detectedSongKey = null;
-          if (requestedSong) {
-            detectedSongKey = getOrCreateSong(requestedSong);
+
+          // 1. Trích xuất thông tin bài hát từ khối ```song ... ``` do Gemini cung cấp
+          const songBlockMatch = text.match(/```(?:song|json|gemini_song)?\s*(\{[\s\S]*?"title"[\s\S]*?\})\s*```/i);
+          if (songBlockMatch) {
+            try {
+              const songMeta = JSON.parse(songBlockMatch[1]);
+              if (songMeta && songMeta.title) {
+                detectedSongKey = registerDynamicSongFromGemini(songMeta);
+                cleanAnswer = text.replace(/```(?:song|json|gemini_song)?\s*\{[\s\S]*?"title"[\s\S]*?\}\s*```/gi, '').trim();
+              }
+            } catch (err) {
+              console.warn("Parse Gemini song metadata error:", err);
+            }
           }
+
+          // 2. Dự phòng thông minh: Nếu bé yêu cầu bài hát nhưng Gemini không đính kèm khối JSON
+          if (!detectedSongKey) {
+            const requestedTitle = extractSongTitleFromPrompt(prompt);
+            if (requestedTitle) {
+              detectedSongKey = registerDynamicSongFromGemini({
+                title: requestedTitle,
+                singer: 'Ca sĩ thiếu nhi',
+                youtubeQuery: `${requestedTitle} thiếu nhi`,
+                lyrics: [
+                  `Đang mở ca khúc "${requestedTitle}" cho bé nghe nè! 🎶`,
+                  `Bé cùng vỗ tay nhún nhảy thật vui theo điệu nhạc nhé! 💖✨`,
+                  `Kuromi chúc bé nghe nhạc vui vẻ và tràn ngập tiếng cười! 🌸🎀`
+                ]
+              });
+            }
+          }
+
           return {
-            answer: text,
+            answer: cleanAnswer,
             song: detectedSongKey
           };
         }
@@ -4050,10 +3492,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (quickSongBtn) {
     quickSongBtn.addEventListener('click', () => {
       playSfx('pop');
-      const songKeys = Object.keys(SONGS_LIBRARY);
-      const randomKey = songKeys[Math.floor(Math.random() * songKeys.length)];
-      const s = SONGS_LIBRARY[randomKey];
-      handleChildSubmit(`Hát cho bé nghe bài ${s.title}`);
+      handleChildSubmit(`Kuromi ơi, hát cho bé nghe một bài hát thiếu nhi thật vui nhộn nhé! 🎶`);
     });
   }
 
