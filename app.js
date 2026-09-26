@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS = {
   ttsEnabled: true,
   sfxEnabled: true,
   voiceStyle: 'kuromi_anime', // 'kuromi_anime', 'google_online', 'fairy', 'device'
-  familySyncCode: 'baohan2026'
+  familySyncCode: 'baohan0311'
 };
 
 function loadSettings() {
@@ -230,8 +230,8 @@ const KuromiSync = {
   suppressOutbound: false,
 
   getFamilyCode() {
-    const raw = (APP_STATE.settings && APP_STATE.settings.familySyncCode) ? APP_STATE.settings.familySyncCode : 'baohan2026';
-    return raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'baohan2026';
+    const raw = (APP_STATE.settings && APP_STATE.settings.familySyncCode) ? APP_STATE.settings.familySyncCode : 'baohan0311';
+    return raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '') || 'baohan0311';
   },
 
   updateStatusUi(status, detail) {
@@ -4430,7 +4430,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : (APP_STATE.settings.childName || 'Bảo Hân');
     const selectedVoice = document.querySelector('input[name="voiceStyle"]:checked')?.value || 'kuromi_anime';
     const familyCodeInput = document.getElementById('familySyncCodeInput');
-    const syncCode = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan2026';
+    const syncCode = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan0311';
 
     saveSettings({
       aiMode: selectedMode,
@@ -4453,7 +4453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     manualSyncBtn.addEventListener('click', async () => {
       playSfx('pop');
       const familyCodeInput = document.getElementById('familySyncCodeInput');
-      const code = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan2026';
+      const code = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan0311';
       APP_STATE.settings.familySyncCode = code;
       saveSettings({ familySyncCode: code });
       if (window.KuromiSync) {
@@ -4664,7 +4664,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Populate familySyncCode input if element exists
   const familyCodeInput = document.getElementById('familySyncCodeInput');
   if (familyCodeInput) {
-    familyCodeInput.value = APP_STATE.settings.familySyncCode || 'baohan2026';
+    familyCodeInput.value = APP_STATE.settings.familySyncCode || 'baohan0311';
   }
 
   // Initialize Firebase Cloud Sync
