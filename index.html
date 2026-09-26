@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="referrer" content="no-referrer">
-  <title>Kuromi & Bé Bảo Hân | Trợ Lý AI Đa Giác Quan</title>
-  <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio chân thật dành riêng cho bé Bảo Hân. Bách khoa toàn thư tri thức nhí, hình ảnh dẫn chứng, nghe nhạc và âm thanh muôn loài sống động.">
+  <title>Kuromi & Bé Bảo Hân | Trợ Lý AI 100% Google Gemini</title>
+  <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio thông minh 100% Google Gemini trực tuyến dành riêng cho bé Bảo Hân. Giải đáp khoa học, kể chuyện cổ tích, nghe nhạc YouTube và học tập vui vẻ.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Kuromi AI">
@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Lexend:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.7">
+  <link rel="stylesheet" href="style.css?v=4.8">
 </head>
 <body>
   <div class="stars-particle-container" id="starsContainer"></div>
@@ -461,18 +461,13 @@
         </div>
         <div class="settings-group">
           <label class="setting-label">
-            <strong>🤖 Chế Độ Trí Tuệ Nhân Tạo (AI Engine)</strong>
-            <span class="setting-desc">Kuromi sử dụng trí tuệ nhân tạo Google Gemini AI thế hệ mới để trả lời thông minh, giải thích khoa học và kể chuyện cổ tích tuyệt hay cho bé.</span>
+            <strong>🤖 Trí Tuệ Nhân Tạo Google Gemini AI (100% Trực Tuyến)</strong>
+            <span class="setting-desc">Kuromi hoạt động 100% bằng trí tuệ nhân tạo đám mây Google Gemini AI, không còn sử dụng dữ liệu tĩnh nội bộ. Kuromi có thể trả lời mọi câu hỏi, giải toán, kể bất kỳ câu chuyện cổ tích nào và tương tác sinh động với bé Bảo Hân.</span>
           </label>
-          <div class="ai-mode-selector">
-            <label class="radio-label">
-              <input type="radio" name="aiMode" value="gemini" checked id="modeGemini">
-              <span>Google Gemini AI Siêu Trí Tuệ (Khuyên dùng)</span>
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="aiMode" value="local" id="modeLocal">
-              <span>Chế độ ngoại tuyến (Offline)</span>
-            </label>
+          
+          <div class="gemini-active-badge">
+            <span class="pulse-green-dot"></span>
+            <span><strong>Đang kết nối:</strong> Google Gemini AI Cloud (100% Dữ Liệu Trực Tuyến)</span>
           </div>
           
           <div class="api-key-block" id="apiKeyBlock">
@@ -482,7 +477,7 @@
               <button type="button" id="testApiKeyBtn" class="test-api-btn">🔍 Kiểm Tra</button>
             </div>
             <div id="apiKeyStatus" class="api-key-status-msg hidden"></div>
-            <small style="color: var(--kuromi-lavender); font-size: 0.78rem;">Khóa API kết nối với máy chủ Google AI. Bạn có thể lấy khóa miễn phí tại Google AI Studio bất kỳ lúc nào.</small>
+            <small style="color: var(--kuromi-lavender); font-size: 0.78rem;">Khóa API kết nối trực tiếp với máy chủ Google Gemini. Ba mẹ lấy khóa miễn phí tại Google AI Studio.</small>
           </div>
         </div>
 
@@ -690,6 +685,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=4.7"></script>
+  <script src="app.js?v=4.8"></script>
 </body>
 </html>
