@@ -2323,7 +2323,32 @@ let cachedVietnameseVoice = null;
 let activeSpeechUtterance = null;
 let webSpeechWatchdogTimer = null;
 
+function cleanKidResponseText(text) {
+  if (!text) return '';
+  let str = text;
+
+  // 1. Loại bỏ toàn bộ các khối mã kỹ thuật (```visual ... ```, ```song ... ```, ```json ... ```)
+  str = str.replace(/```[a-zA-Z0-9_]*[\s\S]*?```/gi, '');
+
+  // 2. Loại bỏ bất kỳ đoạn JSON kỹ thuật nào chứa visual / title / caption / searchTerm / lyrics / youtubeQuery
+  str = str.replace(/\{[\s\S]*?(?:title|caption|searchTerm|keyword|youtubeQuery|lyrics)[\s\S]*?\}/gi, '');
+
+  // 3. Loại bỏ các dòng kỹ thuật chứa từ khóa "title":, "caption":, "searchTerm":, "visual":
+  str = str.replace(/^[ \t]*"?(?:visual|title|caption|searchTerm|keyword|youtubeQuery|lyrics|bpm|icon)"?\s*:[^\r\n]*/gmi, '');
+
+  // 4. Loại bỏ các dấu ngoặc nhọn, dấu backtick mồ côi
+  str = str.replace(/^[ \t]*```[a-z]*[ \t]*$/gmi, '');
+  str = str.replace(/^[ \t]*[{\}][ \t]*$/gmi, '');
+
+  // 5. Chuẩn hóa khoảng trống và xuống dòng
+  str = str.replace(/\n{3,}/g, '\n\n').trim();
+  return str;
+}
+
 function cleanKidTextForTts(text) {
+  if (!text) return '';
+  const noJson = cleanKidResponseText(text);
+  return noJson
   if (!text) return '';
   return text
     .replace(/https?:\/\/\S+/g, '')
@@ -3089,12 +3114,14 @@ Quy tắc trả lời:
           let detectedVisual = null;
 
           // 2. Trích xuất thông tin tranh dẫn chứng từ khối ```visual ... ``` do Gemini cung cấp
-          const visualBlockMatch = cleanAnswer.match(/\`\`\`(?:visual|image)?\\s*(\\{[\\s\\S]*?"title"[\\s\\S]*?\\})\\s*\`\`\`/i);
+          const visualBlockMatch = cleanAnswer.match(/```(?:visual|image|json)?\s*(\{[\s\S]*?"title"[\s\S]*?\})\s*```/i)
+            || cleanAnswer.match(/(\{[\s\S]*?"title"[\s\S]*?"caption"[\s\S]*?\})/i);
+
           if (visualBlockMatch) {
             try {
               const vMeta = JSON.parse(visualBlockMatch[1]);
               if (vMeta && vMeta.title) {
-                const searchQ = vMeta.searchTerm || vMeta.title;
+                const searchQ = vMeta.searchTerm || vMeta.keyword || vMeta.title;
                 const imgSrc = await fetchRealImageForChild(searchQ, vMeta.title);
                 if (imgSrc) {
                   detectedVisual = {
@@ -3107,7 +3134,6 @@ Quy tắc trả lời:
             } catch (err) {
               console.warn("Parse Gemini visual metadata error:", err);
             }
-            cleanAnswer = cleanAnswer.replace(/\`\`\`(?:visual|image)?\\s*\\{[\\s\\S]*?"title"[\\s\\S]*?\\}\\s*\`\`\`/gi, '').trim();
           }
 
           // 3. Dự phòng hình ảnh thông minh: Nếu bé hỏi kiến thức/thiên nhiên/động vật hoặc hỏi hình ảnh mà Gemini chưa gắn khối visual
@@ -3128,6 +3154,9 @@ Quy tắc trả lời:
               }
             }
           }
+
+          // 4. LÀM SẠCH 100% CÂU TRẢ LỜI: LOẠI BỎ TRIỆT ĐỂ MỌI TỪ KHÓA KỸ THUẬT (visual, title, caption, searchTerm, dấu ngoặc...)
+          cleanAnswer = cleanKidResponseText(cleanAnswer);
 
           return {
             answer: cleanAnswer,
@@ -3502,7 +3531,8 @@ function escapeHtml(str) {
 
 function formatResponseText(text) {
   if (!text) return '';
-  let formatted = escapeHtml(text);
+  const clean = cleanKidResponseText(text);
+  let formatted = escapeHtml(clean);
   formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   formatted = formatted.replace(/\n/g, '<br>');
   return formatted;
