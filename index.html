@@ -2,9 +2,15 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Kuromi & Bé Bảo Hân | Trợ Lý AI Đa Giác Quan</title>
-  <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio chân thật dành riêng cho bé Bảo Hân. Hỏi đáp vạn vật, xem hình ảnh minh họa dẫn chứng, nghe hát và tiếng động muôn loài sống động.">
+  <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio chân thật dành riêng cho bé Bảo Hân. Bách khoa toàn thư tri thức nhí, hình ảnh dẫn chứng, nghe nhạc và âm thanh muôn loài sống động.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kuromi AI">
+  <meta name="theme-color" content="#140a1f">
+  <link rel="icon" type="image/jpeg" href="assets/kuromi_normal.jpg">
+  <link rel="apple-touch-icon" href="assets/kuromi_normal.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
@@ -99,44 +105,159 @@
       <!-- Right Column: Interactive Chat & Multi-Sensory Stream -->
       <section class="chat-display-section">
         
-        <!-- Multi-Sensory Quick Explore Filter Bar -->
+        <!-- Multi-Sensory Quick Explore Filter Bar with Category Tabs -->
         <div class="explore-tray-wrapper">
           <div class="explore-header">
             <span class="explore-label">🌟 Bé Bảo Hân muốn khám phá gì hôm nay:</span>
           </div>
-          <div class="quick-explore-carousel">
-            <button class="explore-chip chip-music" data-prompt="Hát cho bé nghe bài Kìa con bướm vàng">
-              🎵 Hát bài Kìa con bướm vàng
+          <!-- Category Filter Tabs -->
+          <div class="explore-category-tabs">
+            <button class="cat-tab active" data-cat="all">🌟 Tất Cả</button>
+            <button class="cat-tab" data-cat="why">❓ Vì Sao?</button>
+            <button class="cat-tab" data-cat="animals">🐾 Muôn Thú</button>
+            <button class="cat-tab" data-cat="ocean">🌊 Đại Dương</button>
+            <button class="cat-tab" data-cat="habits">🥦 Bé Khỏe</button>
+            <button class="cat-tab" data-cat="vehicles">🚗 Xe Cộ</button>
+            <button class="cat-tab" data-cat="music">🎵 Ca Nhạc</button>
+            <button class="cat-tab" data-cat="story">📖 Cổ Tích</button>
+            <button class="cat-tab" data-cat="riddle">💡 Đố Vui &amp; Toán</button>
+          </div>
+          <div class="quick-explore-carousel" id="quickExploreCarousel">
+            <!-- Dynamically populated or rendered chips -->
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao trời lại có mưa rơi vậy Kuromi?">
+              🌧️ Vì sao trời mưa?
             </button>
-            <button class="explore-chip chip-music" data-prompt="Hát cho bé nghe bài Chú ếch con">
-              🐸 Hát bài Chú ếch con
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao lá cây lại có màu xanh?">
+              🌿 Vì sao lá cây màu xanh?
             </button>
-            <button class="explore-chip chip-music" data-prompt="Hát bài Twinkle Twinkle Little Star">
-              ⭐ Hát bài Ngôi sao nhỏ
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Vì sao nước biển lại có vị mặn?">
+              🌊 Vì sao nước biển mặn?
             </button>
-            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng mèo kêu meo meo">
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao bé phải đánh răng sáng và tối mỗi ngày?">
+              🦷 Vì sao phải đánh răng?
+            </button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao bé phải đi ngủ sớm vậy Kuromi?">
+              🌙 Vì sao phải ngủ sớm?
+            </button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Tại sao mắt chúng mình lại phải chớp chớp?">
+              👀 Vì sao mắt chớp?
+            </button>
+            <button class="explore-chip chip-knowledge" data-cat="why" data-prompt="Trái tim đập để làm gì vậy Kuromi?">
+              💓 Trái tim đập để làm gì?
+            </button>
+            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Con chó thích ăn gì và sủa thế nào vậy Kuromi?">
+              🐶 Con chó thích ăn gì?
+            </button>
+            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng mèo kêu meo meo">
               🐱 Nghe tiếng mèo kêu
             </button>
-            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng sư tử gầm dũng mãnh">
+            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chú chó sủa gâu gâu bảo vệ nhà">
+              🐕 Nghe tiếng chó sủa
+            </button>
+            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chú vịt kêu cạp cạp">
+              🦆 Nghe tiếng vịt kêu
+            </button>
+            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng sư tử gầm dũng mãnh chúa sơn lâm">
               🦁 Nghe tiếng sư tử
             </button>
-            <button class="explore-chip chip-sound" data-prompt="Cho bé nghe tiếng còi tàu hỏa tu tu xình xịch">
-              🚂 Nghe tiếng tàu hỏa
+            <button class="explore-chip chip-sound" data-cat="animals" data-prompt="Cho bé nghe tiếng chim hót líu lo chào buổi sáng">
+              🐦 Nghe chim hót líu lo
             </button>
-            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình khủng long bạo chúa T-Rex">
+            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Con voi có mũi dài để làm gì vậy Kuromi?">
+              🐘 Con voi dùng mũi làm gì?
+            </button>
+            <button class="explore-chip chip-visual" data-cat="animals" data-prompt="Cho bé xem hình khủng long bạo chúa T-Rex tiền sử">
               🦖 Xem hình khủng long
             </button>
-            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình hệ mặt trời và các hành tinh">
-              🪐 Xem Hệ mặt trời
+            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Cá heo thông minh thế nào và có phải là cá không?">
+              🐬 Cá heo thông minh thế nào?
             </button>
-            <button class="explore-chip chip-visual" data-prompt="Cho bé xem hình cầu vồng 7 màu tuyệt đẹp">
-              🌈 Xem Cầu vồng 7 màu
+            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Bạch tuộc có mấy quả tim và mấy cái vòi?">
+              🐙 Bạch tuộc có mấy tim?
             </button>
-            <button class="explore-chip chip-story" data-prompt="Kể cho bé nghe câu chuyện Rùa và Thỏ">
-              🐰 Kể chuyện Rùa & Thỏ
+            <button class="explore-chip chip-visual" data-cat="ocean" data-prompt="Cho bé xem hình đại dương kỳ thú cá voi và rùa biển">
+              🌊 Xem sinh vật đại dương
             </button>
-            <button class="explore-chip chip-knowledge" data-prompt="Tại sao bé phải đánh răng mỗi ngày?">
-              🦷 Vì sao phải đánh răng?
+            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Xe cứu hỏa có màu gì và làm nhiệm vụ gì vậy Kuromi?">
+              🚒 Xe cứu hỏa làm gì?
+            </button>
+            <button class="explore-chip chip-sound" data-cat="vehicles" data-prompt="Cho bé nghe tiếng còi xe cứu hỏa u o u o">
+              🚨 Nghe còi xe cứu hỏa
+            </button>
+            <button class="explore-chip chip-sound" data-cat="vehicles" data-prompt="Cho bé nghe tiếng còi tàu hỏa tu tu xình xịch">
+              🚂 Nghe tiếng tàu hỏa
+            </button>
+            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Máy bay khổng lồ bay lên trời bằng cách nào?">
+              ✈️ Máy bay bay thế nào?
+            </button>
+            <button class="explore-chip chip-visual" data-cat="vehicles" data-prompt="Tàu ngầm lặn sâu dưới đáy biển bằng cách nào?">
+              🚢 Tàu ngầm lặn thế nào?
+            </button>
+            <button class="explore-chip chip-visual" data-cat="habits" data-prompt="Tại sao bé phải ăn nhiều rau xanh và trái cây mỗi ngày?">
+              🥗 Vì sao phải ăn rau?
+            </button>
+            <button class="explore-chip chip-visual" data-cat="habits" data-prompt="Tại sao bé phải rửa tay bằng xà phòng trước khi ăn?">
+              🧼 Vì sao phải rửa tay?
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Kìa con bướm vàng">
+              🦋 Hát Kìa con bướm vàng
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Chú ếch con">
+              🐸 Hát bài Chú ếch con
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Bắc Kim Thang">
+              🌾 Hát Bắc Kim Thang
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Chú voi con ở Bản Đôn">
+              🐘 Hát Chú voi con ở Bản Đôn
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cả nhà thương nhau">
+              👨‍👩‍👧 Hát Cả nhà thương nhau
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Đi học về">
+              🎒 Hát bài Đi học về
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Con heo đất">
+              🐷 Hát bài Con heo đất
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cháu yêu bà">
+              👵 Hát bài Cháu yêu bà
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Con cào cào khỏe đẹp">
+              🦗 Hát bài Con cào cào
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Cháu lên ba">
+              🎒 Hát bài Cháu lên ba
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Baby Shark vui nhộn">
+              🦈 Hát Baby Shark
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát bài Twinkle Twinkle Little Star">
+              ⭐ Hát bài Ngôi sao nhỏ
+            </button>
+            <button class="explore-chip chip-music" data-cat="music" data-prompt="Hát cho bé nghe bài Happy Birthday chúc mừng sinh nhật">
+              🎂 Hát Chúc mừng sinh nhật
+            </button>
+            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Ba chú heo con chăm chỉ">
+              🐷 Kể Ba chú heo con
+            </button>
+            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Cô bé quàng khăn đỏ">
+              🧣 Kể Cô bé quàng khăn đỏ
+            </button>
+            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Rùa và Thỏ">
+              🐰 Kể chuyện Rùa &amp; Thỏ
+            </button>
+            <button class="explore-chip chip-story" data-cat="story" data-prompt="Kể cho bé nghe câu chuyện Con quạ thông minh uống nước">
+              🦅 Kể Con quạ thông minh
+            </button>
+            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Kuromi đố bé câu đố vui về con vật đi nào!">
+              💡 Đố vui đoán con vật
+            </button>
+            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Màu đỏ pha với màu vàng ra màu gì vậy Kuromi?">
+              🎨 Đỏ pha vàng ra màu gì?
+            </button>
+            <button class="explore-chip chip-riddle" data-cat="riddle" data-prompt="Bé đố Kuromi: 5 cộng 5 bằng mấy?">
+              🔢 5 cộng 5 bằng mấy?
             </button>
           </div>
         </div>
@@ -182,6 +303,16 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Live Microphone Listening Indicator Pill -->
+        <div class="mic-listening-indicator hidden" id="micListeningIndicator">
+          <div class="mic-listening-pulse-dot"></div>
+          <div class="sound-wave-bars">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span class="listening-text" id="micListeningText">Kuromi đang lắng nghe bé nói... 🎙️</span>
+          <button type="button" class="cancel-listening-btn" id="cancelListeningBtn" title="Dừng micro">✕ Dừng</button>
         </div>
 
         <!-- Message Input Bar For Children -->
@@ -275,8 +406,12 @@
           
           <div class="api-key-block hidden" id="apiKeyBlock">
             <label for="geminiApiKey">Nhập Google Gemini API Key:</label>
-            <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="parent-input">
-            <small>Khóa API được lưu an toàn trong trình duyệt của bạn (LocalStorage) và không gửi đi đâu khác.</small>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="password" id="geminiApiKey" placeholder="AIzaSy..." class="parent-input" style="flex: 1;">
+              <button type="button" id="testApiKeyBtn" class="test-api-btn">🔍 Kiểm Tra</button>
+            </div>
+            <div id="apiKeyStatus" class="api-key-status-msg hidden"></div>
+            <small style="color: var(--kuromi-lavender); font-size: 0.78rem;">Khóa API được lưu an toàn trong trình duyệt của bạn (LocalStorage). Nếu chưa có, bạn có thể lấy miễn phí tại Google AI Studio.</small>
           </div>
         </div>
 
@@ -292,17 +427,64 @@
 
         <div class="settings-group">
           <label class="setting-label">
-            <strong>🔊 Tốc độ & Giọng nói Kuromi:</strong>
+            <strong>🎙️ Phong Cách Giọng Đọc Của Kuromi:</strong>
+            <span class="setting-desc">Chọn phong cách giọng nói hoạt hình lí lắc hoặc giọng đọc chuẩn tự nhiên tiếng Việt cho bé.</span>
+          </label>
+          <div class="voice-persona-selector">
+            <label class="voice-card active" data-voice="kuromi_anime">
+              <input type="radio" name="voiceStyle" value="kuromi_anime" checked id="voiceKuromiAnime">
+              <div class="voice-card-body">
+                <span class="voice-badge">Khuyên Dùng ⭐</span>
+                <span class="voice-title">🎀 Kuromi Hoạt Hình (Anime Sanrio)</span>
+                <span class="voice-desc">Giọng hoạt hình nhí nhảnh, lí lắc, ngọt ngào, chất Kuromi vui nhộn.</span>
+              </div>
+            </label>
+            <label class="voice-card" data-voice="google_online">
+              <input type="radio" name="voiceStyle" value="google_online" id="voiceGoogleOnline">
+              <div class="voice-card-body">
+                <span class="voice-badge">Chuẩn Studio 🎧</span>
+                <span class="voice-title">👩‍🏫 Chị Google Trong Trẻo (Tự Nhiên 100%)</span>
+                <span class="voice-desc">Giọng nữ chuẩn phổ thông, phát âm tròn vành rõ chữ, dễ nghe như cô giáo.</span>
+              </div>
+            </label>
+            <label class="voice-card" data-voice="fairy">
+              <input type="radio" name="voiceStyle" value="fairy" id="voiceFairy">
+              <div class="voice-card-body">
+                <span class="voice-badge">Êm Dịu 🌙</span>
+                <span class="voice-title">🧚 Cô Tiên Kể Chuyện (Ấm Áp Ru Êm)</span>
+                <span class="voice-desc">Giọng đọc dịu dàng, chậm rãi, truyền cảm, thích hợp nghe kể chuyện cổ tích.</span>
+              </div>
+            </label>
+            <label class="voice-card" data-voice="device">
+              <input type="radio" name="voiceStyle" value="device" id="voiceDevice">
+              <div class="voice-card-body">
+                <span class="voice-badge">Offline 📱</span>
+                <span class="voice-title">📱 Giọng Thiết Bị (Hệ Thống Máy / iPad)</span>
+                <span class="voice-desc">Sử dụng bộ giọng có sẵn trên thiết bị của bạn.</span>
+              </div>
+            </label>
+          </div>
+          <div class="voice-test-row">
+            <button type="button" id="testVoiceBtn" class="test-voice-btn">
+              🔊 Nghe Thử Giọng Này
+            </button>
+            <span class="voice-test-hint" id="voiceTestStatus">Bấm để nghe Kuromi chào bé Bảo Hân</span>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <label class="setting-label">
+            <strong>🔊 Tinh chỉnh Tốc độ đọc:</strong>
           </label>
           <div class="slider-row">
             <span>Tốc độ đọc:</span>
             <input type="range" id="ttsRateSlider" min="0.7" max="1.3" step="0.05" value="1.05">
-            <span id="ttsRateVal">1.0x</span>
+            <span id="ttsRateVal">1.05x</span>
           </div>
           <div class="slider-row">
-            <span>Độ cao giọng (Cute Pitch):</span>
-            <input type="range" id="ttsPitchSlider" min="1.0" max="1.8" step="0.1" value="1.4">
-            <span id="ttsPitchVal">Dễ thương</span>
+            <span>Độ cao giọng (Pitch):</span>
+            <input type="range" id="ttsPitchSlider" min="0.9" max="1.6" step="0.05" value="1.25">
+            <span id="ttsPitchVal">1.25</span>
           </div>
         </div>
 
