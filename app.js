@@ -1870,7 +1870,7 @@ const SONGS_LIBRARY = {
     title: 'Alibaba',
     category: 'Vui nhộn',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'G5b1x_g7kYI',
+    youtubeId: 'Fu0IT5oRx7Q',
     icon: '👳‍♂️',
     bpm: 135,
     lyrics: [
@@ -1886,8 +1886,8 @@ const SONGS_LIBRARY = {
     id: 'chiongnau',
     title: 'Chị Ong Nâu Và Em Bé',
     category: 'Bài hát thiếu nhi',
-    singer: 'Bé Xuân Mai',
-    youtubeId: 'mC0B1_X75E8',
+    singer: 'Mầm Chồi Lá',
+    youtubeId: 'S5VJ1CWHzO4',
     icon: '🐝',
     bpm: 125,
     lyrics: [
@@ -1904,7 +1904,7 @@ const SONGS_LIBRARY = {
     title: 'Em Đi Chơi Thuyền',
     category: 'Bài hát thiếu nhi',
     singer: 'Bé Xuân Mai',
-    youtubeId: 'P6gVjGfR-uU',
+    youtubeId: 'MrIo8gZ7tSw',
     icon: '⛵',
     bpm: 120,
     lyrics: [
@@ -1920,8 +1920,8 @@ const SONGS_LIBRARY = {
     id: 'traidatnay',
     title: 'Trái Đất Này Là Của Chúng Mình',
     category: 'Hòa bình & Bạn bè',
-    singer: 'Tốp ca thiếu nhi',
-    youtubeId: 'k78Jd6s3h9U',
+    singer: 'Bé Mai Vy',
+    youtubeId: '6_fMOEtzgU8',
     icon: '🌍',
     bpm: 125,
     lyrics: [
@@ -1932,6 +1932,74 @@ const SONGS_LIBRARY = {
     notes: [
       { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
     ]
+  },
+  'concobebe': {
+    id: 'concobebe',
+    title: 'Con Cò Bé Bé',
+    category: 'Đồng dao tuổi thơ',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'jO2vrSXVDo0',
+    icon: '🕊️',
+    bpm: 120,
+    lyrics: [
+      { text: "Con cò bé bé nó đậu cành tre 🕊️", duration: 3.5 },
+      { text: "Đi không hỏi mẹ biết đi đường nào 🌿", duration: 3.5 },
+      { text: "Khi đi em hỏi, khi về em chào, miệng em chúm chím mẹ có yêu không nào! 💖", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 }
+    ]
+  },
+  'thangcuoi': {
+    id: 'thangcuoi',
+    title: 'Thằng Cuội',
+    category: 'Đồng dao cổ tích',
+    singer: 'Ca sĩ thiếu nhi',
+    youtubeId: '_8r2T85vVz0',
+    icon: '🌙',
+    bpm: 110,
+    lyrics: [
+      { text: "Bóng trăng trắng ngà, có cây đa to 🌙", duration: 3.5 },
+      { text: "Có thằng Cuội già, ôm một mối mơ 🌟", duration: 3.5 },
+      { text: "Gió mây cùng đùa, trăng sáng lung linh khắp trần gian! ✨", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'A4', dur: 1.0 }
+    ]
+  },
+  'chimvanhkhuyen': {
+    id: 'chimvanhkhuyen',
+    title: 'Con Chim Vành Khuyên',
+    category: 'Bài hát lễ phép',
+    singer: 'Bé Xuân Mai',
+    youtubeId: 'WyRtgnf5Tds',
+    icon: '🐦',
+    bpm: 125,
+    lyrics: [
+      { text: "Có con chim vành khuyên nhỏ, dáng trông thật ngoan ngoãn quá 🐦", duration: 3.5 },
+      { text: "Gọi dạ, bảo vâng, líu lo chào đón mọi người ✨", duration: 3.5 },
+      { text: "Chim gặp bác chào mào chào bác, chim gặp cô sơn ca chào cô! 🌸", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'G4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 0.5 }, { note: 'C5', dur: 1.0 }
+    ]
+  },
+  'namngontayngoan': {
+    id: 'namngontayngoan',
+    title: 'Năm Ngón Tay Ngoan',
+    category: 'Bài hát giáo dục',
+    singer: 'Bé Khánh Ngọc',
+    youtubeId: 'i9nHld-R8HI',
+    icon: '🖐️',
+    bpm: 120,
+    lyrics: [
+      { text: "Xòe bàn tay, đếm ngón tay 🖐️", duration: 3.5 },
+      { text: "Một anh béo trông thật đến hay, ngón tay cái là anh cả! ✨", duration: 3.5 },
+      { text: "Cả năm ngón tay đều chăm chỉ, giúp bé làm bao việc tốt mỗi ngày! 💖", duration: 4.0 }
+    ],
+    notes: [
+      { note: 'C4', dur: 0.5 }, { note: 'D4', dur: 0.5 }, { note: 'E4', dur: 0.5 }, { note: 'G4', dur: 1.0 }
+    ]
   }
 };
 
@@ -1940,57 +2008,64 @@ const SONGS_LIBRARY = {
 // =============================================================================
 // Alias dictionary for instantaneous keyword & typo recognition
 const SONG_ALIASES = {
-  'butterfly': ['con buom', 'buom vang', 'kia con buom vang', 'kia con buom', 'con buom vang'],
-  'frog': ['chu ech', 'ech con', 'chu ech con', 'hai mat tron', 'ho bom'],
-  'family': ['ca nha', 'ca nha thuong nhau', 'ba thuong con', 'thuong yeu nhau', 'me thuong con'],
-  'locust': ['cao cao', 'con cao cao', 'canh xanh xanh', 'khoe dep'],
-  'preschool': ['chau len ba', 'chau len 3', 'di mau giao', 'co thuong chau', 'khong khoc nhe'],
-  'teeth': ['danh rang', 'tap danh rang', 'be tap danh rang', 'rang trang', 'trang tinh'],
-  'backimthang': ['bac kim thang', 'ca lang bi ro', 'chu ban dau', 'chu ban ech'],
-  'chuvoicon': ['chu voi', 'voi con', 'ban don', 'o ban don', 'chu voi con'],
-  'dihocve': ['di hoc ve', 'chao cha me', 'cha khen', 'di hoc'],
-  'conheodat': ['con heo dat', 'heo dat', 'lon dat', 'tien xu', 'i o i o'],
-  'chauyeuba': ['chau yeu ba', 'ba oi ba', 'toc ba trang', 'yeu ba'],
-  'motconvit': ['mot con vit', '1 con vit', 'con vit', 'xoe ra hai cai canh', 'cap cap', 'bi ba bi bom'],
-  'bongbongbangbang': ['bong bong bang bang', 'bong bong', 'com vang com bac'],
-  'bangocnen': ['ba ngon nen', 'ngon nen', 'ba ngon nen lung linh', 'ba la cay nen vang'],
-  'alibaba': ['alibaba', 'ali ba ba', 'khi xua alibaba'],
-  'chiongnau': ['chi ong nau', 'ong nau', 'chi ong nau nau', 'ong nau va em be'],
-  'doithuyen': ['em di choi thuyen', 'di choi thuyen', 'thuyen con vit'],
-  'traidatnay': ['trai dat nay la cua chung minh', 'trai dat nay', 'qua bong xanh'],
-  'meo': ['rua mat nhu meo', 'meo meo', 'con meo', 'meo rua mat', 'meo con'],
-  'star': ['ngoi sao nho', 'ngoi sao', 'twinkle', 'little star', 'sao nho'],
-  'birthday': ['chuc mung sinh nhat', 'sinh nhat', 'happy birthday', 'birthday'],
-  'babyshark': ['baby shark', 'ca map', 'shark dance', 'pinkfong']
+  'butterfly': ['con buom', 'buom vang', 'kia con buom vang', 'kia con buom', 'con buom vang', 'nhac con buom', 'nhac kia con buom vang'],
+  'frog': ['chu ech', 'ech con', 'chu ech con', 'hai mat tron', 'ho bom', 'nhac chu ech con', 'nhac ech con'],
+  'family': ['ca nha', 'ca nha thuong nhau', 'ba thuong con', 'thuong yeu nhau', 'me thuong con', 'nhac ca nha thuong nhau'],
+  'locust': ['cao cao', 'con cao cao', 'canh xanh xanh', 'khoe dep', 'nhac con cao cao'],
+  'preschool': ['chau len ba', 'chau len 3', 'di mau giao', 'co thuong chau', 'khong khoc nhe', 'nhac chau len ba'],
+  'teeth': ['danh rang', 'tap danh rang', 'be tap danh rang', 'rang trang', 'trang tinh', 'nhac be tap danh rang'],
+  'backimthang': ['bac kim thang', 'nhac bac kim thang', 'bai hat bac kim thang', 'ca lang bi ro', 'chu ban dau', 'chu ban ech'],
+  'chuvoicon': ['chu voi', 'voi con', 'ban don', 'o ban don', 'chu voi con', 'nhac chu voi con'],
+  'dihocve': ['di hoc ve', 'chao cha me', 'cha khen', 'di hoc', 'nhac di hoc ve'],
+  'conheodat': ['con heo dat', 'heo dat', 'lon dat', 'tien xu', 'i o i o', 'nhac con heo dat'],
+  'chauyeuba': ['chau yeu ba', 'ba oi ba', 'toc ba trang', 'yeu ba', 'nhac chau yeu ba'],
+  'motconvit': ['mot con vit', '1 con vit', 'con vit', 'xoe ra hai cai canh', 'cap cap', 'bi ba bi bom', 'nhac mot con vit'],
+  'bongbongbangbang': ['bong bong bang bang', 'bong bong', 'com vang com bac', 'nhac bong bong bang bang'],
+  'bangocnen': ['ba ngon nen', 'ngon nen', 'ba ngon nen lung linh', 'ba la cay nen vang', 'nhac ba ngon nen lung linh'],
+  'alibaba': ['alibaba', 'ali ba ba', 'khi xua alibaba', 'nhac alibaba'],
+  'chiongnau': ['chi ong nau', 'ong nau', 'chi ong nau nau', 'ong nau va em be', 'nhac chi ong nau'],
+  'doithuyen': ['em di choi thuyen', 'di choi thuyen', 'thuyen con vit', 'nhac em di choi thuyen'],
+  'traidatnay': ['trai dat nay la cua chung minh', 'trai dat nay', 'qua bong xanh', 'nhac trai dat nay'],
+  'concobebe': ['con co be be', 'co be be', 'con co', 'nhac con co be be'],
+  'thangcuoi': ['thang cuoi', 'chu cuoi', 'bong trang trang', 'nhac thang cuoi'],
+  'chimvanhkhuyen': ['chim vanh khuyen', 'con chim vanh khuyen', 'vanh khuyen nho', 'nhac chim vanh khuyen'],
+  'namngontayngoan': ['nam ngon tay ngoan', 'ngon tay ngoan', 'nhac nam ngon tay ngoan'],
+  'meo': ['rua mat nhu meo', 'meo meo', 'con meo', 'meo rua mat', 'meo con', 'nhac rua mat nhu meo'],
+  'star': ['ngoi sao nho', 'ngoi sao', 'twinkle', 'little star', 'sao nho', 'nhac ngoi sao nho'],
+  'birthday': ['chuc mung sinh nhat', 'sinh nhat', 'happy birthday', 'birthday', 'nhac sinh nhat'],
+  'babyshark': ['baby shark', 'ca map', 'shark dance', 'pinkfong', 'nhac baby shark']
 };
 
 function matchSongKey(songName) {
   if (!songName) return null;
-  const norm = removeVietnameseTones(songName).replace(/[.,?!;]/g, '').trim().toLowerCase();
-  if (norm.length < 3) return null;
+  const rawNorm = removeVietnameseTones(songName).replace(/[.,?!;]/g, '').trim().toLowerCase();
+  if (rawNorm.length < 2) return null;
 
-  // 1. Direct Exact Alias Matching
+  // Loại bỏ các tiền tố thông dụng như "nhac", "bai hat", "ca khuc", "bai", "hat bai"...
+  const cleanNorm = rawNorm.replace(/^(?:nhac|bai hat|ca khuc|bai ca|bai nhac|bai|hat bai|hat)\s+/, '').trim();
+
+  // 1. Khớp chính xác với từ khóa Alias (cả dạng gốc lẫn dạng đã làm sạch tiền tố)
   for (const key in SONG_ALIASES) {
     for (const alias of SONG_ALIASES[key]) {
-      if (norm === alias) {
+      if (rawNorm === alias || cleanNorm === alias) {
         return key;
       }
     }
   }
 
-  // 2. Direct Exact Title Matching in SONGS_LIBRARY
+  // 2. Khớp chính xác với Tên Bài Hát trong thư viện
   for (const key in SONGS_LIBRARY) {
     const s = SONGS_LIBRARY[key];
     const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    if (norm === normTitle) {
+    if (rawNorm === normTitle || cleanNorm === normTitle) {
       return key;
     }
   }
 
-  // 3. Substring match only if alias or title is at least 7 characters (prevents false matches on common words)
+  // 3. Khớp cụm từ phụ (Substring matching)
   for (const key in SONG_ALIASES) {
     for (const alias of SONG_ALIASES[key]) {
-      if (alias.length >= 7 && (norm.includes(alias) || (norm.length >= 7 && alias.includes(norm)))) {
+      if (alias.length >= 5 && (rawNorm.includes(alias) || cleanNorm.includes(alias) || (cleanNorm.length >= 5 && alias.includes(cleanNorm)))) {
         return key;
       }
     }
@@ -1999,7 +2074,7 @@ function matchSongKey(songName) {
   for (const key in SONGS_LIBRARY) {
     const s = SONGS_LIBRARY[key];
     const normTitle = removeVietnameseTones(s.title).replace(/[.,?!;]/g, '').trim().toLowerCase();
-    if (normTitle.length >= 7 && (norm.includes(normTitle) || (norm.length >= 7 && normTitle.includes(norm)))) {
+    if (normTitle.length >= 5 && (rawNorm.includes(normTitle) || cleanNorm.includes(normTitle) || (cleanNorm.length >= 5 && normTitle.includes(cleanNorm)))) {
       return key;
     }
   }
@@ -2012,7 +2087,8 @@ function getOrCreateSong(songName) {
   if (matchedKey) return matchedKey;
 
   // Clean title for dynamic song
-  const rawTitle = songName.trim();
+  let rawTitle = songName.trim();
+  rawTitle = rawTitle.replace(/^(?:nhạc|bài\s+hát|bài\s+ca|bài\s+nhạc|bài|ca\s+khúc|hát\s+bài|hát)\s+/i, '').trim();
   const cleanTitle = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
   const dynKey = 'dyn_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
 
@@ -2067,6 +2143,7 @@ function extractSongIntent(prompt) {
     if (m && m[1]) {
       let songName = m[1].trim();
       songName = songName.replace(/\s+(đi|nào|với|nhé|nha|ạ|cho\s+bé|vui\s+nhộn|được\s+không).*$/i, '').trim();
+      songName = songName.replace(/^(?:nhạc|bài\s+hát|bài\s+ca|bài\s+nhạc|bài|ca\s+khúc|hát\s+bài|hát)\s+/i, '').trim();
       if (songName.length > 1) {
         return songName;
       }
@@ -2399,54 +2476,75 @@ function playRealisticSound(soundType, statusCallback) {
   }
 }
 
-// Melody Player Manager
+// =============================================================================
+// UNIFIED MASTER AUDIO & VOICE MANAGER (TRIỆT TIÊU 100% LỖI LẪN GIỌNG & TRÙNG TIẾNG)
+// =============================================================================
 let currentPlaybackTimeouts = [];
 let currentSongVocalAudio = null;
 let currentGlobalAudio = null;
+let currentSongSessionId = 0;
 
-function stopCurrentSong() {
+function stopAllAudioAndVoices() {
+  // 1. Tăng cả 2 session ID để triệt tiêu vĩnh viễn mọi audio/chunk/retry đang chờ
+  currentTtsSessionId++;
+  currentSongSessionId++;
+
+  // 2. Dọn sạch toàn bộ timeout
   currentPlaybackTimeouts.forEach(t => clearTimeout(t));
   currentPlaybackTimeouts = [];
-  APP_STATE.currentPlayingSong = null;
+
+  if (speechDebounceTimer) {
+    clearTimeout(speechDebounceTimer);
+    speechDebounceTimer = null;
+  }
+  if (webSpeechWatchdogTimer) {
+    clearTimeout(webSpeechWatchdogTimer);
+    webSpeechWatchdogTimer = null;
+  }
+
+  // 3. Tắt Web Speech Synthesis
+  if (typeof window !== 'undefined' && window.speechSynthesis) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch (e) {}
+  }
+  activeSpeechUtterance = null;
+  if (typeof window !== 'undefined') window._currentUtterance = null;
+
+  // 4. Dập tắt toàn bộ HTML5 Audio elements
+  if (activeTtsAudio) {
+    try {
+      activeTtsAudio.pause();
+      activeTtsAudio.src = '';
+      activeTtsAudio.load();
+    } catch (e) {}
+    activeTtsAudio = null;
+  }
 
   if (currentSongVocalAudio) {
     try {
       currentSongVocalAudio.pause();
       currentSongVocalAudio.src = '';
       currentSongVocalAudio.load();
-    } catch(e) {}
+    } catch (e) {}
     currentSongVocalAudio = null;
   }
+
   if (currentGlobalAudio) {
     try {
       currentGlobalAudio.pause();
       currentGlobalAudio.src = '';
       currentGlobalAudio.load();
-    } catch(e) {}
+    } catch (e) {}
     currentGlobalAudio = null;
   }
 
-  // Tắt triệt để mọi giọng đọc đang phát
-  if (typeof window !== 'undefined' && window.speechSynthesis) {
-    try {
-      window.speechSynthesis.cancel();
-    } catch(e) {}
-  }
-  if (activeTtsAudio) {
-    try {
-      activeTtsAudio.pause();
-      activeTtsAudio.src = '';
-      activeTtsAudio.load();
-    } catch(e) {}
-    activeTtsAudio = null;
-  }
-
-  // TẮT TOÀN BỘ VIDEO YOUTUBE ĐANG PHÁT TRÊN TOÀN BỘ CARD (TRÁNH LẪN TIẾNG)
+  // 5. Tắt toàn bộ video YouTube đang nhúng trên mọi card
   document.querySelectorAll('.singer-video-frame').forEach(iframe => {
     try {
       iframe.src = 'about:blank';
       iframe.style.display = 'none';
-    } catch(e) {}
+    } catch (e) {}
   });
   document.querySelectorAll('.jukebox-video-container').forEach(box => {
     box.classList.add('hidden');
@@ -2468,29 +2566,26 @@ function stopCurrentSong() {
   if (mascot) mascot.classList.remove('dancing');
   const dock = document.getElementById('nowPlayingDock');
   if (dock) dock.classList.add('hidden');
+  const testBtn = document.getElementById('testVoiceBtn');
+  if (testBtn) testBtn.classList.remove('playing');
+  isTestingVoice = false;
+  APP_STATE.currentPlayingSong = null;
   setKuromiState('normal');
 }
 
-function singVocalLine(cleanVerse, onComplete) {
-  // Dập tắt bất kỳ âm thanh nào đang phát trước đó
-  if (currentSongVocalAudio) {
-    try {
-      currentSongVocalAudio.pause();
-      currentSongVocalAudio.src = '';
-    } catch (e) {}
-    currentSongVocalAudio = null;
-  }
-  if (currentGlobalAudio) {
-    try {
-      currentGlobalAudio.pause();
-      currentGlobalAudio.src = '';
-    } catch (e) {}
-    currentGlobalAudio = null;
-  }
+function stopCurrentSong() {
+  stopAllAudioAndVoices();
+}
 
+function stopAllSpeech() {
+  stopAllAudioAndVoices();
+}
+
+function singVocalLine(cleanVerse, onComplete) {
+  const session = currentSongSessionId;
   let isFinished = false;
   const finishOnce = () => {
-    if (isFinished) return;
+    if (isFinished || session !== currentSongSessionId) return;
     isFinished = true;
     if (onComplete) onComplete();
   };
@@ -2517,11 +2612,10 @@ function singVocalLine(cleanVerse, onComplete) {
   }
 
   // Máy không có giọng tiếng Việt: Dùng Google TTS Tiếng Việt chuẩn 100%
-  // Khóa chốt chống chạy lặp 2 lần gây lẫn 2 tiếng
   let fallbackHandled = false;
 
   function tryHost(hIndex) {
-    if (isFinished) return;
+    if (isFinished || session !== currentSongSessionId) return;
     fallbackHandled = false;
     const url = buildGoogleTtsUrl(cleanVerse, hIndex);
     const audio = new Audio();
@@ -2537,7 +2631,7 @@ function singVocalLine(cleanVerse, onComplete) {
     audio.onended = finishOnce;
 
     const handleSongFallback = () => {
-      if (isFinished || fallbackHandled) return;
+      if (isFinished || fallbackHandled || session !== currentSongSessionId) return;
       fallbackHandled = true;
       if (hIndex + 1 < GOOGLE_TTS_HOSTS.length) {
         tryHost(hIndex + 1);
@@ -2554,12 +2648,13 @@ function singVocalLine(cleanVerse, onComplete) {
 }
 
 function playKuromiVocalSong(songKey, onLyricUpdate) {
-  // DỪNG TOÀN BỘ MỌI ÂM THANH KHÁC TRƯỚC KHI BẮT ĐẦU HÁT!
-  stopCurrentSong();
+  // 1. DỪNG TRIỆT ĐỂ MỌI ÂM THANH & LỜI CHÀO / GIỌNG NÓI KHÁC TRƯỚC KHI BẮT ĐẦU HÁT!
+  stopAllAudioAndVoices();
 
   const song = SONGS_LIBRARY[songKey];
   if (!song) return;
 
+  const thisSongSession = currentSongSessionId;
   APP_STATE.currentPlayingSong = song;
   setKuromiState('singing');
   const mascot = document.getElementById('mascotWrapper');
@@ -2579,12 +2674,13 @@ function playKuromiVocalSong(songKey, onLyricUpdate) {
   let verseIndex = 0;
 
   function singNextVerse() {
-    if (APP_STATE.currentPlayingSong?.id !== songKey) return;
+    if (thisSongSession !== currentSongSessionId || APP_STATE.currentPlayingSong?.id !== songKey) return;
 
     if (verseIndex >= song.lyrics.length) {
       // Kuromi hát xong trọn vẹn bài hát!
       const endTimeout = setTimeout(() => {
-        stopCurrentSong();
+        if (thisSongSession !== currentSongSessionId) return;
+        stopAllAudioAndVoices();
         document.getElementById('kuromiStatusText').textContent = `Kuromi hát xong bài ${song.title} rồi nè! Bé ${childName} có thích không nào? 🎀`;
         setKuromiState('happy');
         playSfx('sparkle');
@@ -2604,9 +2700,8 @@ function playKuromiVocalSong(songKey, onLyricUpdate) {
     }
 
     // Hát từng câu tuần tự và CHỈ 1 CÂU DUY NHẤT một thời điểm!
-    // TUYỆT ĐỐI KHÔNG CHỒNG TIẾNG, KHÔNG LẪN LỘN ÂM THANH!
     singVocalLine(cleanVerse, () => {
-      if (APP_STATE.currentPlayingSong?.id !== songKey) return;
+      if (thisSongSession !== currentSongSessionId || APP_STATE.currentPlayingSong?.id !== songKey) return;
       const pauseTimer = setTimeout(() => {
         singNextVerse();
       }, 500);
@@ -2620,7 +2715,9 @@ function playKuromiVocalSong(songKey, onLyricUpdate) {
 }
 
 function openSingerVideo(songKey, cardElement) {
-  stopCurrentSong();
+  // 1. DỪNG TRIỆT ĐỂ MỌI ÂM THANH & GIỌNG ĐỌC TRƯỚC ĐÓ
+  stopAllAudioAndVoices();
+
   const song = SONGS_LIBRARY[songKey];
   if (!song) return;
 
@@ -2633,21 +2730,19 @@ function openSingerVideo(songKey, cardElement) {
   const waveBars = cardElement.querySelector('.jukebox-wave-bars');
   const externalLink = cardElement.querySelector('.open-external-mv-link');
 
-  if (videoBox && iframe) {
-    const ytUrl = song.youtubeId 
-      ? `https://www.youtube.com/watch?v=${song.youtubeId}`
-      : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
+  const ytUrl = song.youtubeId 
+    ? `https://www.youtube.com/watch?v=${song.youtubeId}`
+    : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
 
-    if (externalLink) {
-      externalLink.href = ytUrl;
-      externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
-    }
+  if (externalLink) {
+    externalLink.href = ytUrl;
+    externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
+  }
 
-    const embedSrc = song.youtubeId 
-      ? `https://www.youtube-nocookie.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`
-      : `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}&autoplay=1&playsinline=1`;
-
-    iframe.referrerPolicy = 'origin-when-cross-origin';
+  // NẾU BÀI HÁT CÓ MÃ YOUTUBE HỢP LỆ: Phát trực tiếp ngay trong khung video trên trang
+  if (song.youtubeId && videoBox && iframe) {
+    const embedSrc = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&playsinline=1&rel=0`;
+    iframe.setAttribute('referrerpolicy', 'origin');
     iframe.src = embedSrc;
     iframe.style.display = 'block';
     videoBox.classList.remove('hidden');
@@ -2658,12 +2753,18 @@ function openSingerVideo(songKey, cardElement) {
     if (lyricEl) {
       lyricEl.textContent = `🎬 Đang phát video ca khúc "${song.title}" cho bé ${childName} xem tại đây!`;
     }
+  } else {
+    // Nếu là bài hát chưa có mã video trực tiếp: Mở thẳng YouTube chất lượng cao
+    window.open(ytUrl, '_blank', 'noopener,noreferrer');
+    if (lyricEl) {
+      lyricEl.textContent = `🎬 Đang mở YouTube phát video "${song.title}" cho bé ${childName} xem nhé!`;
+    }
   }
 
   setKuromiState('singing');
   const mascot = document.getElementById('mascotWrapper');
   if (mascot) mascot.classList.add('dancing');
-  document.getElementById('kuromiStatusText').textContent = `Kuromi mở bài ${song.title} cho bé ${childName} nghe nè! 💃🎶`;
+  document.getElementById('kuromiStatusText').textContent = `Kuromi mở bài ${song.title} cho bé ${childName} xem nè! 💃🎶`;
 }
 
 function closeSingerVideo(cardElement) {
@@ -2838,30 +2939,6 @@ function getVietnameseVoice() {
   return refreshAvailableVoices();
 }
 
-function stopAllSpeech() {
-  currentTtsSessionId++;
-  if (webSpeechWatchdogTimer) {
-    clearTimeout(webSpeechWatchdogTimer);
-    webSpeechWatchdogTimer = null;
-  }
-  if (activeTtsAudio) {
-    try {
-      activeTtsAudio.pause();
-      activeTtsAudio.src = '';
-    } catch (e) {}
-    activeTtsAudio = null;
-  }
-  if (typeof window !== 'undefined' && window.speechSynthesis) {
-    try {
-      window.speechSynthesis.cancel();
-    } catch (e) {}
-  }
-  activeSpeechUtterance = null;
-  setKuromiState('normal');
-  const testBtn = document.getElementById('testVoiceBtn');
-  if (testBtn) testBtn.classList.remove('playing');
-  isTestingVoice = false;
-}
 
 // Bộ phát Web Speech API với bảo vệ 100% TIẾNG VIỆT và Mutual Fallback
 function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
