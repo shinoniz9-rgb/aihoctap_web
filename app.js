@@ -1603,6 +1603,30 @@ function extractVisualTopic(prompt) {
 const DYNAMIC_SONGS_CACHE = {};
 const SONGS_LIBRARY = DYNAMIC_SONGS_CACHE; // Khả năng tương thích an toàn
 
+// Nạp cache bài hát từ localStorage lúc mở ứng dụng (Bảo toàn lịch sử bài hát)
+function loadDynamicSongsCache() {
+  try {
+    const raw = localStorage.getItem('kuromi_dynamic_songs');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        Object.assign(DYNAMIC_SONGS_CACHE, parsed);
+      }
+    }
+  } catch (e) {
+    console.warn("Lỗi đọc cache bài hát:", e);
+  }
+}
+loadDynamicSongsCache();
+
+function saveDynamicSongsCache() {
+  try {
+    localStorage.setItem('kuromi_dynamic_songs', JSON.stringify(DYNAMIC_SONGS_CACHE));
+  } catch (e) {
+    console.warn("Lỗi lưu cache bài hát:", e);
+  }
+}
+
 function registerDynamicSongFromGemini(meta) {
   if (!meta || !meta.title) return null;
   const cleanTitle = String(meta.title).trim();
@@ -1636,6 +1660,7 @@ function registerDynamicSongFromGemini(meta) {
   };
 
   DYNAMIC_SONGS_CACHE[dynKey] = songObj;
+  saveDynamicSongsCache();
   return dynKey;
 }
 
@@ -2224,8 +2249,20 @@ function openSingerVideo(songKey, cardElement) {
   // 1. DỪNG TRIỆT ĐỂ MỌI ÂM THANH & GIỌNG ĐỌC TRƯỚC ĐÓ
   stopAllAudioAndVoices();
 
-  const song = SONGS_LIBRARY[songKey];
-  if (!song) return;
+  // Tìm đối tượng bài hát từ cache, dữ liệu thẻ, hoặc songKey
+  let song = null;
+  if (typeof songKey === 'object' && songKey && songKey.title) {
+    song = songKey;
+  } else if (typeof songKey === 'string' && SONGS_LIBRARY[songKey]) {
+    song = SONGS_LIBRARY[songKey];
+  } else if (cardElement && cardElement._songData) {
+    song = cardElement._songData;
+  }
+
+  if (!song) {
+    console.warn("Không tìm thấy dữ liệu bài hát:", songKey);
+    return;
+  }
 
   const childName = APP_STATE.settings.childName || 'Bảo Hân';
   const videoBox = cardElement.querySelector('.jukebox-video-container');
@@ -2236,21 +2273,26 @@ function openSingerVideo(songKey, cardElement) {
   const waveBars = cardElement.querySelector('.jukebox-wave-bars');
   const externalLink = cardElement.querySelector('.open-external-mv-link');
 
-  const ytUrl = song.youtubeId 
-    ? `https://www.youtube.com/watch?v=${song.youtubeId}`
-    : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
+  const videoId = song.youtubeId || resolveVerifiedYoutubeId(song.title) || '5dmAgpLJK7E';
+  const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
   if (externalLink) {
     externalLink.href = ytUrl;
     externalLink.innerHTML = `▶️ Mở Xem Trên YouTube 🎬`;
   }
 
-  // ĐẢM BẢO LUÔN CÓ MÃ VIDEO HỢP LỆ VÀ PHÁT TRỰC TIẾP TRONG BẢNG TRÒ CHUYỆN!
-  const videoId = song.youtubeId || resolveVerifiedYoutubeId(song.title) || '5dmAgpLJK7E';
-
+  // ĐẢM BẢO PHÁT TRỰC TIẾP TRÊN MOBILE & IPAD TRONG BẢNG TRÒ CHUYỆN
   if (videoBox && iframe) {
-    const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0`;
-    iframe.setAttribute('referrerpolicy', 'origin');
+    const originParam = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null') 
+      ? `&origin=${encodeURIComponent(window.location.origin)}` 
+      : '';
+    const embedSrc = `https://www.youtube.com/embed/${videoId}?playsinline=1&enablejsapi=1&rel=0&modestbranding=1${originParam}`;
+
+    iframe.removeAttribute('referrerpolicy');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    iframe.setAttribute('playsinline', '1');
+    iframe.setAttribute('webkit-playsinline', '1');
     iframe.src = embedSrc;
     iframe.style.display = 'block';
     videoBox.classList.remove('hidden');
@@ -2266,7 +2308,8 @@ function openSingerVideo(songKey, cardElement) {
   setKuromiState('singing');
   const mascot = document.getElementById('mascotWrapper');
   if (mascot) mascot.classList.add('dancing');
-  document.getElementById('kuromiStatusText').textContent = `Kuromi mở bài ${song.title} cho bé ${childName} xem nè! 💃🎶`;
+  const statusEl = document.getElementById('kuromiStatusText');
+  if (statusEl) statusEl.textContent = `Kuromi mở bài ${song.title} cho bé ${childName} xem nè! 💃🎶`;
 }
 
 function closeSingerVideo(cardElement) {
@@ -2345,18 +2388,36 @@ function cleanKidResponseText(text) {
   return str;
 }
 
+// Kiểm tra thiết bị Apple (iPhone, iPad, iPod, Mac touch)
+function isAppleDevice() {
+  if (typeof navigator === 'undefined') return false;
+  const ua = navigator.userAgent || '';
+  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
 function cleanKidTextForTts(text) {
   if (!text) return '';
-  const noJson = cleanKidResponseText(text);
-  return noJson
-  if (!text) return '';
-  return text
-    .replace(/https?:\/\/\S+/g, '')
-    .replace(/[#*`_~>[\]()]/g, ' ')
-    .replace(/\p{Extended_Pictographic}/gu, '')
-    .replace(/[✨🎀💖⭐💡🎵🎶💃🎤👂👀🐶🐱🦆🦁🐦🐘🦖🐬🐙🚗🚑🚒🚨🚂✈️🚢🥗🧼🌾👵🦗🎒🦈🎂🧚🤖📱🎧🌙🌸🐾🥦❓]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  let str = cleanKidResponseText(text);
+
+  // 1. Chuẩn hóa Unicode NFC (Tránh lỗi tách dấu thanh tiếng Việt trên Apple iOS Safari / iPad)
+  if (typeof str.normalize === 'function') {
+    str = str.normalize('NFC');
+  }
+
+  // 2. Loại bỏ đường dẫn URL
+  str = str.replace(/https?:\/\/\S+/g, '');
+
+  // 3. Loại bỏ ký hiệu định dạng Markdown (*, **, _, ~, `, #, >, [], (), {}, \)
+  str = str.replace(/[#*`_~>[\](){}\\|]/g, ' ');
+
+  // 4. Loại bỏ Emoji & Pictographic
+  str = str.replace(/\p{Extended_Pictographic}/gu, ' ');
+  str = str.replace(/[✨🎀💖⭐💡🎵🎶💃🎤👂👀🐶🐱🦆🦁🐦🐘🦖🐬🐙🚗🚑🚒🚨🚂✈️🚢🥗🧼🌾👵🦗🎒🦈🎂🧚🤖📱🎧🌙🌸🐾🥦❓❗]/gu, ' ');
+
+  // 5. Chuẩn hóa khoảng trống
+  str = str.replace(/\s+/g, ' ').trim();
+
+  return str;
 }
 
 function chunkTextForTts(text, maxLen = 100) {
@@ -2650,7 +2711,7 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
   playNextChunk();
 }
 
-// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG ĐỌC TIẾNG VIỆT
+// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG NỮ TIẾNG VIỆT CHUẨN XÁC 100%
 function speakText(text, onComplete, force = false) {
   if (!APP_STATE.ttsEnabled && !force) {
     if (onComplete) onComplete();
@@ -2671,16 +2732,27 @@ function speakText(text, onComplete, force = false) {
 
   const voiceStyle = APP_STATE.settings.voiceStyle || 'kuromi_anime';
   const userRate = APP_STATE.settings.ttsRate || 1.05;
+  const isApple = isAppleDevice();
   const viVoice = getVietnameseVoice();
   const chunks = chunkTextForTts(cleanText, 100);
 
-  // GIỌNG 1: Kuromi Hoạt Hình (Anime Sanrio - Nhí nhảnh, lí lắc, ngọt ngào, đáng yêu cho bé)
+  // QUY TẮC CỐT LÕI: Trên thiết bị Apple (iPhone, iPad), bộ máy WebKit SpeechSynthesis (AVSpeechSynthesizer)
+  // có lỗi âm vị học hệ thống khiến từ "Bé" bị phát âm thành "Bớ" hoặc méo tiếng.
+  // Vì vậy, trên iOS/iPadOS, hệ thống tự động ưu tiên 100% Google TTS Tiếng Việt chuẩn (Studio)
+  // để đảm bảo mọi câu từ, đặc biệt là chữ "Bé" và "Bé Bảo Hân", luôn được phát âm tròn vành rõ chữ, ngọt ngào và chính xác tuyệt đối!
+
+  // GIỌNG 1: Kuromi Hoạt Hình (Nữ Hoạt Hình Lí Lắc, Ngọt Ngào, Vui Tươi Cho Bé)
   if (voiceStyle === 'kuromi_anime') {
     playSfx('chime');
-    if (viVoice) {
+    if (isApple) {
+      speakWithGoogleTts(chunks, {
+        rate: 1.15 * (userRate / 1.05),
+        preservesPitch: false
+      }, onComplete);
+    } else if (viVoice) {
       speakWithWebSpeech(cleanText, {
         rate: 1.12 * (userRate / 1.05),
-        pitch: 1.35 // Giọng trong trẻo, lí lắc anime Sanrio
+        pitch: 1.25 // Cao độ trong trẻo, nhí nhảnh Kuromi Sanrio
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
           rate: 1.15 * (userRate / 1.05),
@@ -2688,7 +2760,6 @@ function speakText(text, onComplete, force = false) {
         }, onComplete);
       });
     } else {
-      // Máy không có voice tiếng Việt: dùng Google TTS Tiếng Việt chuẩn với cao độ nhí nhảnh
       speakWithGoogleTts(chunks, {
         rate: 1.15 * (userRate / 1.05),
         preservesPitch: false
@@ -2697,15 +2768,17 @@ function speakText(text, onComplete, force = false) {
     return;
   }
 
-  // GIỌNG 2: Chị Google Trong Trẻo (Chuẩn Studio Tiếng Việt Phổ Thông 100%)
+  // GIỌNG 2: Cô Giáo Hiền Dịu (Nữ Chuẩn Mực Sư Phạm - Ấm Áp, Tròn Vành Rõ Chữ)
   if (voiceStyle === 'google_online') {
+    playSfx('pop');
+    // Luôn ưu tiên Google TTS Tiếng Việt chuẩn Studio để đạt âm sắc cô giáo mẫu mực
     speakWithGoogleTts(chunks, {
-      rate: 1.0 * (userRate / 1.05),
+      rate: 0.98 * (userRate / 1.05),
       preservesPitch: true
     }, onComplete, () => {
-      if (viVoice) {
+      if (viVoice && !isApple) {
         speakWithWebSpeech(cleanText, {
-          rate: 1.0 * (userRate / 1.05),
+          rate: 0.98 * (userRate / 1.05),
           pitch: 1.0
         }, onComplete);
       } else {
@@ -2715,44 +2788,54 @@ function speakText(text, onComplete, force = false) {
     return;
   }
 
-  // GIỌNG 3: Cô Tiên Kể Chuyện (Ấm Áp Ru Êm, Chậm Rãi Truyền Cảm - Tiếng Việt 100%)
+  // GIỌNG 3: Cô Tiên Dịu Êm (Nữ Ngọt Ngào, Êm Đềm Ru Ngủ - Du Dương Truyền Cảm)
   if (voiceStyle === 'fairy') {
     playFairyChime();
-    if (viVoice) {
+    if (isApple) {
+      speakWithGoogleTts(chunks, {
+        rate: 0.86 * (userRate / 1.05),
+        preservesPitch: true
+      }, onComplete);
+    } else if (viVoice) {
       speakWithWebSpeech(cleanText, {
         rate: 0.85 * (userRate / 1.05),
         pitch: 0.95
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 0.88 * (userRate / 1.05),
+          rate: 0.86 * (userRate / 1.05),
           preservesPitch: true
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 0.88 * (userRate / 1.05),
+        rate: 0.86 * (userRate / 1.05),
         preservesPitch: true
       }, onComplete);
     }
     return;
   }
 
-  // GIỌNG 4: Giọng Thiết Bị (Bộ Tổng Hợp Hệ Thống Máy / iPad - Bảo Vệ Tiếng Việt 100%)
-  if (voiceStyle === 'device') {
-    playDeviceBeep();
-    if (viVoice) {
+  // GIỌNG 4: Chị Họa Mi Tươi Vui (Nữ Trẻ Trung, Trong Trẻo, Hoạt Bát, Giàu Năng Lượng)
+  if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
+    playSfx('ting');
+    if (isApple) {
+      speakWithGoogleTts(chunks, {
+        rate: 1.08 * (userRate / 1.05),
+        preservesPitch: false
+      }, onComplete);
+    } else if (viVoice) {
       speakWithWebSpeech(cleanText, {
-        rate: 1.02 * (userRate / 1.05),
-        pitch: 1.05
+        rate: 1.06 * (userRate / 1.05),
+        pitch: 1.1
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 1.02 * (userRate / 1.05),
+          rate: 1.08 * (userRate / 1.05),
           preservesPitch: true
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.02 * (userRate / 1.05),
+        rate: 1.08 * (userRate / 1.05),
         preservesPitch: true
       }, onComplete);
     }
@@ -2760,7 +2843,7 @@ function speakText(text, onComplete, force = false) {
   }
 }
 
-// Nút Nghe Thử Giọng Này Trong Cài Đặt Ba Mẹ (Kiểm Tra 4 Giọng Tiếng Việt)
+// Nút Nghe Thử Giọng Này Trong Cài Đặt Ba Mẹ (Kiểm Tra 4 Giọng Nữ Tiếng Việt)
 function testVoiceSample(customStyle) {
   const childName = (document.getElementById('childNameInput')?.value || APP_STATE.settings.childName || 'Bảo Hân').trim();
   const testBtn = document.getElementById('testVoiceBtn');
@@ -2771,31 +2854,30 @@ function testVoiceSample(customStyle) {
     APP_STATE.settings.voiceStyle || 
     'kuromi_anime';
 
-  let personaTitle = 'Kuromi Hoạt Hình';
-  // Câu chào nhí nhảnh, ngọt ngào, đáng yêu đúng chuẩn Kuromi Sanrio:
-  let samplePhrase = `Hí hí, Kuromi chào bé ${childName} đáng yêu nè! Kuromi chúc bé học thật giỏi và luôn cười tươi vui vẻ cùng Kuromi nha! 💖🎀`;
+  let personaTitle = '🎀 Kuromi Hoạt Hình (Nữ Hoạt Hình Lí Lắc)';
+  let samplePhrase = `Hí hí, Kuromi chào bé ${childName} đáng yêu nè! Kuromi chúc bé luôn chăm ngoan và học thật giỏi cùng Kuromi nha!`;
 
   if (selectedVoice === 'google_online') {
-    personaTitle = 'Chị Google Trong Trẻo';
-    samplePhrase = `Xin chào bé ${childName}. Chúc bé một buổi học tập thật chăm ngoan, tiến bộ và học thêm nhiều điều hay nhé! 👩‍🏫⭐`;
+    personaTitle = '👩‍🏫 Cô Giáo Hiền Dịu (Tiếng Việt Chuẩn Mực)';
+    samplePhrase = `Cô chào bé ${childName} ngoan ngoãn. Chúc bé một ngày học tập thật nhiều niềm vui và khám phá thêm nhiều điều kỳ thú nhé!`;
   } else if (selectedVoice === 'fairy') {
-    personaTitle = 'Cô Tiên Kể Chuyện';
-    samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé ngoan ngoãn lắng nghe những câu chuyện cổ tích êm đềm cùng cô nhé... 🧚✨`;
-  } else if (selectedVoice === 'device') {
-    personaTitle = 'Giọng Thiết Bị';
-    samplePhrase = `Hệ thống thiết bị xin chào bé ${childName}. Trợ lý học tập đã sẵn sàng hỗ trợ bé khám phá thế giới xung quanh! 📱🤖`;
+    personaTitle = '🧚 Cô Tiên Dịu Êm (Ngọt Ngào & Ru Ngủ)';
+    samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé hãy nằm thật ngoan và cùng cô lắng nghe những câu chuyện cổ tích êm đềm nhé...`;
+  } else if (selectedVoice === 'device' || selectedVoice === 'hoami_cheerful') {
+    personaTitle = '🐰 Chị Họa Mi Tươi Vui (Trong Trẻo & Năng Động)';
+    samplePhrase = `Chị Họa Mi chào bé ${childName}! Hôm nay chúng mình cùng giải những câu đố vui và khám phá tri thức thật rộn ràng nào!`;
   }
 
   if (testBtn) testBtn.classList.add('playing');
-  if (statusEl) statusEl.textContent = `Đang phát: ${personaTitle} (Tiếng Việt) 🔊...`;
+  if (statusEl) statusEl.textContent = `Đang phát: ${personaTitle} 🔊...`;
 
-  // Cập nhật và lưu lại giọng đang chọn
+  // Cập nhật và lưu lại giọng đang chọn (Non-destructive safe merge)
   APP_STATE.settings.voiceStyle = selectedVoice;
   saveSettings({ voiceStyle: selectedVoice });
 
   speakText(samplePhrase, () => {
     if (testBtn) testBtn.classList.remove('playing');
-    if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe thấy rõ ràng bằng Tiếng Việt chưa nè? 💕`;
+    if (statusEl) statusEl.textContent = `Đã phát xong: ${personaTitle}! Bé nghe chuẩn xác chữ Bé chưa nè? 💕`;
   }, true);
 }
 
@@ -3230,80 +3312,75 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
   }
 
   let jukeboxHtml = '';
-  if (data.song) {
-    const song = SONGS_LIBRARY[data.song];
-    if (song) {
-      const ytUrl = song.youtubeId 
-        ? `https://www.youtube.com/watch?v=${song.youtubeId}`
-        : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
+  const song = data.songData || (data.song ? SONGS_LIBRARY[data.song] : null) || (typeof data.song === 'object' ? data.song : null);
+  if (song) {
+    data.songData = song; // Đảm bảo lưu trọn vẹn dữ liệu bài hát vào lịch sử chat
+    const songId = song.id || (typeof data.song === 'string' ? data.song : 'gemini_song');
+    const ytUrl = song.youtubeId 
+      ? `https://www.youtube.com/watch?v=${song.youtubeId}`
+      : `https://www.youtube.com/results?search_query=${encodeURIComponent((song.youtubeQuery || song.title + ' thiếu nhi'))}`;
 
-      jukeboxHtml = `
-        <div class="jukebox-player-card" data-song="${data.song}">
-          <div class="jukebox-top">
-            <div class="jukebox-header-badge">🎵 Ca Khúc Thiếu Nhi YouTube &amp; Lời Hát</div>
-            <div class="jukebox-info">
-              <span class="jukebox-title">${song.icon} ${escapeHtml(song.title)}</span>
-              <span class="jukebox-subtitle">🎤 Ca sĩ: <strong>${escapeHtml(song.singer || 'Ca sĩ thiếu nhi')}</strong></span>
-            </div>
+    jukeboxHtml = `
+      <div class="jukebox-player-card" data-song="${songId}">
+        <div class="jukebox-top">
+          <div class="jukebox-header-badge">🎵 Ca Khúc Thiếu Nhi YouTube &amp; Lời Hát</div>
+          <div class="jukebox-info">
+            <span class="jukebox-title">${song.icon || '🎵'} ${escapeHtml(song.title)}</span>
+            <span class="jukebox-subtitle">🎤 Ca sĩ: <strong>${escapeHtml(song.singer || 'Ca sĩ thiếu nhi')}</strong></span>
           </div>
+        </div>
 
-          <!-- Triple Action Options: Direct YouTube vs In-Page Video vs Kuromi Live -->
-          <div class="jukebox-actions-group">
-            <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="origin-when-cross-origin" class="jukebox-vocal-btn youtube-direct-btn" title="Mở xem bài hát trực tiếp trên YouTube">
-              <span class="btn-icon">▶️</span>
-              <div class="btn-labels">
-                <strong>Mở Xem Trên YouTube</strong>
-                <small>Xem MV gốc có hình ảnh ca sĩ</small>
-              </div>
-            </a>
-            <button type="button" class="jukebox-vocal-btn real-singer-btn" data-song="${data.song}" title="Xem video ngay trên màn hình này">
-              <span class="btn-icon">🎬</span>
-              <div class="btn-labels">
-                <strong>Phát Video Tại Đây</strong>
-                <small>Khung video bên dưới</small>
-              </div>
-            </button>
-            <button type="button" class="jukebox-vocal-btn kuromi-sing-btn" data-song="${data.song}" title="Kuromi cất tiếng hát tặng bé">
-              <span class="btn-icon">🎀</span>
-              <div class="btn-labels">
-                <strong>Kuromi Cất Tiếng Hát</strong>
-                <small>Giọng hoạt hình lí lắc cùng nhạc</small>
-              </div>
-            </button>
-          </div>
-
-          <!-- Real Singer Video Container (Embedded Kids MV) -->
-          <div class="jukebox-video-container hidden">
-            <div class="video-responsive-frame">
-              <iframe class="singer-video-frame" src="" referrerpolicy="origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <!-- Triple Action Options: Direct YouTube vs In-Page Video vs Kuromi Live -->
+        <div class="jukebox-actions-group">
+          <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="strict-origin-when-cross-origin" class="jukebox-vocal-btn youtube-direct-btn" title="Mở xem bài hát trực tiếp trên YouTube">
+            <span class="btn-icon">▶️</span>
+            <div class="btn-labels">
+              <strong>Mở Xem Trên YouTube</strong>
+              <small>Xem MV gốc có hình ảnh ca sĩ</small>
             </div>
-            <div class="video-status-bar">
-              <span>🎶 Đang phát ca khúc cho bé nghe</span>
-              <div class="video-status-actions">
-                <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="origin-when-cross-origin" class="open-external-mv-link" title="Xem trên YouTube">▶️ Mở Trên YouTube 🎬</a>
-                <button type="button" class="close-video-frame-btn" data-song="${data.song}">✕ Đóng video</button>
-              </div>
+          </a>
+          <button type="button" class="jukebox-vocal-btn real-singer-btn" data-song="${songId}" title="Xem video ngay trên màn hình này">
+            <span class="btn-icon">🎬</span>
+            <div class="btn-labels">
+              <strong>Phát Video Tại Đây</strong>
+              <small>Khung video bên dưới</small>
             </div>
-          </div>
+          </button>
+          <button type="button" class="jukebox-vocal-btn kuromi-sing-btn" data-song="${songId}" title="Kuromi cất tiếng hát tặng bé">
+            <span class="btn-icon">🎀</span>
+            <div class="btn-labels">
+              <strong>Kuromi Cất Tiếng Hát</strong>
+              <small>Giọng hoạt hình lí lắc cùng nhạc</small>
+            </div>
+          </button>
+        </div>
 
-          <!-- Karaoke / Kuromi Lyrics display -->
-          <div class="jukebox-lyrics-box">
-            <span class="current-lyric">Bé bấm "▶️ Mở Xem Trên YouTube" hoặc "Phát Video Tại Đây" nha!</span>
-            <div class="jukebox-wave-bars">
-              <span></span><span></span><span></span><span></span>
+        <!-- Real Singer Video Container (Embedded Kids MV) -->
+        <div class="jukebox-video-container hidden">
+          <div class="video-responsive-frame">
+            <iframe class="singer-video-frame" 
+                    src="" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen 
+                    playsinline 
+                    webkit-playsinline>
+            </iframe>
+          </div>
+          <div class="video-status-bar">
+            <span>🎶 Đang phát ca khúc cho bé nghe</span>
+            <div class="video-status-actions">
+              <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" referrerpolicy="strict-origin-when-cross-origin" class="open-external-mv-link" title="Xem trên YouTube">▶️ Mở Trên YouTube 🎬</a>
+              <button type="button" class="close-video-frame-btn" data-song="${songId}">✕ Đóng video</button>
             </div>
           </div>
         </div>
-      `;
-    }
-  } else if (data.sound) {
-    jukeboxHtml = `
-      <div class="jukebox-player-card">
-        <div class="jukebox-top">
-          <button class="jukebox-play-btn sound-fx-btn" data-sound="${data.sound}">🔊</button>
-          <div class="jukebox-info">
-            <span class="jukebox-title">👂 ${escapeHtml(data.soundTitle || 'Nghe âm thanh')}</span>
-            <span class="jukebox-subtitle">Bấm nút để nghe âm thanh chân thật nha!</span>
+
+        <!-- Karaoke / Kuromi Lyrics display -->
+        <div class="jukebox-lyrics-box">
+          <span class="current-lyric">Bé bấm "▶️ Mở Xem Trên YouTube" hoặc "Phát Video Tại Đây" nha!</span>
+          <div class="jukebox-wave-bars">
+            <span></span><span></span><span></span><span></span>
           </div>
         </div>
       </div>
@@ -3390,9 +3467,11 @@ function appendKuromiResponse(data, shouldSaveAndSpeak = true) {
 
   if (realSingerBtn) {
     const songKey = realSingerBtn.getAttribute('data-song');
-    realSingerBtn.addEventListener('click', () => {
+    msgRow._songData = song;
+    realSingerBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       playSfx('chime');
-      openSingerVideo(songKey, msgRow);
+      openSingerVideo(song || songKey, msgRow);
     });
   }
 
