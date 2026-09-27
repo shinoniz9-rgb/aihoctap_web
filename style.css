@@ -3554,8 +3554,8 @@ body {
   }
 
   .classroom-stage-card {
-    padding: 6px 8px;
-    gap: 4px;
+    padding: 8px 10px;
+    gap: 6px;
     justify-content: space-between;
   }
 
@@ -3990,15 +3990,17 @@ body {
   }
 
   /* Ô Bạn Thân & Lớp Học Trên Mobile - Gọn gàng, đồng đều kích thước 100% */
-  .kuromi-stage-card {
+  .kuromi-stage-card,
+  .classroom-stage-card {
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
     padding: 3px 6px;
     gap: 6px;
-    height: auto;
-    min-height: 44px;
-    max-height: 48px;
+    height: 46px;
+    min-height: 46px;
+    max-height: 46px;
+    box-sizing: border-box;
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--radius-sm);
