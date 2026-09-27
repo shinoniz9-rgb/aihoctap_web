@@ -2871,29 +2871,24 @@ function speakText(text, onComplete, force = false) {
   // Phát nhạc hiệu mở đầu độc quyền theo phong cách giọng
   playPersonaIntro(voiceStyle);
 
-  // PHONG CÁCH 1: 🎀 BÉ KUROMI HOẠT HÌNH (Nhí Nhảnh, Ngọt Ngào, Nhiều Tiếng Cười Hí Hí)
-  // Cao độ cao (pitch 1.45), nhịp điệu nhanh vui tươi (rate 1.15), pitch shift formant cao
+  // PHONG CÁCH 1: 🎀 BÉ KUROMI HOẠT HÌNH (100% NỮ HOẠT HÌNH - Nhí Nhảnh, Ngọt Ngào, Sanrio)
+  // Cao độ cao (pitch 1.50), nhịp điệu nhanh vui tươi (rate 1.15), pitch shift formant cao (+4.3 semitones)
   if (voiceStyle === 'kuromi_anime') {
-    if (isApple) {
-      speakWithGoogleTts(chunks, {
-        rate: 1.22 * rateScale,
-        preservesPitch: false // Nâng formant cao trong sáng, nhí nhảnh chất bạn thân
-      }, onComplete);
-    } else if (viVoice) {
+    if (viVoice) {
       speakWithWebSpeech(formattedText, {
         rate: 1.15 * rateScale,
-        pitch: 1.45,
+        pitch: 1.50,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 1.22 * rateScale,
+          rate: 1.28 * rateScale,
           preservesPitch: false
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.22 * rateScale,
+        rate: 1.28 * rateScale,
         preservesPitch: false
       }, onComplete);
     }
@@ -2901,12 +2896,12 @@ function speakText(text, onComplete, force = false) {
   }
 
   // PHONG CÁCH 2: 👩‍🏫 CÔ GIÁO HIỀN DỊU (100% NỮ SƯ PHẠM - Trầm Ấm, Mẫu Mực, Tròn Vành Rõ Chữ)
-  // Cao độ nữ tự nhiên (pitch 1.05), nhịp điệu từ tốn (rate 0.94), bảo toàn âm sắc nữ tự nhiên
+  // Cao độ nữ tự nhiên (pitch 1.02), nhịp điệu từ tốn (rate 0.92), bảo toàn âm sắc nữ tự nhiên mẫu mực
   if (voiceStyle === 'google_online') {
-    if (viVoice && !isApple) {
+    if (viVoice) {
       speakWithWebSpeech(formattedText, {
-        rate: 0.94 * rateScale,
-        pitch: 1.05,
+        rate: 0.92 * rateScale,
+        pitch: 1.02,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
@@ -2925,58 +2920,48 @@ function speakText(text, onComplete, force = false) {
   }
 
   // PHONG CÁCH 3: 🧚 CÔ TIÊN DỊU ÊM (100% NỮ THẦN TIÊN NGỌT NGÀO - HUYỀN ẢO, DU DƯƠNG RU NGỦ)
-  // Cao độ nữ thanh thoát, ngọt ngào (pitch 1.18), nhịp điệu êm dịu (rate 0.88), tuyệt đối giữ trọn vẹn chất giọng NỮ
+  // Cao độ nữ thanh thoát, ngọt ngào (pitch 1.25), nhịp điệu êm dịu (rate 0.88), âm sắc nữ tiên dịu ngọt (+1 semitone)
   if (voiceStyle === 'fairy') {
-    if (isApple) {
-      speakWithGoogleTts(chunks, {
-        rate: 0.90 * rateScale,
-        preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%, tuyệt đối không hạ formant thành giọng nam
-      }, onComplete);
-    } else if (viVoice) {
+    if (viVoice) {
       speakWithWebSpeech(formattedText, {
         rate: 0.88 * rateScale,
-        pitch: 1.18, // Giọng nữ ngọt ngào, ngân nga, dịu dàng như lời ru
+        pitch: 1.25,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 0.90 * rateScale,
-          preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%
+          rate: 1.06 * rateScale,
+          preservesPitch: false // Nâng nhẹ cao độ nữ thanh thoát như tiên nữ
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 0.90 * rateScale,
-        preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%
+        rate: 1.06 * rateScale,
+        preservesPitch: false
       }, onComplete);
     }
     return;
   }
 
   // PHONG CÁCH 4: 🌸 CHỊ HỌA MI TƯƠI VUI (100% NỮ TRẺ TRUNG - Trong Trẻo, Hoạt Bát, Sôi Nổi & Hát Ca)
-  // Cao độ trong trẻo tươi sáng (pitch 1.25), nhịp điệu rộn ràng (rate 1.08), giàu năng lượng
+  // Cao độ trong trẻo tươi sáng (pitch 1.35), nhịp điệu rộn ràng (rate 1.08), âm sắc chị gái sôi nổi (+2.8 semitones)
   if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
-    if (isApple) {
-      speakWithGoogleTts(chunks, {
-        rate: 1.10 * rateScale,
-        preservesPitch: true
-      }, onComplete);
-    } else if (viVoice) {
+    if (viVoice) {
       speakWithWebSpeech(formattedText, {
         rate: 1.08 * rateScale,
-        pitch: 1.25,
+        pitch: 1.35,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 1.10 * rateScale,
-          preservesPitch: true
+          rate: 1.18 * rateScale,
+          preservesPitch: false // Nâng formant tươi vui hoạt bát của chị gái
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.10 * rateScale,
-        preservesPitch: true
+        rate: 1.18 * rateScale,
+        preservesPitch: false
       }, onComplete);
     }
     return;
