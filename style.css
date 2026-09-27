@@ -422,14 +422,16 @@ body {
 /* ==========================================================================
    APP MAIN GRID (NATIVE TABLET & DESKTOP 2-COLUMN APP EXPERIENCE)
    ========================================================================== */
-.app-main {
+.app-main,
+.learning-main-view {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 8px;
   flex: 1;
   min-height: 0;
   height: 100%;
-  animation: tabFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  animation: tabFadeIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes tabFadeIn {
@@ -2221,44 +2223,44 @@ body {
 
 .settings-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.primary-save-btn {
-  flex: 2;
-  background: linear-gradient(135deg, var(--kuromi-pink), var(--kuromi-pink-neon));
-  border: none;
-  color: #fff;
-  font-family: var(--font-display);
-  font-weight: 700;
-  padding: 12px;
-  border-radius: var(--radius-md);
-  font-size: 0.95rem;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(255, 37, 138, 0.4);
-  transition: var(--transition-smooth);
-}
-
-.primary-save-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(255, 37, 138, 0.7);
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1.5px solid rgba(255, 101, 168, 0.25);
+  width: 100%;
 }
 
 .danger-btn {
-  flex: 1;
-  background: rgba(244, 67, 54, 0.2);
-  border: 1px solid rgba(244, 67, 54, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(244, 67, 54, 0.16);
+  border: 1.5px solid rgba(244, 67, 54, 0.5);
   color: #ff8a80;
-  padding: 12px;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 11px 24px;
   border-radius: var(--radius-md);
-  font-size: 0.82rem;
   cursor: pointer;
+  box-shadow: 0 3px 12px rgba(244, 67, 54, 0.2);
+  transition: var(--transition-smooth);
+  width: 100%;
+  max-width: 360px;
 }
 
 .danger-btn:hover {
-  background: #f44336;
-  color: #fff;
+  background: linear-gradient(135deg, #d32f2f, #f44336);
+  border-color: #ff5252;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.45);
+}
+
+.danger-btn-icon {
+  font-size: 1.1rem;
 }
 
 /* ==========================================================================
@@ -2349,20 +2351,47 @@ body {
    CLASSROOM LEARNING HUB STYLES (TRƯỜNG HỌC KUROMI)
    ========================================================================== */
 .learning-main-view {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 16px;
+  /* Inherits exact grid-template-columns: 280px 1fr and gap: 8px from .app-main */
+  width: 100%;
   height: 100%;
-  min-height: 0;
-  overflow: hidden;
 }
 
 .classroom-stage-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   overflow-y: auto;
+  gap: 5px;
+  padding: 8px 10px;
+}
+
+.classroom-stage-card .mascot-display-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 3px;
+  flex-shrink: 0;
+}
+
+.classroom-stage-card .avatar-halo {
+  width: 95px;
+  height: 95px;
+}
+
+.classroom-stage-card .mascot-image-wrapper {
+  width: 88px;
+  height: 88px;
+}
+
+.classroom-stage-card .mascot-status-bubble {
+  padding: 6px 10px;
+  margin-bottom: 3px;
+  flex-shrink: 0;
+}
+
+.classroom-stage-card .mascot-status-bubble p {
+  font-size: 0.78rem;
+  line-height: 1.25;
 }
 
 .classroom-ribbon {
@@ -2378,30 +2407,31 @@ body {
   background: rgba(30, 15, 45, 0.88) !important;
 }
 
-/* Star Reward Panel */
+/* Star Reward Panel - Compact & Beautifully Balanced */
 .star-reward-panel {
   width: 100%;
   background: rgba(20, 10, 31, 0.88);
-  border: 2px solid rgba(255, 215, 0, 0.45);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.15);
-  margin-bottom: 12px;
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.12);
+  margin-bottom: 2px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .star-reward-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 }
 
 .star-big-icon {
-  font-size: 2.2rem;
-  filter: drop-shadow(0 0 8px #ffeb3b);
+  font-size: 1.6rem;
+  filter: drop-shadow(0 0 6px #ffeb3b);
   animation: starFloat 2.4s ease-in-out infinite alternate;
 }
 
@@ -2417,11 +2447,11 @@ body {
 }
 
 .star-count-label {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--kuromi-lavender);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .star-number-row {
@@ -2432,45 +2462,46 @@ body {
 
 .star-number {
   font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffeb3b;
-  text-shadow: 0 0 12px rgba(255, 235, 59, 0.6);
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #ffd700;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .star-unit {
-  font-size: 0.9rem;
+  font-size: 0.76rem;
   color: var(--kuromi-pink-pastel);
   font-weight: 700;
+}
+
+.star-actions-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .add-star-bonus-btn {
   background: linear-gradient(135deg, #ffd700, #ff9800);
   border: none;
   color: #140a1f;
-  padding: 6px 12px;
+  padding: 4px 9px;
   border-radius: var(--radius-full);
   font-family: var(--font-kid);
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(255, 152, 0, 0.4);
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.4);
   transition: var(--transition-smooth);
   flex-shrink: 0;
   touch-action: manipulation;
 }
 
 .add-star-bonus-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 16px rgba(255, 215, 0, 0.8);
-}
-
-.star-actions-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-end;
-  flex-shrink: 0;
+  transform: scale(1.05);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.8);
 }
 
 .reset-star-btn {
@@ -2479,8 +2510,8 @@ body {
   color: var(--kuromi-lavender);
   font-family: var(--font-kid);
   font-weight: 700;
-  font-size: 0.72rem;
-  padding: 3px 8px;
+  font-size: 0.68rem;
+  padding: 2px 7px;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: inline-flex;
@@ -2499,26 +2530,30 @@ body {
 .star-rank-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 101, 168, 0.15);
-  border: 1px solid var(--kuromi-border);
-  padding: 6px 10px;
-  border-radius: var(--radius-sm);
+  gap: 5px;
+  background: rgba(255, 101, 168, 0.12);
+  border: 1px solid rgba(255, 101, 168, 0.3);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
 }
 
 .rank-icon {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
 }
 
 .rank-title {
-  font-size: 0.85rem;
+  font-family: var(--font-kid);
+  font-size: 0.74rem;
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .progress-bar-container {
   width: 100%;
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-full);
   overflow: hidden;
@@ -2533,38 +2568,38 @@ body {
 }
 
 .progress-hint {
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   color: var(--kuromi-lavender);
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
-/* Learning Display Section - Fixed Balanced 2x2 Grid */
+/* Learning Display Section - 100% Matches .chat-display-section Dimensions & Box Style */
 .learning-display-section {
   display: flex;
   flex-direction: column;
-  background: rgba(31, 16, 48, 0.78);
+  background: rgba(28, 14, 44, 0.85);
   backdrop-filter: blur(20px);
-  border: 2px solid var(--kuromi-border);
-  border-radius: var(--radius-lg);
-  padding: 16px 20px 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  border: 1.5px solid var(--kuromi-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   overflow: hidden;
   height: 100%;
   min-height: 0;
-  gap: 10px;
+  gap: 8px;
 }
 
 .learning-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px 2px 4px;
+  padding: 2px 4px;
   flex-shrink: 0;
 }
 
 .learning-grid-headline {
   font-family: var(--font-kid);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #ffeb3b;
   text-shadow: 0 0 10px rgba(255, 235, 59, 0.4);
@@ -2572,12 +2607,40 @@ body {
   letter-spacing: 0.3px;
 }
 
+.learning-stars-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 215, 0, 0.16);
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.star-badge-icon {
+  font-size: 0.95rem;
+}
+
+.star-badge-num {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+.star-badge-txt {
+  font-size: 0.72rem;
+  color: var(--kuromi-pink-pastel);
+  font-weight: 700;
+}
+
 /* Stations Grid - Fixed 2x2 Strict Proportions */
 .stations-grid-container {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
   height: 100%;
   min-height: 0;
   flex: 1;
@@ -2589,9 +2652,9 @@ body {
 .station-card {
   position: relative;
   background: linear-gradient(145deg, rgba(42, 20, 68, 0.94), rgba(25, 11, 42, 0.98));
-  border: 2px solid rgba(255, 101, 168, 0.38);
-  border-radius: var(--radius-lg);
-  padding: 14px 18px 12px;
+  border: 1.5px solid rgba(255, 101, 168, 0.38);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -3468,6 +3531,52 @@ body {
     justify-content: space-between;
   }
 
+  .classroom-stage-card {
+    padding: 6px 8px;
+    gap: 4px;
+    justify-content: space-between;
+  }
+
+  .classroom-stage-card .mascot-display-container {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .avatar-halo {
+    width: 76px;
+    height: 76px;
+  }
+
+  .classroom-stage-card .mascot-image-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .classroom-stage-card .mascot-status-bubble {
+    padding: 4px 8px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .mascot-status-bubble p {
+    font-size: 0.74rem;
+    line-height: 1.2;
+  }
+
+  .classroom-stage-card .star-reward-panel {
+    padding: 6px 8px;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .star-big-icon {
+    font-size: 1.3rem;
+  }
+
+  .classroom-stage-card .star-number {
+    font-size: 1.2rem;
+  }
+
   .stage-sidebar-column {
     gap: 6px;
   }
@@ -3523,6 +3632,9 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--kuromi-border);
   }
 
   .chat-messages-container {
@@ -3603,6 +3715,52 @@ body {
     justify-content: space-between;
   }
 
+  .classroom-stage-card {
+    padding: 5px 6px;
+    gap: 3px;
+    justify-content: space-between;
+  }
+
+  .classroom-stage-card .mascot-display-container {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .avatar-halo {
+    width: 66px;
+    height: 66px;
+  }
+
+  .classroom-stage-card .mascot-image-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .classroom-stage-card .mascot-status-bubble {
+    padding: 3px 6px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .mascot-status-bubble p {
+    font-size: 0.72rem;
+    line-height: 1.15;
+  }
+
+  .classroom-stage-card .star-reward-panel {
+    padding: 4px 6px;
+    gap: 3px;
+    margin-bottom: 2px;
+  }
+
+  .classroom-stage-card .star-big-icon {
+    font-size: 1.15rem;
+  }
+
+  .classroom-stage-card .star-number {
+    font-size: 1.1rem;
+  }
+
   .stage-sidebar-column {
     gap: 5px;
   }
@@ -3659,6 +3817,9 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--kuromi-border);
   }
 
   .chat-messages-container {
@@ -3793,7 +3954,7 @@ body {
     padding: 1px 6px;
   }
 
-  /* Ô Bạn Thân Của Bé Bảo Hân Trên Mobile - Gọn gàng không chiếm diện tích */
+  /* Ô Bạn Thân & Lớp Học Trên Mobile - Gọn gàng, đồng đều kích thước 100% */
   .kuromi-stage-card {
     flex-direction: row;
     align-items: center;
@@ -3806,6 +3967,11 @@ body {
     flex-shrink: 0;
     overflow: hidden;
     border-radius: var(--radius-sm);
+  }
+
+  .classroom-stage-card .star-reward-panel,
+  .classroom-stage-card .stage-interactions {
+    display: none !important;
   }
 
   .stage-ribbon-tag {
@@ -3915,13 +4081,83 @@ body {
   .learning-display-section {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--kuromi-border);
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .learning-header-bar {
+    padding: 2px 2px 4px;
+    flex-shrink: 0;
+  }
+
+  .learning-grid-headline {
+    font-size: 0.92rem;
+  }
+
+  .learning-stars-badge {
+    padding: 2px 8px;
+  }
+
+  .learning-stars-badge .star-badge-num {
+    font-size: 0.85rem;
   }
 
   .stations-grid-container {
+    display: grid;
     grid-template-columns: 1fr;
     gap: 6px;
-    padding-bottom: 12px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 2px 10px;
+    margin: 0;
+  }
+
+  .station-card {
+    padding: 8px 10px;
+    min-height: 85px;
+    border-radius: var(--radius-sm);
+    gap: 4px;
+  }
+
+  .station-card-ribbon {
+    display: none;
+  }
+
+  .station-card-icon-halo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .station-big-emoji {
+    font-size: 1.15rem;
+  }
+
+  .station-title {
+    font-size: 1.02rem;
+  }
+
+  .station-desc {
+    font-size: 0.76rem;
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+  }
+
+  .station-tag {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+  }
+
+  .station-launch-btn {
+    padding: 6px 12px;
+    font-size: 0.86rem;
   }
 
   .message-row {
@@ -4076,6 +4312,35 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .settings-actions {
+    margin-top: 12px;
+    padding-top: 10px;
+    width: 100%;
+  }
+
+  .danger-btn {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 14px;
+    font-size: 0.86rem;
+  }
+
+  .cloud-sync-card {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .cloud-input-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sync-now-btn {
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
   }
 }
 

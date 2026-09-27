@@ -191,6 +191,9 @@ function updateLearningUi() {
   const starCountEl = document.getElementById('learningStarCount');
   if (starCountEl) starCountEl.textContent = currentStars;
 
+  const headerStarEl = document.getElementById('learningHeaderStarCount');
+  if (headerStarEl) headerStarEl.textContent = currentStars;
+
   const modalStarEl = document.getElementById('modalStarCounter');
   if (modalStarEl) modalStarEl.textContent = currentStars;
 
@@ -3872,7 +3875,27 @@ document.addEventListener('DOMContentLoaded', () => {
   closeSettingsBtn.addEventListener('click', () => {
     playSfx('pop');
     stopAllSpeech();
+    flushSettingsFromModal();
     settingsModal.classList.add('hidden');
+  });
+
+  // Close & flush settings when clicking modal backdrop
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) {
+      playSfx('pop');
+      stopAllSpeech();
+      flushSettingsFromModal();
+      settingsModal.classList.add('hidden');
+    }
+  });
+
+  // Close & flush settings on Escape key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+      stopAllSpeech();
+      flushSettingsFromModal();
+      settingsModal.classList.add('hidden');
+    }
   });
 
   // Voice Persona selection handling
@@ -3969,47 +3992,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Rate & Pitch sliders
+  // Real-time Auto-Saving for Child Name
+  const childNameInput = document.getElementById('childNameInput');
+  if (childNameInput) {
+    const handleNameInput = () => {
+      const val = childNameInput.value.trim() || 'Bảo Hân';
+      APP_STATE.settings.childName = val;
+      saveSettings({ childName: val });
+    };
+    childNameInput.addEventListener('input', handleNameInput);
+    childNameInput.addEventListener('change', handleNameInput);
+  }
+
+  // Real-time Auto-Saving for Gemini API Key
+  const geminiApiKeyField = document.getElementById('geminiApiKey');
+  if (geminiApiKeyField) {
+    const handleKeyInput = () => {
+      const keyVal = geminiApiKeyField.value.trim();
+      APP_STATE.settings.geminiApiKey = keyVal;
+      saveSettings({ geminiApiKey: keyVal });
+    };
+    geminiApiKeyField.addEventListener('input', handleKeyInput);
+    geminiApiKeyField.addEventListener('change', handleKeyInput);
+  }
+
+  // Real-time Auto-Saving for Family Sync Code
+  const familySyncInput = document.getElementById('familySyncCodeInput');
+  if (familySyncInput) {
+    const handleSyncCode = () => {
+      const codeVal = familySyncInput.value.trim().toLowerCase() || 'baohan0311';
+      APP_STATE.settings.familySyncCode = codeVal;
+      saveSettings({ familySyncCode: codeVal });
+    };
+    familySyncInput.addEventListener('input', handleSyncCode);
+    familySyncInput.addEventListener('change', handleSyncCode);
+  }
+
+  // Rate & Pitch sliders with Real-time Auto-Save
   const rateSlider = document.getElementById('ttsRateSlider');
-  rateSlider.addEventListener('input', () => {
-    document.getElementById('ttsRateVal').textContent = `${rateSlider.value}x`;
-    APP_STATE.settings.ttsRate = parseFloat(rateSlider.value);
-  });
+  if (rateSlider) {
+    const handleRate = () => {
+      const rateVal = parseFloat(rateSlider.value);
+      document.getElementById('ttsRateVal').textContent = `${rateVal}x`;
+      APP_STATE.settings.ttsRate = rateVal;
+      saveSettings({ ttsRate: rateVal });
+    };
+    rateSlider.addEventListener('input', handleRate);
+    rateSlider.addEventListener('change', handleRate);
+  }
 
   const pitchSlider = document.getElementById('ttsPitchSlider');
-  pitchSlider.addEventListener('input', () => {
-    document.getElementById('ttsPitchVal').textContent = `${pitchSlider.value}`;
-    APP_STATE.settings.ttsPitch = parseFloat(pitchSlider.value);
-  });
+  if (pitchSlider) {
+    const handlePitch = () => {
+      const pitchVal = parseFloat(pitchSlider.value);
+      document.getElementById('ttsPitchVal').textContent = `${pitchVal}`;
+      APP_STATE.settings.ttsPitch = pitchVal;
+      saveSettings({ ttsPitch: pitchVal });
+    };
+    pitchSlider.addEventListener('input', handlePitch);
+    pitchSlider.addEventListener('change', handlePitch);
+  }
 
-  // Save Settings Non-Destructively
-  document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-    playSfx('chime');
-    stopAllSpeech();
-    const selectedMode = document.querySelector('input[name="aiMode"]:checked').value;
-    const key = document.getElementById('geminiApiKey').value.trim();
-    const nameInput = document.getElementById('childNameInput');
-    const newName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : (APP_STATE.settings.childName || 'Bảo Hân');
-    const selectedVoice = document.querySelector('input[name="voiceStyle"]:checked')?.value || 'kuromi_anime';
-    const familyCodeInput = document.getElementById('familySyncCodeInput');
-    const syncCode = (familyCodeInput && familyCodeInput.value.trim()) ? familyCodeInput.value.trim().toLowerCase() : 'baohan0311';
+  // Comprehensive Non-Destructive Safe Flush on Modal Close
+  function flushSettingsFromModal() {
+    const nameVal = (childNameInput && childNameInput.value.trim()) ? childNameInput.value.trim() : (APP_STATE.settings.childName || 'Bảo Hân');
+    const keyVal = geminiApiKeyField ? geminiApiKeyField.value.trim() : (APP_STATE.settings.geminiApiKey || '');
+    const rVal = rateSlider ? parseFloat(rateSlider.value) : (APP_STATE.settings.ttsRate || 1.05);
+    const pVal = pitchSlider ? parseFloat(pitchSlider.value) : (APP_STATE.settings.ttsPitch || 1.25);
+    const syncVal = (familySyncInput && familySyncInput.value.trim()) ? familySyncInput.value.trim().toLowerCase() : (APP_STATE.settings.familySyncCode || 'baohan0311');
+    const voiceVal = document.querySelector('input[name="voiceStyle"]:checked')?.value || (APP_STATE.settings.voiceStyle || 'kuromi_anime');
     const activeAgeBtn = document.querySelector('.age-btn.active');
-    const selectedAge = activeAgeBtn ? activeAgeBtn.getAttribute('data-age') : (APP_STATE.settings.ageGroup || 'preschool');
+    const ageVal = activeAgeBtn ? activeAgeBtn.getAttribute('data-age') : (APP_STATE.settings.ageGroup || 'preschool');
 
     saveSettings({
-      aiMode: selectedMode,
-      geminiApiKey: key,
-      childName: newName,
-      ageGroup: selectedAge,
-      voiceStyle: selectedVoice,
-      ttsRate: APP_STATE.settings.ttsRate || 1.05,
-      ttsPitch: APP_STATE.settings.ttsPitch || 1.25,
-      familySyncCode: syncCode
+      childName: nameVal,
+      geminiApiKey: keyVal,
+      ttsRate: rVal,
+      ttsPitch: pVal,
+      familySyncCode: syncVal,
+      voiceStyle: voiceVal,
+      ageGroup: ageVal
     });
+  }
 
-    settingsModal.classList.add('hidden');
-    document.getElementById('kuromiStatusText').textContent = `Ba Mẹ đã lưu cài đặt thành công! Kuromi sẵn sàng phục vụ bé ${APP_STATE.settings.childName} rồi ạ! 🎀✨`;
-  });
+  // Save Settings button (Optional / Safe Fallback if present)
+  const saveBtn = document.getElementById('saveSettingsBtn');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      playSfx('chime');
+      stopAllSpeech();
+      flushSettingsFromModal();
+      settingsModal.classList.add('hidden');
+      document.getElementById('kuromiStatusText').textContent = `Ba Mẹ đã cập nhật cài đặt thành công! Kuromi sẵn sàng phục vụ bé ${APP_STATE.settings.childName} rồi ạ! 🎀✨`;
+    });
+  }
 
   // Manual Cloud Sync button inside parent modal
   const manualSyncBtn = document.getElementById('manualSyncBtn');
