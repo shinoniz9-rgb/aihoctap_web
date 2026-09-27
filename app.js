@@ -1763,44 +1763,110 @@ function playSfx(type) {
   }
 }
 
-// Special Voice SFX Signatures
+// Special Voice SFX Signatures for 4 Female Personas
+function playKuromiSparkleIntro() {
+  if (!APP_STATE.sfxEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const freqs = [1046.50, 1318.51, 1567.98, 2093.00]; // C6, E6, G6, C7 anime sparkle
+  freqs.forEach((f, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f, now + i * 0.05);
+    gain.gain.setValueAtTime(0.001, now + i * 0.05);
+    gain.gain.linearRampToValueAtTime(0.12, now + i * 0.05 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.05 + 0.35);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + i * 0.05);
+    osc.stop(now + i * 0.05 + 0.38);
+  });
+}
+
+function playTeacherWarmChime() {
+  if (!APP_STATE.sfxEnabled) return;
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const freqs = [349.23, 440.00, 523.25]; // F4, A4, C5 warm pedagogical triad
+  freqs.forEach((f, i) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(f, now + i * 0.07);
+    gain.gain.setValueAtTime(0.001, now + i * 0.07);
+    gain.gain.linearRampToValueAtTime(0.14, now + i * 0.07 + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.65);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now + i * 0.07);
+    osc.stop(now + i * 0.07 + 0.7);
+  });
+}
+
 function playFairyChime() {
   if (!APP_STATE.sfxEnabled) return;
   const ctx = getAudioContext();
   if (!ctx) return;
   const now = ctx.currentTime;
-  const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 fairy sparkle arpeggio
+  const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50, 1318.51]; // C5, E5, G5, B5, C6, E6 celestial harp
   freqs.forEach((f, i) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(f, now + i * 0.08);
-    gain.gain.setValueAtTime(0.001, now + i * 0.08);
-    gain.gain.linearRampToValueAtTime(0.14, now + i * 0.08 + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.6);
+    osc.frequency.setValueAtTime(f, now + i * 0.07);
+    gain.gain.setValueAtTime(0.001, now + i * 0.07);
+    gain.gain.linearRampToValueAtTime(0.10, now + i * 0.07 + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.7);
     osc.connect(gain);
     gain.connect(ctx.destination);
-    osc.start(now + i * 0.08);
-    osc.stop(now + i * 0.08 + 0.65);
+    osc.start(now + i * 0.07);
+    osc.stop(now + i * 0.07 + 0.75);
   });
 }
 
-function playDeviceBeep() {
+function playBirdChirpIntro() {
   if (!APP_STATE.sfxEnabled) return;
   const ctx = getAudioContext();
   if (!ctx) return;
   const now = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(880, now);
-  osc.frequency.setValueAtTime(1320, now + 0.06);
-  gain.gain.setValueAtTime(0.08, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start(now);
-  osc.stop(now + 0.16);
+
+  // Chirp 1
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(1800, now);
+  osc1.frequency.exponentialRampToValueAtTime(2600, now + 0.08);
+  gain1.gain.setValueAtTime(0.001, now);
+  gain1.gain.linearRampToValueAtTime(0.12, now + 0.02);
+  gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start(now);
+  osc1.stop(now + 0.11);
+
+  // Chirp 2
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(2200, now + 0.12);
+  osc2.frequency.exponentialRampToValueAtTime(3200, now + 0.22);
+  gain2.gain.setValueAtTime(0.001, now + 0.12);
+  gain2.gain.linearRampToValueAtTime(0.14, now + 0.14);
+  gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+  osc2.connect(gain2);
+  gain2.connect(ctx.destination);
+  osc2.start(now + 0.12);
+  osc2.stop(now + 0.25);
+}
+
+function playPersonaIntro(style) {
+  if (style === 'kuromi_anime') playKuromiSparkleIntro();
+  else if (style === 'google_online') playTeacherWarmChime();
+  else if (style === 'fairy') playFairyChime();
+  else if (style === 'device' || style === 'hoami_cheerful') playBirdChirpIntro();
 }
 
 // Realistic Audio Synthesizer (Animals, Vehicles, Nature)
@@ -2506,25 +2572,67 @@ function isVietnameseVoice(v) {
 }
 
 // Quét và tìm bộ giọng Tiếng Việt của hệ thống
-function refreshAvailableVoices() {
-  if (typeof window === 'undefined' || !window.speechSynthesis) return null;
+function getAllVietnameseVoices() {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return [];
   const voices = window.speechSynthesis.getVoices() || [];
-  if (!voices.length) return null;
+  return voices.filter(isVietnameseVoice);
+}
 
-  const viVoices = voices.filter(isVietnameseVoice);
+function getVietnameseVoice(persona = 'kuromi_anime') {
+  const viVoices = getAllVietnameseVoices();
+  if (!viVoices.length) return null;
 
-  if (viVoices.length > 0) {
-    const femaleOrNatural = viVoices.find(v => {
+  // Lọc danh sách giọng nữ hoặc giọng tự nhiên (Hoài My, Linh, Mai, An...)
+  const femaleVoices = viVoices.filter(v => {
+    const n = (v.name || '').toLowerCase();
+    return n.includes('hoaimy') || n.includes('linh') || n.includes('mai') || 
+           n.includes('an') || n.includes('female') || n.includes('nữ') || 
+           n.includes('natural') || n.includes('online');
+  });
+
+  const pool = femaleVoices.length > 0 ? femaleVoices : viVoices;
+
+  // 1. Kuromi: Ưu tiên giọng có cao độ tự nhiên, trong sáng (Hoài My, Linh, Mai)
+  if (persona === 'kuromi_anime') {
+    const match = pool.find(v => {
       const n = v.name.toLowerCase();
-      return n.includes('natural') || n.includes('online') || n.includes('hoaimy') || 
-             n.includes('linh') || n.includes('female') || n.includes('mai') || n.includes('nữ');
+      return n.includes('hoaimy') || n.includes('linh') || n.includes('mai');
     });
-    cachedVietnameseVoice = femaleOrNatural || viVoices[0];
-    return cachedVietnameseVoice;
+    return match || pool[0];
   }
 
-  cachedVietnameseVoice = null;
-  return null;
+  // 2. Cô Giáo: Ưu tiên giọng truyền cảm, mẫu mực sư phạm (Hoài My Natural Online, hoặc giọng chuẩn nhất)
+  if (persona === 'google_online') {
+    const match = pool.find(v => {
+      const n = v.name.toLowerCase();
+      return (n.includes('hoaimy') && n.includes('natural')) || n.includes('hoaimy') || n.includes('natural');
+    });
+    return match || pool[0];
+  }
+
+  // 3. Cô Tiên: Ưu tiên giọng nữ dịu dàng, êm ái, thanh thoát (Linh, Mai, hoặc giọng nữ dịu)
+  if (persona === 'fairy') {
+    const match = pool.find(v => {
+      const n = v.name.toLowerCase();
+      return n.includes('linh') || n.includes('mai') || n.includes('female');
+    });
+    return match || pool[0];
+  }
+
+  // 4. Chị Họa Mi: Ưu tiên giọng nữ trong trẻo, hoạt bát, rõ nét (Google Tiếng Việt, An, hoặc Mai)
+  if (persona === 'device' || persona === 'hoami_cheerful') {
+    const match = pool.find(v => {
+      const n = v.name.toLowerCase();
+      return n.includes('an') || n.includes('google') || n.includes('mai') || n.includes('linh');
+    });
+    return match || pool[0];
+  }
+
+  return pool[0];
+}
+
+function refreshAvailableVoices() {
+  return getVietnameseVoice('kuromi_anime');
 }
 
 if (typeof window !== 'undefined' && window.speechSynthesis) {
@@ -2534,11 +2642,15 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
   refreshAvailableVoices();
 }
 
-function getVietnameseVoice() {
-  if (cachedVietnameseVoice && isVietnameseVoice(cachedVietnameseVoice)) return cachedVietnameseVoice;
-  return refreshAvailableVoices();
+function formatKidTextForVoicePersona(text, voiceStyle = 'kuromi_anime') {
+  if (!text) return '';
+  let str = text;
+  if (voiceStyle === 'fairy') {
+    // Du dương, êm đềm, khoảng nghỉ nhẹ nhàng như ru ngủ
+    str = str.replace(/([.!?])\s+/g, '... ');
+  }
+  return str;
 }
-
 
 // Bộ phát Web Speech API với bảo vệ 100% TIẾNG VIỆT và Mutual Fallback
 function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
@@ -2548,7 +2660,7 @@ function speakWithWebSpeech(cleanText, options = {}, onComplete, onFallback) {
     return;
   }
 
-  const viVoice = getVietnameseVoice();
+  const viVoice = options.voice || getVietnameseVoice(options.persona);
   // QUY TẮC CỐT LÕI: NẾU THIẾT BỊ KHÔNG CÓ GIỌNG TIẾNG VIỆT THỰC SỰ
   // TUYỆT ĐỐI KHÔNG ĐƯỢC ĐỌC (VÌ TRÌNH DUYỆT SẼ LẤY GIỌNG TIẾNG ANH ĐỌC LƠ LỚ, THÔ CỨNG)
   if (!viVoice) {
@@ -2723,7 +2835,7 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
   playNextChunk();
 }
 
-// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG NỮ TIẾNG VIỆT CHUẨN XÁC 100%
+// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG NỮ TIẾNG VIỆT TRUYỀN CẢM XÚC - KHÁC BIỆT HOÀN TOÀN
 function speakText(text, onComplete, force = false) {
   if (!APP_STATE.ttsEnabled && !force) {
     if (onComplete) onComplete();
@@ -2744,110 +2856,120 @@ function speakText(text, onComplete, force = false) {
 
   const voiceStyle = APP_STATE.settings.voiceStyle || 'kuromi_anime';
   const userRate = APP_STATE.settings.ttsRate || 1.05;
+  const rateScale = userRate / 1.05;
   const isApple = isAppleDevice();
-  const viVoice = getVietnameseVoice();
-  const chunks = chunkTextForTts(cleanText, 100);
+  const viVoice = getVietnameseVoice(voiceStyle);
+  const formattedText = formatKidTextForVoicePersona(cleanText, voiceStyle);
+  const chunks = chunkTextForTts(formattedText, 100);
 
-  // QUY TẮC CỐT LÕI: Trên thiết bị Apple (iPhone, iPad), bộ máy WebKit SpeechSynthesis (AVSpeechSynthesizer)
-  // có lỗi âm vị học hệ thống khiến từ "Bé" bị phát âm thành "Bớ" hoặc méo tiếng.
-  // Vì vậy, trên iOS/iPadOS, hệ thống tự động ưu tiên 100% Google TTS Tiếng Việt chuẩn (Studio)
-  // để đảm bảo mọi câu từ, đặc biệt là chữ "Bé" và "Bé Bảo Hân", luôn được phát âm tròn vành rõ chữ, ngọt ngào và chính xác tuyệt đối!
+  // Phát nhạc hiệu mở đầu độc quyền theo phong cách giọng
+  playPersonaIntro(voiceStyle);
 
-  // GIỌNG 1: Kuromi Hoạt Hình (Nữ Hoạt Hình Lí Lắc, Ngọt Ngào, Vui Tươi Cho Bé)
+  // PHONG CÁCH 1: 🎀 BÉ KUROMI HOẠT HÌNH (Nhí Nhảnh, Ngọt Ngào, Nhiều Tiếng Cười Hí Hí)
+  // Cao độ cao (pitch 1.45), nhịp điệu nhanh vui tươi (rate 1.15), pitch shift formant cao
   if (voiceStyle === 'kuromi_anime') {
-    playSfx('chime');
     if (isApple) {
       speakWithGoogleTts(chunks, {
-        rate: 1.15 * (userRate / 1.05),
-        preservesPitch: false
+        rate: 1.22 * rateScale,
+        preservesPitch: false // Nâng formant cao trong sáng, nhí nhảnh chất bạn thân
       }, onComplete);
     } else if (viVoice) {
-      speakWithWebSpeech(cleanText, {
-        rate: 1.12 * (userRate / 1.05),
-        pitch: 1.25 // Cao độ trong trẻo, nhí nhảnh Kuromi Sanrio
+      speakWithWebSpeech(formattedText, {
+        rate: 1.15 * rateScale,
+        pitch: 1.45,
+        voice: viVoice,
+        persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 1.15 * (userRate / 1.05),
+          rate: 1.22 * rateScale,
           preservesPitch: false
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.15 * (userRate / 1.05),
+        rate: 1.22 * rateScale,
         preservesPitch: false
       }, onComplete);
     }
     return;
   }
 
-  // GIỌNG 2: Cô Giáo Hiền Dịu (Nữ Chuẩn Mực Sư Phạm - Ấm Áp, Tròn Vành Rõ Chữ)
+  // PHONG CÁCH 2: 👩‍🏫 CÔ GIÁO HIỀN DỊU (Trầm Ấm, Mẫu Mực Sư Phạm, Tròn Vành Rõ Chữ)
+  // Cao độ trầm ấm (pitch 0.96), nhịp điệu từ tốn mẫu mực (rate 0.90), giữ nguyên cao độ tự nhiên
   if (voiceStyle === 'google_online') {
-    playSfx('pop');
-    // Luôn ưu tiên Google TTS Tiếng Việt chuẩn Studio để đạt âm sắc cô giáo mẫu mực
-    speakWithGoogleTts(chunks, {
-      rate: 0.98 * (userRate / 1.05),
-      preservesPitch: true
-    }, onComplete, () => {
-      if (viVoice && !isApple) {
-        speakWithWebSpeech(cleanText, {
-          rate: 0.98 * (userRate / 1.05),
-          pitch: 1.0
-        }, onComplete);
-      } else {
-        if (onComplete) onComplete();
-      }
-    });
-    return;
-  }
-
-  // GIỌNG 3: Cô Tiên Dịu Êm (Nữ Ngọt Ngào, Êm Đềm Ru Ngủ - Du Dương Truyền Cảm)
-  if (voiceStyle === 'fairy') {
-    playFairyChime();
-    if (isApple) {
-      speakWithGoogleTts(chunks, {
-        rate: 0.86 * (userRate / 1.05),
-        preservesPitch: true
-      }, onComplete);
-    } else if (viVoice) {
-      speakWithWebSpeech(cleanText, {
-        rate: 0.85 * (userRate / 1.05),
-        pitch: 0.95
+    if (viVoice && !isApple) {
+      speakWithWebSpeech(formattedText, {
+        rate: 0.90 * rateScale,
+        pitch: 0.96,
+        voice: viVoice,
+        persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 0.86 * (userRate / 1.05),
+          rate: 0.92 * rateScale,
           preservesPitch: true
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 0.86 * (userRate / 1.05),
+        rate: 0.92 * rateScale,
         preservesPitch: true
       }, onComplete);
     }
     return;
   }
 
-  // GIỌNG 4: Chị Họa Mi Tươi Vui (Nữ Trẻ Trung, Trong Trẻo, Hoạt Bát, Giàu Năng Lượng)
-  if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
-    playSfx('ting');
+  // PHONG CÁCH 3: 🧚 CÔ TIÊN DỊU ÊM (Huyền Ảo, Du Dương Ru Ngủ, Êm Đềm Truyền Cảm)
+  // Cao độ êm dịu (pitch 0.85), nhịp điệu chậm rãi du dương (rate 0.78), formant hơi trầm mềm mại
+  if (voiceStyle === 'fairy') {
     if (isApple) {
       speakWithGoogleTts(chunks, {
-        rate: 1.08 * (userRate / 1.05),
-        preservesPitch: false
+        rate: 0.80 * rateScale,
+        preservesPitch: false // Chậm rãi, âm sắc huyền ảo ru ngủ
       }, onComplete);
     } else if (viVoice) {
-      speakWithWebSpeech(cleanText, {
-        rate: 1.06 * (userRate / 1.05),
-        pitch: 1.1
+      speakWithWebSpeech(formattedText, {
+        rate: 0.78 * rateScale,
+        pitch: 0.85,
+        voice: viVoice,
+        persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 1.08 * (userRate / 1.05),
+          rate: 0.80 * rateScale,
+          preservesPitch: false
+        }, onComplete);
+      });
+    } else {
+      speakWithGoogleTts(chunks, {
+        rate: 0.80 * rateScale,
+        preservesPitch: false
+      }, onComplete);
+    }
+    return;
+  }
+
+  // PHONG CÁCH 4: 🌸 CHỊ HỌA MI TƯƠI VUI (Trong Trẻo, Hoạt Bát, Sôi Nổi & Hát Ca)
+  // Cao độ trong trẻo tươi sáng (pitch 1.20), nhịp điệu rộn ràng (rate 1.08), giàu năng lượng
+  if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
+    if (isApple) {
+      speakWithGoogleTts(chunks, {
+        rate: 1.10 * rateScale,
+        preservesPitch: true
+      }, onComplete);
+    } else if (viVoice) {
+      speakWithWebSpeech(formattedText, {
+        rate: 1.08 * rateScale,
+        pitch: 1.20,
+        voice: viVoice,
+        persona: voiceStyle
+      }, onComplete, () => {
+        speakWithGoogleTts(chunks, {
+          rate: 1.10 * rateScale,
           preservesPitch: true
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 1.08 * (userRate / 1.05),
+        rate: 1.10 * rateScale,
         preservesPitch: true
       }, onComplete);
     }
@@ -2855,7 +2977,7 @@ function speakText(text, onComplete, force = false) {
   }
 }
 
-// Nút Nghe Thử Giọng Này Trong Cài Đặt Ba Mẹ (Kiểm Tra 4 Giọng Nữ Tiếng Việt)
+// Nút Nghe Thử Giọng Này Trong Cài Đặt Ba Mẹ (Kiểm Tra 4 Giọng Nữ Truyền Cảm)
 function testVoiceSample(customStyle) {
   const childName = (document.getElementById('childNameInput')?.value || APP_STATE.settings.childName || 'Bảo Hân').trim();
   const testBtn = document.getElementById('testVoiceBtn');
@@ -2866,18 +2988,18 @@ function testVoiceSample(customStyle) {
     APP_STATE.settings.voiceStyle || 
     'kuromi_anime';
 
-  let personaShort = 'Kuromi Hoạt Hình';
-  let samplePhrase = `Hí hí, Kuromi chào bé ${childName} đáng yêu nè! Kuromi chúc bé luôn chăm ngoan và học thật giỏi cùng Kuromi nha!`;
+  let personaShort = 'Bé Kuromi Hoạt Hình';
+  let samplePhrase = `Hí hí! Kuromi chào bạn thân bé ${childName} của Kuromi nè! 💖 Ôi, Kuromi thương bé ${childName} nhiều ơi là nhiều luôn á! Hôm nay hai đứa mình cùng chơi, cùng học thật là vui nhé, ngoan ơi là ngoan nè, chụt chụt!`;
 
   if (selectedVoice === 'google_online') {
     personaShort = 'Cô Giáo Hiền Dịu';
-    samplePhrase = `Cô chào bé ${childName} ngoan ngoãn. Chúc bé một ngày học tập thật nhiều niềm vui và khám phá thêm nhiều điều kỳ thú nhé!`;
+    samplePhrase = `Cô chào con yêu, bé ${childName}... 🌸 Cô rất tự hào vì con luôn chăm ngoan, lễ phép. Nào, con hãy ngồi thật ngay ngắn, lắng nghe cô hướng dẫn và cùng khám phá bài học kỳ thú hôm nay nhé. Cô thương con nhiều lắm!`;
   } else if (selectedVoice === 'fairy') {
     personaShort = 'Cô Tiên Dịu Êm';
-    samplePhrase = `Cô Tiên chào bé ${childName} yêu quý. Bé hãy nằm thật ngoan và cùng cô lắng nghe những câu chuyện cổ tích êm đềm nhé...`;
+    samplePhrase = `Bé ${childName} ơi... 🌙 Hãy nhắm mắt lại và thả lỏng nào, thiên thần nhỏ của cô... Cô Tiên sẽ mang ngàn vì sao lấp lánh và làn gió mát lành đến vỗ về con, ru con vào giấc mơ cổ tích thật êm đềm... Chúc con yêu ngủ thật ngon nhé...`;
   } else if (selectedVoice === 'device' || selectedVoice === 'hoami_cheerful') {
-    personaShort = 'Chị Họa Mi';
-    samplePhrase = `Chị Họa Mi chào bé ${childName}! Hôm nay chúng mình cùng giải những câu đố vui và khám phá tri thức thật rộn ràng nào!`;
+    personaShort = 'Chị Họa Mi Tươi Vui';
+    samplePhrase = `La la la! 🌸 Chị Họa Mi xin chào em gái nhỏ ${childName} đáng yêu! Một ngày mới rực rỡ đã bắt đầu rồi nè! Nào, em hãy cùng chị cất cao tiếng hát, giải những câu đố thông minh và bay vào thế giới kỳ diệu ngay thôi nào!`;
   }
 
   if (testBtn) testBtn.classList.add('playing');
@@ -3117,13 +3239,24 @@ async function callGeminiApi(prompt) {
     };
   }
 
-  const systemInstruction = `Bạn là Kuromi (nhân vật hoạt hình Sanrio nổi tiếng), đóng vai người bạn thân thiết, vui tính, ngọt ngào và biết tuốt dành riêng cho bé ${childName} (${ageGroup === 'preschool' ? '3-6 tuổi' : '5-10 tuổi'} tại Việt Nam). 
+  const voiceStyle = (APP_STATE.settings && APP_STATE.settings.voiceStyle) || 'kuromi_anime';
+  let personaRole = `Bạn là Kuromi (nhân vật hoạt hình Sanrio nổi tiếng), đóng vai người bạn thân thiết, vui tính, ngọt ngào, nhí nhảnh và biết tuốt dành riêng cho bé ${childName}. Xưng là "Kuromi" và gọi bé là "bé ${childName}". Ngôn từ siêu đáng yêu, lí lắc, hay cười khúc khích hí hí, thả tim và ôm bé 🎀💖.`;
+
+  if (voiceStyle === 'google_online') {
+    personaRole = `Bạn là Cô Giáo Mầm Non Hiền Dịu, tận tụy, mẫu mực và vô cùng ấm áp dành riêng cho bé ${childName}. Xưng là "cô" và gọi bé là "bé ${childName}" hoặc "con yêu". Giọng điệu trầm ấm, ân cần, giải thích cặn kẽ mẫu mực, luôn động viên, khen ngợi và dạy bé những điều hay lẽ phải 👩‍🏫📚.`;
+  } else if (voiceStyle === 'fairy') {
+    personaRole = `Bạn là Cô Tiên Dịu Êm trong thế giới cổ tích thần tiên của bé ${childName}. Xưng là "cô Tiên" và gọi bé là "bé ${childName}" hoặc "thiên thần nhỏ". Giọng điệu huyền ảo, du dương, êm đềm, thì thầm ấm áp như lời ru, mang tình yêu thương và phép màu thần tiên vỗ về tâm hồn bé 🧚✨🌙.`;
+  } else if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
+    personaRole = `Bạn là Chị Họa Mi Tươi Vui, người chị gái thông minh, hoạt bát, trong trẻo và yêu đời của bé ${childName}. Xưng là "chị Họa Mi" và gọi bé là "bé ${childName}" hoặc "em gái nhỏ ${childName}". Giọng điệu rộn ràng, sôi nổi, tràn ngập năng lượng tích cực, thích đố vui, kể chuyện hài hước và cùng bé cất cao tiếng hát 🌸🐦🎶.`;
+  }
+
+  const systemInstruction = `${personaRole} (${ageGroup === 'preschool' ? '3-6 tuổi' : '5-10 tuổi'} tại Việt Nam). 
 Quy tắc trả lời:
-- Luôn xưng là "Kuromi" và gọi bé là "bé ${childName}".
+- Luôn giữ đúng vai xưng hô và phong cách truyền cảm đã nêu trên.
 - Trả lời cụ thể, giải thích rõ ràng câu hỏi của bé bằng ngôn ngữ trẻ em dễ hiểu, giàu cảm xúc, ngập tràn sự tích cực.
 - Khi bé hỏi "Tại sao...", câu hỏi khoa học, vũ trụ, động vật, tự nhiên, đời sống hoặc yêu cầu dẫn chứng hình ảnh: 
   1. Giải thích nguyên nhân chuẩn xác, sinh động, dễ hiểu, giàu cảm xúc cho bé (3-5 câu).
-  2. Ở CUỐI CÂU TRẢ LỜI, hãy LUÔN đính kèm một khối JSON để Kuromi hiển thị TRANH DẪN CHỨNG THỰC TẾ với chú thích chi tiết cho bé:
+  2. Ở CUỐI CÂU TRẢ LỜI, hãy LUÔN đính kèm một khối JSON để hiển thị TRANH DẪN CHỨNG THỰC TẾ với chú thích chi tiết cho bé:
 \`\`\`visual
 {
   "title": "Tên sự vật / hiện tượng (ví dụ: Cầu Vồng Sau Mưa, Cá Voi Xanh, Núi Lửa Phun Trào, Hệ Mặt Trời...)",
@@ -3134,7 +3267,7 @@ Quy tắc trả lời:
 - Khi bé nhờ kể chuyện ("kể chuyện", "chuyện cổ tích", "kể chuyện bé nghe", chuyện Thánh Gióng, Thạch Sanh, Tấm Cám, công chúa, muông thú...): Hãy kể trọn vẹn một câu chuyện cổ tích / đồng thoại thật cuốn hút, ly kỳ, có mở đầu, cao trào và bài học yêu thương, lòng dũng cảm cho bé ${childName}.
 - KHI BÉ YÊU CẦU HÁT, NGHE NHẠC, HOẶC NHẮC ĐẾN BÀI HÁT:
   1. Trả lời trò chuyện thật ngọt ngào, khen ngợi và rủ bé cùng hát/nhún nhảy.
-  2. Ở CUỐI CÙNG của câu trả lời, hãy đính kèm một khối JSON đúng cấu trúc sau để Kuromi cất tiếng hát và tạo thẻ bài hát cho bé:
+  2. Ở CUỐI CÙNG của câu trả lời, hãy đính kèm một khối JSON đúng cấu trúc sau để cất tiếng hát và tạo thẻ bài hát cho bé:
 \`\`\`song
 {
   "title": "Tên bài hát",
@@ -3905,18 +4038,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (radio) radio.checked = true;
       document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
       card.classList.add('active');
-      playSfx('pop');
 
-      const style = card.getAttribute('data-voice');
+      const style = card.getAttribute('data-voice') || 'kuromi_anime';
+      playPersonaIntro(style);
+
       APP_STATE.settings.voiceStyle = style;
       saveSettings({ voiceStyle: style });
 
       const voiceHint = document.getElementById('voiceTestStatus');
       if (voiceHint) {
-        let label = 'Kuromi Hoạt Hình';
-        if (style === 'google_online') label = 'Cô Giáo Hiền Dịu';
-        else if (style === 'fairy') label = 'Cô Tiên Dịu Êm';
-        else if (style === 'device' || style === 'hoami_cheerful') label = 'Chị Họa Mi';
+        let label = '🎀 Bé Kuromi Hoạt Hình';
+        if (style === 'google_online') label = '👩‍🏫 Cô Giáo Hiền Dịu';
+        else if (style === 'fairy') label = '🧚 Cô Tiên Dịu Êm';
+        else if (style === 'device' || style === 'hoami_cheerful') label = '🌸 Chị Họa Mi Tươi Vui';
         voiceHint.textContent = `✨ Đã chọn: ${label}`;
       }
     });
