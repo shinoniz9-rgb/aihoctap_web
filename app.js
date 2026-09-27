@@ -2547,10 +2547,26 @@ function buildGoogleTtsUrl(text, hostIndex = 0) {
 }
 
 // Bộ lọc bảo vệ 100% tiếng Việt chuẩn (Tuyệt đối không nhận nhầm các giọng tiếng Anh có chữ 'an' hay 'siri')
+function isMaleVoiceName(name) {
+  if (!name) return false;
+  const n = name.toLowerCase();
+  if (n.includes('female') || n.includes('nữ')) return false;
+  return n.includes('namminh') || n.includes('nam minh') || 
+         (n.includes('male') && !n.includes('female')) || 
+         n.includes('trai') || n.includes('boy') || n.includes('man ') || 
+         n.includes('david') || n.includes('george');
+}
+
+// Bộ lọc bảo vệ 100% tiếng Việt chuẩn NỮ (Tuyệt đối loại bỏ giọng nam Nam Minh)
 function isVietnameseVoice(v) {
   if (!v) return false;
   const lang = (v.lang || '').toLowerCase().replace(/_/g, '-');
   const name = (v.name || '').toLowerCase();
+
+  // TUYỆT ĐỐI LOẠI BỎ GIỌNG NAM (Nam Minh, male...) để đảm bảo 100% là GIỌNG NỮ
+  if (isMaleVoiceName(name)) {
+    return false;
+  }
 
   // 1. Phải có mã ngôn ngữ là tiếng Việt
   if (lang.startsWith('vi') || lang === 'vie' || lang.includes('-vn')) {
@@ -2563,15 +2579,15 @@ function isVietnameseVoice(v) {
     return true;
   }
 
-  // 3. Giọng tiếng Việt chuẩn Microsoft đã biết (Hoài My, Nam Minh)
-  if (name.includes('hoaimy') || name.includes('namminh')) {
+  // 3. Giọng nữ tiếng Việt chuẩn Microsoft (Hoài My)
+  if (name.includes('hoaimy')) {
     return true;
   }
 
   return false;
 }
 
-// Quét và tìm bộ giọng Tiếng Việt của hệ thống
+// Quét và tìm bộ giọng Tiếng Việt NỮ của hệ thống
 function getAllVietnameseVoices() {
   if (typeof window === 'undefined' || !window.speechSynthesis) return [];
   const voices = window.speechSynthesis.getVoices() || [];
@@ -2582,53 +2598,43 @@ function getVietnameseVoice(persona = 'kuromi_anime') {
   const viVoices = getAllVietnameseVoices();
   if (!viVoices.length) return null;
 
-  // Lọc danh sách giọng nữ hoặc giọng tự nhiên (Hoài My, Linh, Mai, An...)
-  const femaleVoices = viVoices.filter(v => {
-    const n = (v.name || '').toLowerCase();
-    return n.includes('hoaimy') || n.includes('linh') || n.includes('mai') || 
-           n.includes('an') || n.includes('female') || n.includes('nữ') || 
-           n.includes('natural') || n.includes('online');
-  });
-
-  const pool = femaleVoices.length > 0 ? femaleVoices : viVoices;
-
-  // 1. Kuromi: Ưu tiên giọng có cao độ tự nhiên, trong sáng (Hoài My, Linh, Mai)
+  // 1. Kuromi: Ưu tiên giọng nữ trẻ trung, trong sáng, lí lắc (Hoài My, Linh, Mai)
   if (persona === 'kuromi_anime') {
-    const match = pool.find(v => {
-      const n = v.name.toLowerCase();
+    const match = viVoices.find(v => {
+      const n = (v.name || '').toLowerCase();
       return n.includes('hoaimy') || n.includes('linh') || n.includes('mai');
     });
-    return match || pool[0];
+    return match || viVoices[0];
   }
 
-  // 2. Cô Giáo: Ưu tiên giọng truyền cảm, mẫu mực sư phạm (Hoài My Natural Online, hoặc giọng chuẩn nhất)
+  // 2. Cô Giáo: Ưu tiên giọng nữ truyền cảm, mẫu mực sư phạm (Hoài My Natural Online, hoặc giọng chuẩn nhất)
   if (persona === 'google_online') {
-    const match = pool.find(v => {
-      const n = v.name.toLowerCase();
-      return (n.includes('hoaimy') && n.includes('natural')) || n.includes('hoaimy') || n.includes('natural');
+    const match = viVoices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      return (n.includes('hoaimy') && n.includes('natural')) || n.includes('hoaimy') || n.includes('linh');
     });
-    return match || pool[0];
+    return match || viVoices[0];
   }
 
-  // 3. Cô Tiên: Ưu tiên giọng nữ dịu dàng, êm ái, thanh thoát (Linh, Mai, hoặc giọng nữ dịu)
+  // 3. Cô Tiên: Ưu tiên giọng NỮ dịu dàng, êm ái, thanh thoát, ngọt ngào (Hoài My, Linh, Mai, Google)
   if (persona === 'fairy') {
-    const match = pool.find(v => {
-      const n = v.name.toLowerCase();
-      return n.includes('linh') || n.includes('mai') || n.includes('female');
+    const match = viVoices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      return n.includes('hoaimy') || n.includes('linh') || n.includes('mai') || n.includes('female');
     });
-    return match || pool[0];
+    return match || viVoices[0];
   }
 
-  // 4. Chị Họa Mi: Ưu tiên giọng nữ trong trẻo, hoạt bát, rõ nét (Google Tiếng Việt, An, hoặc Mai)
+  // 4. Chị Họa Mi: Ưu tiên giọng NỮ trong trẻo, hoạt bát, rõ nét (Google Tiếng Việt, An, Hoài My, Mai)
   if (persona === 'device' || persona === 'hoami_cheerful') {
-    const match = pool.find(v => {
-      const n = v.name.toLowerCase();
-      return n.includes('an') || n.includes('google') || n.includes('mai') || n.includes('linh');
+    const match = viVoices.find(v => {
+      const n = (v.name || '').toLowerCase();
+      return n.includes('an') || n.includes('google') || n.includes('mai') || n.includes('hoaimy');
     });
-    return match || pool[0];
+    return match || viVoices[0];
   }
 
-  return pool[0];
+  return viVoices[0];
 }
 
 function refreshAvailableVoices() {
@@ -2894,61 +2900,61 @@ function speakText(text, onComplete, force = false) {
     return;
   }
 
-  // PHONG CÁCH 2: 👩‍🏫 CÔ GIÁO HIỀN DỊU (Trầm Ấm, Mẫu Mực Sư Phạm, Tròn Vành Rõ Chữ)
-  // Cao độ trầm ấm (pitch 0.96), nhịp điệu từ tốn mẫu mực (rate 0.90), giữ nguyên cao độ tự nhiên
+  // PHONG CÁCH 2: 👩‍🏫 CÔ GIÁO HIỀN DỊU (100% NỮ SƯ PHẠM - Trầm Ấm, Mẫu Mực, Tròn Vành Rõ Chữ)
+  // Cao độ nữ tự nhiên (pitch 1.05), nhịp điệu từ tốn (rate 0.94), bảo toàn âm sắc nữ tự nhiên
   if (voiceStyle === 'google_online') {
     if (viVoice && !isApple) {
       speakWithWebSpeech(formattedText, {
-        rate: 0.90 * rateScale,
-        pitch: 0.96,
+        rate: 0.94 * rateScale,
+        pitch: 1.05,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 0.92 * rateScale,
+          rate: 0.94 * rateScale,
           preservesPitch: true
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 0.92 * rateScale,
+        rate: 0.94 * rateScale,
         preservesPitch: true
       }, onComplete);
     }
     return;
   }
 
-  // PHONG CÁCH 3: 🧚 CÔ TIÊN DỊU ÊM (Huyền Ảo, Du Dương Ru Ngủ, Êm Đềm Truyền Cảm)
-  // Cao độ êm dịu (pitch 0.85), nhịp điệu chậm rãi du dương (rate 0.78), formant hơi trầm mềm mại
+  // PHONG CÁCH 3: 🧚 CÔ TIÊN DỊU ÊM (100% NỮ THẦN TIÊN NGỌT NGÀO - HUYỀN ẢO, DU DƯƠNG RU NGỦ)
+  // Cao độ nữ thanh thoát, ngọt ngào (pitch 1.18), nhịp điệu êm dịu (rate 0.88), tuyệt đối giữ trọn vẹn chất giọng NỮ
   if (voiceStyle === 'fairy') {
     if (isApple) {
       speakWithGoogleTts(chunks, {
-        rate: 0.80 * rateScale,
-        preservesPitch: false // Chậm rãi, âm sắc huyền ảo ru ngủ
+        rate: 0.90 * rateScale,
+        preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%, tuyệt đối không hạ formant thành giọng nam
       }, onComplete);
     } else if (viVoice) {
       speakWithWebSpeech(formattedText, {
-        rate: 0.78 * rateScale,
-        pitch: 0.85,
+        rate: 0.88 * rateScale,
+        pitch: 1.18, // Giọng nữ ngọt ngào, ngân nga, dịu dàng như lời ru
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
         speakWithGoogleTts(chunks, {
-          rate: 0.80 * rateScale,
-          preservesPitch: false
+          rate: 0.90 * rateScale,
+          preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%
         }, onComplete);
       });
     } else {
       speakWithGoogleTts(chunks, {
-        rate: 0.80 * rateScale,
-        preservesPitch: false
+        rate: 0.90 * rateScale,
+        preservesPitch: true // BẢO TOÀN CAO ĐỘ NỮ 100%
       }, onComplete);
     }
     return;
   }
 
-  // PHONG CÁCH 4: 🌸 CHỊ HỌA MI TƯƠI VUI (Trong Trẻo, Hoạt Bát, Sôi Nổi & Hát Ca)
-  // Cao độ trong trẻo tươi sáng (pitch 1.20), nhịp điệu rộn ràng (rate 1.08), giàu năng lượng
+  // PHONG CÁCH 4: 🌸 CHỊ HỌA MI TƯƠI VUI (100% NỮ TRẺ TRUNG - Trong Trẻo, Hoạt Bát, Sôi Nổi & Hát Ca)
+  // Cao độ trong trẻo tươi sáng (pitch 1.25), nhịp điệu rộn ràng (rate 1.08), giàu năng lượng
   if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
     if (isApple) {
       speakWithGoogleTts(chunks, {
@@ -2958,7 +2964,7 @@ function speakText(text, onComplete, force = false) {
     } else if (viVoice) {
       speakWithWebSpeech(formattedText, {
         rate: 1.08 * rateScale,
-        pitch: 1.20,
+        pitch: 1.25,
         voice: viVoice,
         persona: voiceStyle
       }, onComplete, () => {
