@@ -238,26 +238,29 @@ body {
   gap: 10px;
   width: 100%;
   padding: 8px 12px;
-  min-height: 40px;
+  min-height: 42px;
+  height: 42px;
+  max-height: 42px;
   border-radius: var(--radius-md);
   border: 1.5px solid var(--kuromi-border);
   background: rgba(31, 16, 48, 0.88);
   backdrop-filter: blur(14px);
   color: var(--kuromi-lavender);
   cursor: pointer;
-  transition: var(--transition-smooth);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
   touch-action: manipulation;
   text-align: left;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
   box-sizing: border-box;
+  transform: none !important;
 }
 
 .sidebar-mode-row:hover {
   background: rgba(255, 101, 168, 0.18);
   border-color: rgba(255, 101, 168, 0.45);
   color: #fff;
-  transform: translateY(-1px);
+  transform: none !important;
 }
 
 .sidebar-mode-row.active {
@@ -265,7 +268,7 @@ body {
   border-color: #ffffff;
   color: #ffffff;
   box-shadow: 0 4px 16px rgba(255, 37, 138, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transform: translateY(-1px);
+  transform: none !important;
 }
 
 .sidebar-row-icon {
@@ -293,12 +296,15 @@ body {
   border-radius: 50%;
   background: #ffeb3b;
   box-shadow: 0 0 8px #ffeb3b;
-  display: none;
+  opacity: 0;
+  visibility: hidden;
   flex-shrink: 0;
+  transition: opacity 0.2s ease;
 }
 
 .sidebar-mode-row.active .sidebar-row-dot {
-  display: block;
+  opacity: 1;
+  visibility: visible;
   animation: sparkleBlink 1.4s infinite alternate;
 }
 
@@ -431,17 +437,21 @@ body {
   min-height: 0;
   height: 100%;
   overflow: hidden;
-  animation: tabFadeIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Cố định tuyệt đối: Triệt tiêu hoàn toàn rung lắc và giật nhảy khi chuyển tab */
 }
 
-@keyframes tabFadeIn {
+/* Hiệu ứng chuyển đổi nội dung êm ái, vị trí cố định 100% */
+.chat-display-section,
+.learning-display-section {
+  animation: tabContentFade 0.16s ease-out;
+}
+
+@keyframes tabContentFade {
   from {
-    opacity: 0;
-    transform: translateY(6px);
+    opacity: 0.85;
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -2366,7 +2376,7 @@ body {
   align-items: center;
   justify-content: space-between;
   overflow-y: auto;
-  gap: 5px;
+  gap: 6px;
   padding: 8px 10px;
 }
 
@@ -3595,8 +3605,11 @@ body {
 
   .sidebar-mode-row {
     padding: 6px 10px;
-    min-height: 36px;
+    min-height: 38px;
+    height: 38px;
+    max-height: 38px;
     gap: 8px;
+    transform: none !important;
   }
 
   .sidebar-row-icon {
@@ -3730,8 +3743,8 @@ body {
   }
 
   .classroom-stage-card {
-    padding: 5px 6px;
-    gap: 3px;
+    padding: 6px 8px;
+    gap: 4px;
     justify-content: space-between;
   }
 
@@ -3781,8 +3794,11 @@ body {
 
   .sidebar-mode-row {
     padding: 5px 8px;
-    min-height: 32px;
+    min-height: 34px;
+    height: 34px;
+    max-height: 34px;
     gap: 6px;
+    transform: none !important;
   }
 
   .sidebar-row-icon {
@@ -3932,8 +3948,8 @@ body {
   }
 
   .app-main, .learning-main-view {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     flex: 1;
     min-height: 0;
     gap: 4px;
@@ -3952,9 +3968,12 @@ body {
 
   .sidebar-mode-row {
     min-height: 28px;
+    height: 28px;
+    max-height: 28px;
     padding: 3px 8px;
     gap: 8px;
     border-radius: var(--radius-sm);
+    transform: none !important;
   }
 
   .sidebar-row-icon {

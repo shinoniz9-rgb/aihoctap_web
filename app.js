@@ -568,6 +568,11 @@ const KuromiSync = {
 window.KuromiSync = KuromiSync;
 
 function switchAppMode(mode, playSoundAndSpeech = true) {
+  // Tránh giật nhảy và phát lại âm thanh nếu đang ở đúng tab đó
+  if (LEARNING_STATE.currentMode === mode && playSoundAndSpeech) {
+    return;
+  }
+
   if (playSoundAndSpeech) playSfx('pop');
   const chatView = document.getElementById('chatMainView');
   const learnView = document.getElementById('learningMainView');
@@ -585,11 +590,11 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
   if (mode === 'learning') {
     if (chatView) {
       chatView.classList.add('hidden');
-      chatView.style.setProperty('display', 'none', 'important');
+      chatView.style.removeProperty('display');
     }
     if (learnView) {
       learnView.classList.remove('hidden');
-      learnView.style.setProperty('display', 'grid', 'important');
+      learnView.style.removeProperty('display');
     }
 
     LEARNING_STATE.currentMode = 'learning';
@@ -608,11 +613,11 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
   } else {
     if (learnView) {
       learnView.classList.add('hidden');
-      learnView.style.setProperty('display', 'none', 'important');
+      learnView.style.removeProperty('display');
     }
     if (chatView) {
       chatView.classList.remove('hidden');
-      chatView.style.setProperty('display', 'grid', 'important');
+      chatView.style.removeProperty('display');
     }
 
     LEARNING_STATE.currentMode = 'chat';
