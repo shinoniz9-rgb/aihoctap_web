@@ -67,6 +67,7 @@ function saveSettings(partial = {}) {
     APP_STATE.sfxEnabled = updated.sfxEnabled !== false;
     localStorage.setItem('kuromi_bot_settings', JSON.stringify(updated));
     applyChildNameUi(updated.childName);
+    if (updated.voiceStyle) applyVoiceStyleUi(updated.voiceStyle);
     if (window.KuromiSync) {
       window.KuromiSync.queuePush('settings', updated);
     }
@@ -105,6 +106,24 @@ function applyChildNameUi(childName) {
   const learnStatus = document.getElementById('learningStatusText');
   if (learnStatus) {
     learnStatus.innerHTML = `Hoan hô bé <span class="child-name-val">${name}</span> đã vào lớp học! Hôm nay chúng mình cùng khám phá trạm nào nào? ⭐`;
+  }
+}
+
+function applyVoiceStyleUi(style) {
+  const val = style || 'kuromi_anime';
+  APP_STATE.settings.voiceStyle = val;
+  const radio = document.querySelector(`input[name="voiceStyle"][value="${val}"]`);
+  if (radio) radio.checked = true;
+  document.querySelectorAll('.voice-card').forEach(card => {
+    card.classList.toggle('active', card.getAttribute('data-voice') === val);
+  });
+  const voiceHint = document.getElementById('voiceTestStatus');
+  if (voiceHint) {
+    let label = '🎀 Bé Kuromi Hoạt Hình';
+    if (val === 'google_online') label = '👩‍🏫 Cô Giáo Hiền Dịu';
+    else if (val === 'fairy') label = '🧚 Cô Tiên Dịu Êm';
+    else if (val === 'device' || val === 'hoami_cheerful') label = '🌸 Chị Họa Mi Tươi Vui';
+    voiceHint.textContent = `✨ Đã đồng bộ: ${label}`;
   }
 }
 
@@ -374,6 +393,7 @@ const KuromiSync = {
         APP_STATE.settings = merged;
         localStorage.setItem('kuromi_bot_settings', JSON.stringify(merged));
         applyChildNameUi(merged.childName);
+        if (merged.voiceStyle) applyVoiceStyleUi(merged.voiceStyle);
         
         const syncInput = document.getElementById('familySyncCodeInput');
         if (syncInput) syncInput.value = merged.familySyncCode || code;
@@ -484,15 +504,24 @@ const KuromiSync = {
             }
           }
 
-          // Remote Settings update (e.g. Name change on iPad)
+          // Remote Settings update (Name, Voice Style, Settings across Mobile, iPad & PC)
           if (path === '/settings/childName' && typeof data === 'string') {
             APP_STATE.settings.childName = data;
             localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
             applyChildNameUi(data);
-          } else if (path === '/settings' && data && data.childName) {
+          } else if (path === '/settings/voiceStyle' && typeof data === 'string') {
+            applyVoiceStyleUi(data);
+            localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
+          } else if (path === '/settings' && data) {
             APP_STATE.settings = { ...DEFAULT_SETTINGS, ...APP_STATE.settings, ...data };
             localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
-            applyChildNameUi(data.childName);
+            if (data.childName) applyChildNameUi(data.childName);
+            if (data.voiceStyle) applyVoiceStyleUi(data.voiceStyle);
+          } else if (path === '/' && data && data.settings) {
+            APP_STATE.settings = { ...DEFAULT_SETTINGS, ...APP_STATE.settings, ...data.settings };
+            localStorage.setItem('kuromi_bot_settings', JSON.stringify(APP_STATE.settings));
+            if (data.settings.childName) applyChildNameUi(data.settings.childName);
+            if (data.settings.voiceStyle) applyVoiceStyleUi(data.settings.voiceStyle);
           }
 
           this.suppressOutbound = false;
@@ -2795,13 +2824,25 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
       activeTtsAudio = audio;
       currentGlobalAudio = audio;
 
-      const rate = options.rate || 1.0;
-      audio.playbackRate = Math.min(Math.max(rate, 0.7), 1.5);
-      if (options.preservesPitch !== undefined) {
-        if ('preservesPitch' in audio) audio.preservesPitch = options.preservesPitch;
-        if ('mozPreservesPitch' in audio) audio.mozPreservesPitch = options.preservesPitch;
-        if ('webkitPreservesPitch' in audio) audio.webkitPreservesPitch = options.preservesPitch;
+      const rawRate = options.rate || 1.0;
+      const targetRate = Math.min(Math.max(rawRate, 0.7), 1.6);
+
+      function applyRateAndPitch() {
+        try {
+          audio.defaultPlaybackRate = targetRate;
+          audio.playbackRate = targetRate;
+          if (options.preservesPitch !== undefined) {
+            if ('preservesPitch' in audio) audio.preservesPitch = options.preservesPitch;
+            if ('mozPreservesPitch' in audio) audio.mozPreservesPitch = options.preservesPitch;
+            if ('webkitPreservesPitch' in audio) audio.webkitPreservesPitch = options.preservesPitch;
+          }
+        } catch (e) {}
       }
+
+      applyRateAndPitch();
+      audio.addEventListener('loadedmetadata', applyRateAndPitch);
+      audio.addEventListener('canplay', applyRateAndPitch);
+      audio.addEventListener('play', applyRateAndPitch);
 
       audio.onended = () => {
         if (sessionId === currentTtsSessionId) {
@@ -3010,9 +3051,15 @@ function testVoiceSample(customStyle) {
 if (typeof window !== 'undefined') {
   const primeAudioOnGesture = () => {
     try {
-      getAudioContext();
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume();
+      }
       if (window.speechSynthesis) {
         window.speechSynthesis.resume();
+        const silentUtt = new SpeechSynthesisUtterance(' ');
+        silentUtt.volume = 0.01;
+        window.speechSynthesis.speak(silentUtt);
       }
     } catch (e) {}
     window.removeEventListener('pointerdown', primeAudioOnGesture, { capture: true });

@@ -2099,6 +2099,8 @@ body {
   background: rgba(30, 15, 45, 0.75);
   border: 1.5px solid var(--kuromi-border);
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition: var(--transition-smooth);
 }
 
@@ -2178,6 +2180,8 @@ body {
   justify-content: center;
   border-radius: var(--radius-full);
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   box-shadow: 0 2px 10px rgba(255, 37, 138, 0.4);
   transition: var(--transition-smooth);
   flex-shrink: 0;
