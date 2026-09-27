@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="referrer" content="no-referrer">
   <title>Kuromi & Bé Bảo Hân | Trợ Lý AI 100% Google Gemini</title>
   <meta name="description" content="Trợ lý AI phong cách Kuromi Sanrio thông minh 100% Google Gemini trực tuyến dành riêng cho bé Bảo Hân. Giải đáp khoa học, kể chuyện cổ tích, nghe nhạc YouTube và học tập vui vẻ.">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -71,55 +71,61 @@
     <!-- Main Content Area (Chat & Mascot) -->
     <main class="app-main" id="chatMainView">
       
-      <!-- Left Column / Top Stage: Interactive Kuromi Mascot Stage -->
-      <section class="kuromi-stage-card">
-        <div class="stage-ribbon-tag">🎀 Bạn Thân Của Bé Bảo Hân 🎀</div>
-
-        <!-- Chuyển Đổi Chế Độ Trực Tiếp Trong Cột Bạn Thân (Tối ưu diện tích cho Bảng Trò Chuyện) -->
-        <nav class="stage-mode-nav" aria-label="Chuyển chế độ hoạt động">
-          <button type="button" class="stage-mode-btn mode-tab-pill active" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
-            <span class="mode-icon">🎀</span>
-            <span class="mode-title">Bạn Nhí Kuromi</span>
-          </button>
-          <button type="button" class="stage-mode-btn mode-tab-pill" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và tích lũy ngôi sao">
-            <span class="mode-icon">🎒</span>
-            <span class="mode-title">Trường Học Kuromi</span>
-          </button>
-        </nav>
+      <!-- Left Column: 3 Mục Tách Biệt Theo Thứ Tự -->
+      <aside class="stage-sidebar-column">
         
-        <div class="mascot-display-container">
-          <div class="avatar-halo" id="avatarHalo"></div>
-          <div class="mascot-image-wrapper" id="mascotWrapper">
-            <img src="assets/kuromi_normal.jpg" alt="Kuromi Mascot" id="kuromiAvatarImg" class="mascot-img">
-            <div class="emotion-sparkle" id="emotionSparkle">✨</div>
-          </div>
-          <div class="sound-wave-bars" id="musicVisualizerStage">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </div>
-        </div>
+        <!-- Mục 1: Hàng Bạn Nhí Kuromi -->
+        <button type="button" class="sidebar-mode-row mode-tab-pill active" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
+          <span class="sidebar-row-icon">🎀</span>
+          <span class="sidebar-row-label">Bạn Nhí Kuromi</span>
+          <span class="sidebar-row-dot"></span>
+        </button>
 
-        <div class="mascot-status-bubble">
-          <span class="bubble-arrow"></span>
-          <p id="kuromiStatusText">Chào bé Bảo Hân đáng yêu! Cần xem ảnh, nghe hát hay hỏi Kuromi điều gì nào? 💕</p>
-        </div>
+        <!-- Mục 2: Hàng Trường Học Kuromi -->
+        <button type="button" class="sidebar-mode-row mode-tab-pill" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và săn sao">
+          <span class="sidebar-row-icon">🎒</span>
+          <span class="sidebar-row-label">Trường Học Kuromi</span>
+          <span class="sidebar-row-badge">⭐ Săn Sao</span>
+        </button>
 
-        <!-- Mascot Mood & Fun Interaction Buttons -->
-        <div class="stage-interactions">
-          <button class="stage-action-pill" id="actionDanceBtn">
-            <span>💃</span> Nhún nhảy
-          </button>
-          <button class="stage-action-pill" id="actionSingBtn">
-            <span>🎤</span> Hát bài mới
-          </button>
-          <button class="stage-action-pill" id="actionCheerBtn">
-            <span>💖</span> Tặng tim
-          </button>
-        </div>
-      </section>
+        <!-- Mục 3: Ô Bạn Thân Của Bé Bảo Hân -->
+        <section class="kuromi-stage-card mascot-friend-box">
+          <div class="stage-ribbon-tag">🎀 Bạn Thân Của Bé Bảo Hân 🎀</div>
+          
+          <div class="mascot-display-container">
+            <div class="avatar-halo" id="avatarHalo"></div>
+            <div class="mascot-image-wrapper" id="mascotWrapper">
+              <img src="assets/kuromi_normal.jpg" alt="Kuromi Mascot" id="kuromiAvatarImg" class="mascot-img">
+              <div class="emotion-sparkle" id="emotionSparkle">✨</div>
+            </div>
+            <div class="sound-wave-bars" id="musicVisualizerStage">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+
+          <div class="mascot-status-bubble">
+            <span class="bubble-arrow"></span>
+            <p id="kuromiStatusText">Chào bé Bảo Hân đáng yêu! Cần xem ảnh, nghe hát hay hỏi Kuromi điều gì nào? 💕</p>
+          </div>
+
+          <!-- Mascot Mood & Fun Interaction Buttons -->
+          <div class="stage-interactions">
+            <button class="stage-action-pill" id="actionDanceBtn">
+              <span>💃</span> Nhún nhảy
+            </button>
+            <button class="stage-action-pill" id="actionSingBtn">
+              <span>🎤</span> Hát bài mới
+            </button>
+            <button class="stage-action-pill" id="actionCheerBtn">
+              <span>💖</span> Tặng tim
+            </button>
+          </div>
+        </section>
+      </aside>
 
       <!-- Right Column: Interactive Chat & Multi-Sensory Stream -->
       <section class="chat-display-section">
@@ -240,23 +246,28 @@
     <!-- Main Learning View (Trường Học & Góc Học Tập Kuromi) -->
     <main class="app-main learning-main-view hidden" id="learningMainView">
       
-      <!-- Left Column / Top Stage: Classroom Mascot Stage & Gamification -->
-      <section class="kuromi-stage-card classroom-stage-card">
-        <div class="stage-ribbon-tag classroom-ribbon">🎒 Trường Học Kuromi 🎒</div>
+      <!-- Left Column: 3 Mục Tách Biệt Theo Thứ Tự -->
+      <aside class="stage-sidebar-column">
+        
+        <!-- Mục 1: Hàng Bạn Nhí Kuromi -->
+        <button type="button" class="sidebar-mode-row mode-tab-pill" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
+          <span class="sidebar-row-icon">🎀</span>
+          <span class="sidebar-row-label">Bạn Nhí Kuromi</span>
+          <span class="sidebar-row-dot"></span>
+        </button>
 
-        <!-- Chuyển Đổi Chế Độ Trực Tiếp Trong Cột Bạn Thân -->
-        <nav class="stage-mode-nav" aria-label="Chuyển chế độ hoạt động">
-          <button type="button" class="stage-mode-btn mode-tab-pill" data-mode="chat" title="Bạn Nhí Kuromi - Bé trò chuyện, nghe kể chuyện, nghe hát ca">
-            <span class="mode-icon">🎀</span>
-            <span class="mode-title">Bạn Nhí Kuromi</span>
-          </button>
-          <button type="button" class="stage-mode-btn mode-tab-pill active" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và tích lũy ngôi sao">
-            <span class="mode-icon">🎒</span>
-            <span class="mode-title">Trường Học Kuromi</span>
-          </button>
-        </nav>
+        <!-- Mục 2: Hàng Trường Học Kuromi -->
+        <button type="button" class="sidebar-mode-row mode-tab-pill active" data-mode="learning" title="Trường Học Kuromi - Lớp học, làm bài tập và săn sao">
+          <span class="sidebar-row-icon">🎒</span>
+          <span class="sidebar-row-label">Trường Học Kuromi</span>
+          <span class="sidebar-row-badge">⭐ Săn Sao</span>
+        </button>
 
-        <div class="mascot-display-container">
+        <!-- Mục 3: Ô Trường Học Kuromi (Lớp Học & Gamification) -->
+        <section class="kuromi-stage-card classroom-stage-card">
+          <div class="stage-ribbon-tag classroom-ribbon">🎒 Trường Học Kuromi 🎒</div>
+
+          <div class="mascot-display-container">
           <div class="avatar-halo classroom-halo"></div>
           <div class="mascot-image-wrapper">
             <img src="assets/kuromi_normal.jpg" alt="Kuromi Cô Giáo Nhí" class="mascot-img">
@@ -311,8 +322,9 @@
           </button>
         </div>
       </section>
+    </aside>
 
-      <!-- Right Column: Learning Stations Map & Content -->
+    <!-- Right Column: Learning Stations Map & Content -->
       <section class="learning-display-section">
         
         <!-- Header Banner: 4 Môn Học Cốt Lõi -->

@@ -516,12 +516,12 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
   const chatView = document.getElementById('chatMainView');
   const learnView = document.getElementById('learningMainView');
 
-  // Đồng bộ trạng thái active trên tất cả nút chuyển chế độ trong mọi stage card
-  document.querySelectorAll('.mode-tab-pill[data-mode="chat"], .stage-mode-btn[data-mode="chat"]').forEach(btn => {
+  // Đồng bộ trạng thái active trên tất cả nút chuyển chế độ trong sidebar và stage card
+  document.querySelectorAll('.sidebar-mode-row[data-mode="chat"], .mode-tab-pill[data-mode="chat"], .stage-mode-btn[data-mode="chat"]').forEach(btn => {
     if (mode === 'chat') btn.classList.add('active');
     else btn.classList.remove('active');
   });
-  document.querySelectorAll('.mode-tab-pill[data-mode="learning"], .stage-mode-btn[data-mode="learning"]').forEach(btn => {
+  document.querySelectorAll('.sidebar-mode-row[data-mode="learning"], .mode-tab-pill[data-mode="learning"], .stage-mode-btn[data-mode="learning"]').forEach(btn => {
     if (mode === 'learning') btn.classList.add('active');
     else btn.classList.remove('active');
   });
@@ -2295,7 +2295,10 @@ function openSingerVideo(songKey, cardElement) {
     iframe.setAttribute('allowfullscreen', 'true');
     iframe.setAttribute('playsinline', '1');
     iframe.setAttribute('webkit-playsinline', '1');
-    iframe.src = embedSrc;
+
+    // Cô lập sub-document với meta referrer strict-origin-when-cross-origin để YouTube nhận Origin chuẩn không bao giờ dính lỗi 153
+    const ytIframeDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="referrer" content="strict-origin-when-cross-origin"><style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{width:100%;height:100%;border:none;display:block;}</style></head><body><iframe src="${embedSrc}" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen playsinline webkit-playsinline></iframe></body></html>`;
+    iframe.srcdoc = ytIframeDoc;
     iframe.style.display = 'block';
     videoBox.classList.remove('hidden');
 
@@ -2461,11 +2464,15 @@ function chunkTextForTts(text, maxLen = 100) {
 const GOOGLE_TTS_HOSTS = [
   'https://translate.google.com/translate_tts',
   'https://translate.googleapis.com/translate_tts',
-  'https://translate.google.com.vn/translate_tts'
+  'https://translate.google.com.vn/translate_tts',
+  'https://dict.youdao.com/dictvoice'
 ];
 
 function buildGoogleTtsUrl(text, hostIndex = 0) {
   const host = GOOGLE_TTS_HOSTS[hostIndex % GOOGLE_TTS_HOSTS.length];
+  if (host.includes('youdao')) {
+    return `${host}?audio=${encodeURIComponent(text)}&le=vi`;
+  }
   const client = hostIndex === 1 ? 'gtx' : 'tw-ob';
   return `${host}?ie=UTF-8&tl=vi&client=${client}&q=${encodeURIComponent(text)}`;
 }
@@ -4058,7 +4065,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===========================================================================
   // MODE SWITCHING EVENT LISTENERS (BẠN NHÍ & TRƯỜNG HỌC KUROMI)
   // ===========================================================================
-  document.querySelectorAll('.stage-mode-btn, .mode-tab-pill').forEach(btn => {
+  document.querySelectorAll('.sidebar-mode-row, .stage-mode-btn, .mode-tab-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       const mode = btn.getAttribute('data-mode') || 'chat';
       switchAppMode(mode);
