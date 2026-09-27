@@ -2939,6 +2939,8 @@ body {
   align-items: center;
   gap: 5px;
   transition: var(--transition-smooth);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .math-tool-btn:hover {
@@ -3099,6 +3101,8 @@ body {
   gap: 4px;
   cursor: pointer;
   transition: var(--transition-smooth);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .abc-card-btn:hover, .abc-card-btn.active {
@@ -3177,6 +3181,8 @@ body {
   text-align: center;
   user-select: none;
   min-height: 142px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .flashcard-item:hover {
@@ -3342,6 +3348,8 @@ body {
   transition: var(--transition-smooth);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   text-align: left;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .quiz-choice-btn:hover {
@@ -3676,7 +3684,9 @@ body {
   .learning-activity-window {
     max-width: 740px !important;
     width: 92% !important;
-    max-height: 86vh;
+    min-height: 0 !important;
+    max-height: 88vh !important;
+    max-height: 88dvh !important;
   }
 
   .flashcards-grid {
@@ -3853,7 +3863,9 @@ body {
   .learning-activity-window {
     max-width: 620px !important;
     width: 94% !important;
-    max-height: 86vh;
+    min-height: 0 !important;
+    max-height: 88vh !important;
+    max-height: 88dvh !important;
   }
 
   .activity-modal-body {
@@ -4174,7 +4186,9 @@ body {
 
   .learning-activity-window {
     width: 96% !important;
+    min-height: 0 !important;
     max-height: 92vh !important;
+    max-height: 92dvh !important;
     border-radius: 20px;
   }
 

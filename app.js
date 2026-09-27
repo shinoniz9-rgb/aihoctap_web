@@ -127,6 +127,30 @@ function applyVoiceStyleUi(style) {
   }
 }
 
+function getPersonaSpeakerTitle(voiceStyle = (APP_STATE.settings && APP_STATE.settings.voiceStyle)) {
+  const style = voiceStyle || 'kuromi_anime';
+  switch (style) {
+    case 'google_online': return 'Cô Giáo';
+    case 'fairy': return 'Cô Tiên';
+    case 'device':
+    case 'hoami_cheerful': return 'Chị Họa Mi';
+    case 'kuromi_anime':
+    default: return 'Kuromi';
+  }
+}
+
+function getPersonaPronoun(voiceStyle = (APP_STATE.settings && APP_STATE.settings.voiceStyle)) {
+  const style = voiceStyle || 'kuromi_anime';
+  switch (style) {
+    case 'google_online': return 'Cô';
+    case 'fairy': return 'Cô Tiên';
+    case 'device':
+    case 'hoami_cheerful': return 'Chị';
+    case 'kuromi_anime':
+    default: return 'tớ';
+  }
+}
+
 function saveChatHistory(item) {
   try {
     const raw = localStorage.getItem('kuromi_chat_history');
@@ -578,7 +602,8 @@ function switchAppMode(mode, playSoundAndSpeech = true) {
     }
 
     if (playSoundAndSpeech && APP_STATE.ttsEnabled) {
-      speakText(`Chào mừng bé ${childName} đến với Lớp Học Kuromi! Hôm nay bé muốn cùng Kuromi khám phá trạm học tập nào nào?`);
+      const speaker = getPersonaSpeakerTitle();
+      speakText(`Chào mừng bé ${childName} đến với Lớp Học Kuromi! Hôm nay bé muốn cùng ${speaker} khám phá trạm học tập nào nào?`);
     }
   } else {
     if (learnView) {
@@ -602,7 +627,8 @@ function awardLearningStar(amount = 1, customMsg = '') {
   saveLearningData({ stars: LEARNING_STATE.stars });
 
   const childName = APP_STATE.settings.childName || 'Bảo Hân';
-  const msg = customMsg || `Kuromi tặng bé ${childName} ${amount} ngôi sao sáng! Bé giỏi quá! ⭐`;
+  const speaker = getPersonaSpeakerTitle();
+  const msg = customMsg || `${speaker} tặng bé ${childName} ${amount} ngôi sao sáng! Bé giỏi quá! ⭐`;
   if (APP_STATE.ttsEnabled) {
     speakText(msg);
   }
@@ -770,10 +796,13 @@ const LEARNING_ACTIVITIES = {
           </div>
         `;
 
+        const speaker = getPersonaSpeakerTitle();
+        const pronoun = getPersonaPronoun();
+
         if (APP_STATE.ttsEnabled) {
           const speechText = isSub
-            ? `Bé ${childName} tính cùng Kuromi nhé: ${q.leftCount} trừ ${q.rightCount} bằng mấy nào?`
-            : `Bé ${childName} tính cùng Kuromi nhé: ${q.leftCount} cộng ${q.rightCount} bằng mấy nào?`;
+            ? `Bé ${childName} tính cùng ${speaker} nhé: ${q.leftCount} trừ ${q.rightCount} bằng mấy nào?`
+            : `Bé ${childName} tính cùng ${speaker} nhé: ${q.leftCount} cộng ${q.rightCount} bằng mấy nào?`;
           speakText(speechText);
         }
 
@@ -786,7 +815,7 @@ const LEARNING_ACTIVITIES = {
             scoreCorrect = 0;
             solvedSet.clear();
             if (APP_STATE.ttsEnabled) {
-              speakText(`Kuromi đã làm mới bài toán rồi! Bé ${childName} làm lại từ đầu cùng tớ nhé!`);
+              speakText(`${speaker} đã làm mới bài toán rồi! Bé ${childName} làm lại từ đầu cùng ${pronoun} nhé!`);
             }
             renderQuestion();
           });
@@ -828,11 +857,11 @@ const LEARNING_ACTIVITIES = {
               }, 2200);
             } else {
               btn.classList.add('wrong');
-              feedback.innerHTML = `😅 Bé ${childName} đếm lại que tính hoa quả cùng Kuromi một lần nữa nhé!`;
+              feedback.innerHTML = `😅 Bé ${childName} đếm lại que tính hoa quả cùng ${speaker} một lần nữa nhé!`;
               feedback.style.color = '#ff80ab';
               playSfx('pop');
               if (APP_STATE.ttsEnabled) {
-                speakText(`Chưa đúng rồi bé ơi, bé đếm lại ngón tay cùng Kuromi nhé!`);
+                speakText(`Chưa đúng rồi bé ơi, bé đếm lại ngón tay cùng ${speaker} nhé!`);
               }
               setTimeout(() => btn.classList.remove('wrong'), 600);
             }
@@ -881,10 +910,12 @@ const LEARNING_ACTIVITIES = {
         { letter: 'Y', emoji: '🩺', word: 'Y Tế' }
       ];
 
+      const speaker = getPersonaSpeakerTitle();
+
       container.innerHTML = `
         <div style="text-align: center; margin-bottom: 12px;">
           <p style="font-size: 0.9rem; color: var(--kuromi-lavender);">
-            Bé chạm vào bất kỳ chữ cái nào để nghe Kuromi đọc chuẩn tiếng Việt nhé:
+            Bé chạm vào bất kỳ chữ cái nào để nghe ${speaker} đọc chuẩn tiếng Việt nhé:
           </p>
         </div>
         <div class="abc-board-grid">
@@ -907,7 +938,8 @@ const LEARNING_ACTIVITIES = {
           const word = btn.getAttribute('data-word');
 
           if (APP_STATE.ttsEnabled) {
-            speakText(`Chữ ${letter}! ${letter} trong ${word}!`);
+            // skipIntro: true để đọc chữ ngay lập tức, không bị trễ tiếng chuông khi bé bấm liên tục
+            speakText(`Chữ ${letter}! ${letter} trong ${word}!`, null, false, true);
           }
         });
       });
@@ -995,7 +1027,7 @@ const LEARNING_ACTIVITIES = {
             </div>
 
             <div class="flashcards-hint-row">
-              <span class="flashcards-hint-text">💡 Bé chạm vào thẻ bài để Kuromi phát âm to rõ và dịch nghĩa nhé:</span>
+              <span class="flashcards-hint-text">💡 Bé chạm vào thẻ bài để ${getPersonaSpeakerTitle()} phát âm to rõ và dịch nghĩa nhé:</span>
             </div>
 
             <div class="flashcards-grid">
@@ -1029,7 +1061,8 @@ const LEARNING_ACTIVITIES = {
             const vi = card.getAttribute('data-vi');
 
             if (APP_STATE.ttsEnabled) {
-              speakText(`${en}! Nghĩa tiếng Việt là ${vi}!`);
+              // skipIntro: true để đọc nhanh ngay lập tức
+              speakText(`${en}! Nghĩa tiếng Việt là ${vi}!`, null, false, true);
             }
           });
         });
@@ -1094,7 +1127,7 @@ const LEARNING_ACTIVITIES = {
 
           <div style="text-align: center; margin-bottom: 12px;">
             <p style="font-size: 0.88rem; color: #fff;">
-              Bé <strong>${childName}</strong> chọn đề tài muốn khám phá nhé (Kuromi sẽ giải thích ngay):
+              Bé <strong>${childName}</strong> chọn đề tài muốn khám phá nhé (${getPersonaSpeakerTitle()} sẽ giải thích ngay):
             </p>
           </div>
 
@@ -1158,6 +1191,7 @@ const LEARNING_ACTIVITIES = {
     icon: '🎒✏️',
     render: (container) => {
       const childName = APP_STATE.settings.childName || 'Bảo Hân';
+      const speaker = getPersonaSpeakerTitle();
       const sampleExercises = [
         { cat: 'math', title: 'Toán có lời văn', content: 'Mai có 7 bông hoa, Mai tặng bạn Lan 3 bông hoa. Hỏi bạn Mai còn lại bao nhiêu bông hoa?' },
         { cat: 'math', title: 'Điền dấu so sánh', content: 'Bé hãy điền dấu >, < hoặc = vào phép tính: 8 + 1 ... 10 - 2' },
@@ -1176,9 +1210,9 @@ const LEARNING_ACTIVITIES = {
             </label>
             <textarea id="homeworkDirectInput" class="homework-textarea" placeholder="Ví dụ: Cô giáo giao bài toán: Có 5 quả táo, mẹ mua thêm 4 quả táo nữa, hỏi có tất cả bao nhiêu quả?..."></textarea>
             <div class="homework-actions-row">
-              <span style="font-size: 0.78rem; color: var(--kuromi-lavender);">Kuromi sẽ giải thích cặn kẽ từng bước, không giải hộ!</span>
+              <span style="font-size: 0.78rem; color: var(--kuromi-lavender);">${speaker} sẽ giải thích cặn kẽ từng bước, không giải hộ!</span>
               <button id="solveHomeworkBtn" class="station-launch-btn btn-homework" style="padding: 8px 18px; font-size: 0.88rem; width: auto;">
-                <span>🚀 Nhờ Kuromi Chỉ Dẫn</span>
+                <span>🚀 Nhờ ${speaker} Chỉ Dẫn</span>
               </button>
             </div>
           </div>
@@ -1212,7 +1246,7 @@ const LEARNING_ACTIVITIES = {
 
         closeLearningModal();
         switchAppMode('chat');
-        handleChildSubmit(`Kuromi ơi, hãy làm gia sư hướng dẫn bé ${childName} tư duy từng bước để giải bài tập này nhé: ${question}`);
+        handleChildSubmit(`${speaker} ơi, hãy làm gia sư hướng dẫn bé ${childName} tư duy từng bước để giải bài tập này nhé: ${question}`);
       });
 
       // Sample click
@@ -1221,7 +1255,7 @@ const LEARNING_ACTIVITIES = {
           const content = btn.getAttribute('data-content');
           closeLearningModal();
           switchAppMode('chat');
-          handleChildSubmit(`Kuromi ơi, giảng bài tập này cho bé ${childName} với: ${content}`);
+          handleChildSubmit(`${speaker} ơi, giảng bài tập này cho bé ${childName} với: ${content}`);
         });
       });
     }
@@ -1371,8 +1405,10 @@ const LEARNING_ACTIVITIES = {
           </div>
         `;
 
+        const speaker = getPersonaSpeakerTitle();
+
         if (APP_STATE.ttsEnabled) {
-          speakText(`Kuromi đố bé ${childName} nhé: ${q.question}`);
+          speakText(`${speaker} đố bé ${childName} nhé: ${q.question}`);
         }
 
         // Reset button
@@ -1384,7 +1420,7 @@ const LEARNING_ACTIVITIES = {
             scoreCorrect = 0;
             solvedSet.clear();
             if (APP_STATE.ttsEnabled) {
-              speakText(`Kuromi đã làm mới bộ câu đố rồi, bé ${childName} cùng giải lại nhé!`);
+              speakText(`${speaker} đã làm mới bộ câu đố rồi, bé ${childName} cùng giải lại nhé!`);
             }
             renderRiddle();
           });
@@ -1421,7 +1457,7 @@ const LEARNING_ACTIVITIES = {
               feedback.innerHTML = `🎉 ${q.explanation} Thưởng bé ${childName} 2 sao! ⭐⭐`;
               feedback.className = 'quiz-feedback-box is-correct-feedback';
               playSfx('fanfare');
-              awardLearningStar(2, `${q.explanation} Kuromi thưởng bé ${childName} hai ngôi sao sáng!`);
+              awardLearningStar(2, `${q.explanation} ${speaker} thưởng bé ${childName} hai ngôi sao sáng!`);
 
               setTimeout(() => {
                 isAnswering = false;
@@ -2583,7 +2619,8 @@ function isMaleVoiceName(name) {
   return n.includes('namminh') || n.includes('nam minh') || 
          (n.includes('male') && !n.includes('female')) || 
          n.includes('trai') || n.includes('boy') || n.includes('man ') || 
-         n.includes('david') || n.includes('george');
+         n.includes(' minh') || n.endsWith('minh') ||
+         n.includes('david') || n.includes('george') || n.includes('paul');
 }
 
 // Bộ lọc bảo vệ 100% tiếng Việt chuẩn NỮ (Tuyệt đối loại bỏ giọng nam Nam Minh)
@@ -2683,6 +2720,9 @@ function formatKidTextForVoicePersona(text, voiceStyle = 'kuromi_anime') {
   if (voiceStyle === 'fairy') {
     // Du dương, êm đềm, khoảng nghỉ nhẹ nhàng như ru ngủ
     str = str.replace(/([.!?])\s+/g, '... ');
+  } else if (voiceStyle === 'google_online') {
+    // Chuẩn mực, mô phạm sư phạm từ tốn
+    str = str.replace(/;\s*/g, ', ');
   }
   return str;
 }
@@ -2882,8 +2922,8 @@ function speakWithGoogleTts(chunks, options = {}, onComplete, onFallback) {
   playNextChunk();
 }
 
-// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG NỮ TIẾNG VIỆT TRUYỀN CẢM XÚC - KHÁC BIỆT HOÀN TOÀN
-function speakText(text, onComplete, force = false) {
+// Hàm đọc tin nhắn chính với 4 PHONG CÁCH GIỌNG NỮ TIẾNG VIỆT TRUYỀN CẢM XÚC - ĐỒNG BỘ 100% TRÊN MÁY TÍNH, MOBILE & IPAD
+function speakText(text, onComplete, force = false, skipIntro = false) {
   if (!APP_STATE.ttsEnabled && !force) {
     if (onComplete) onComplete();
     return;
@@ -2904,107 +2944,96 @@ function speakText(text, onComplete, force = false) {
   const voiceStyle = APP_STATE.settings.voiceStyle || 'kuromi_anime';
   const userRate = APP_STATE.settings.ttsRate || 1.05;
   const rateScale = userRate / 1.05;
-  const isApple = isAppleDevice();
   const viVoice = getVietnameseVoice(voiceStyle);
   const formattedText = formatKidTextForVoicePersona(cleanText, voiceStyle);
   const chunks = chunkTextForTts(formattedText, 100);
 
-  // Phát nhạc hiệu mở đầu độc quyền theo phong cách giọng
-  playPersonaIntro(voiceStyle);
+  // Phát nhạc hiệu mở đầu độc quyền theo phong cách giọng (bỏ qua khi lật thẻ bài nhanh)
+  if (!skipIntro) {
+    playPersonaIntro(voiceStyle);
+  }
+
+  // ĐỒNG BỘ TUYỆT ĐỐI CẢ 4 GIỌNG NỮ (100% NỮ STUDIO TRÊN CẢ PC, IPHONE, IPAD, ANDROID):
+  // Ưu tiên Google TTS Tiếng Việt chuẩn Studio (bảo đảm âm sắc nữ thuần khiết, chính xác cao độ và nhịp điệu trên mọi nền tảng).
+  // Tự động chuyển đổi mượt mà sang Web Speech API nếu thiết bị mất kết nối mạng.
 
   // PHONG CÁCH 1: 🎀 BÉ KUROMI HOẠT HÌNH (100% NỮ HOẠT HÌNH - Nhí Nhảnh, Ngọt Ngào, Sanrio)
-  // Cao độ cao (pitch 1.50), nhịp điệu nhanh vui tươi (rate 1.15), pitch shift formant cao (+4.3 semitones)
+  // Cao độ cao (+4.3 semitones), nhịp điệu nhanh vui tươi (rate 1.28)
   if (voiceStyle === 'kuromi_anime') {
-    if (viVoice) {
-      speakWithWebSpeech(formattedText, {
-        rate: 1.15 * rateScale,
-        pitch: 1.50,
-        voice: viVoice,
-        persona: voiceStyle
-      }, onComplete, () => {
-        speakWithGoogleTts(chunks, {
-          rate: 1.28 * rateScale,
-          preservesPitch: false
+    speakWithGoogleTts(chunks, {
+      rate: 1.28 * rateScale,
+      preservesPitch: false,
+      persona: voiceStyle
+    }, onComplete, () => {
+      if (viVoice) {
+        speakWithWebSpeech(formattedText, {
+          rate: 1.15 * rateScale,
+          pitch: 1.50,
+          voice: viVoice,
+          persona: voiceStyle
         }, onComplete);
-      });
-    } else {
-      speakWithGoogleTts(chunks, {
-        rate: 1.28 * rateScale,
-        preservesPitch: false
-      }, onComplete);
-    }
+      } else if (onComplete) onComplete();
+    });
     return;
   }
 
   // PHONG CÁCH 2: 👩‍🏫 CÔ GIÁO HIỀN DỊU (100% NỮ SƯ PHẠM - Trầm Ấm, Mẫu Mực, Tròn Vành Rõ Chữ)
-  // Cao độ nữ tự nhiên (pitch 1.02), nhịp điệu từ tốn (rate 0.92), bảo toàn âm sắc nữ tự nhiên mẫu mực
+  // Cao độ nữ tự nhiên (preservesPitch: true), nhịp điệu từ tốn (rate 0.94)
   if (voiceStyle === 'google_online') {
-    if (viVoice) {
-      speakWithWebSpeech(formattedText, {
-        rate: 0.92 * rateScale,
-        pitch: 1.02,
-        voice: viVoice,
-        persona: voiceStyle
-      }, onComplete, () => {
-        speakWithGoogleTts(chunks, {
-          rate: 0.94 * rateScale,
-          preservesPitch: true
+    speakWithGoogleTts(chunks, {
+      rate: 0.94 * rateScale,
+      preservesPitch: true, // Bảo toàn âm sắc nữ tự nhiên mẫu mực
+      persona: voiceStyle
+    }, onComplete, () => {
+      if (viVoice) {
+        speakWithWebSpeech(formattedText, {
+          rate: 0.92 * rateScale,
+          pitch: 1.02,
+          voice: viVoice,
+          persona: voiceStyle
         }, onComplete);
-      });
-    } else {
-      speakWithGoogleTts(chunks, {
-        rate: 0.94 * rateScale,
-        preservesPitch: true
-      }, onComplete);
-    }
+      } else if (onComplete) onComplete();
+    });
     return;
   }
 
   // PHONG CÁCH 3: 🧚 CÔ TIÊN DỊU ÊM (100% NỮ THẦN TIÊN NGỌT NGÀO - HUYỀN ẢO, DU DƯƠNG RU NGỦ)
-  // Cao độ nữ thanh thoát, ngọt ngào (pitch 1.25), nhịp điệu êm dịu (rate 0.88), âm sắc nữ tiên dịu ngọt (+1 semitone)
+  // Cao độ thanh thoát dịu dàng (+1.0 semitone), nhịp điệu êm dịu (rate 1.04)
   if (voiceStyle === 'fairy') {
-    if (viVoice) {
-      speakWithWebSpeech(formattedText, {
-        rate: 0.88 * rateScale,
-        pitch: 1.25,
-        voice: viVoice,
-        persona: voiceStyle
-      }, onComplete, () => {
-        speakWithGoogleTts(chunks, {
-          rate: 1.06 * rateScale,
-          preservesPitch: false // Nâng nhẹ cao độ nữ thanh thoát như tiên nữ
+    speakWithGoogleTts(chunks, {
+      rate: 1.04 * rateScale,
+      preservesPitch: false, // Nâng nhẹ cao độ nữ thanh thoát như tiên nữ
+      persona: voiceStyle
+    }, onComplete, () => {
+      if (viVoice) {
+        speakWithWebSpeech(formattedText, {
+          rate: 0.88 * rateScale,
+          pitch: 1.25,
+          voice: viVoice,
+          persona: voiceStyle
         }, onComplete);
-      });
-    } else {
-      speakWithGoogleTts(chunks, {
-        rate: 1.06 * rateScale,
-        preservesPitch: false
-      }, onComplete);
-    }
+      } else if (onComplete) onComplete();
+    });
     return;
   }
 
   // PHONG CÁCH 4: 🌸 CHỊ HỌA MI TƯƠI VUI (100% NỮ TRẺ TRUNG - Trong Trẻo, Hoạt Bát, Sôi Nổi & Hát Ca)
-  // Cao độ trong trẻo tươi sáng (pitch 1.35), nhịp điệu rộn ràng (rate 1.08), âm sắc chị gái sôi nổi (+2.8 semitones)
+  // Cao độ tươi vui lí lắc (+2.8 semitones), nhịp điệu rộn ràng (rate 1.18)
   if (voiceStyle === 'device' || voiceStyle === 'hoami_cheerful') {
-    if (viVoice) {
-      speakWithWebSpeech(formattedText, {
-        rate: 1.08 * rateScale,
-        pitch: 1.35,
-        voice: viVoice,
-        persona: voiceStyle
-      }, onComplete, () => {
-        speakWithGoogleTts(chunks, {
-          rate: 1.18 * rateScale,
-          preservesPitch: false // Nâng formant tươi vui hoạt bát của chị gái
+    speakWithGoogleTts(chunks, {
+      rate: 1.18 * rateScale,
+      preservesPitch: false, // Nâng formant tươi vui hoạt bát của chị gái
+      persona: voiceStyle
+    }, onComplete, () => {
+      if (viVoice) {
+        speakWithWebSpeech(formattedText, {
+          rate: 1.08 * rateScale,
+          pitch: 1.35,
+          voice: viVoice,
+          persona: voiceStyle
         }, onComplete);
-      });
-    } else {
-      speakWithGoogleTts(chunks, {
-        rate: 1.18 * rateScale,
-        preservesPitch: false
-      }, onComplete);
-    }
+      } else if (onComplete) onComplete();
+    });
     return;
   }
 }
@@ -3061,6 +3090,12 @@ if (typeof window !== 'undefined') {
         silentUtt.volume = 0.01;
         window.speechSynthesis.speak(silentUtt);
       }
+      // Khóa mở HTML5 Audio trên Mobile / iPad Safari
+      const silentAudio = new Audio();
+      silentAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+      silentAudio.play().then(() => {
+        silentAudio.pause();
+      }).catch(() => {});
     } catch (e) {}
     window.removeEventListener('pointerdown', primeAudioOnGesture, { capture: true });
     window.removeEventListener('touchstart', primeAudioOnGesture, { capture: true });
@@ -3885,7 +3920,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('actionDanceBtn').addEventListener('click', () => {
     playSfx('chime');
     setKuromiState('dancing');
-    document.getElementById('kuromiStatusText').textContent = "La la la~ Bé cùng nhún nhảy theo điệu nhảy Kuromi nào! 💃✨";
+    const danceMsg = "La la la~ Bé cùng nhún nhảy theo điệu nhạc nào! 💃✨";
+    document.getElementById('kuromiStatusText').textContent = danceMsg;
+    if (APP_STATE.ttsEnabled) {
+      speakText(danceMsg);
+    }
     setTimeout(() => setKuromiState('normal'), 4000);
   });
 
@@ -3898,8 +3937,13 @@ document.addEventListener('DOMContentLoaded', () => {
     playSfx('heart');
     setKuromiState('happy');
     const childName = APP_STATE.settings.childName || 'Bảo Hân';
-    document.getElementById('kuromiStatusText').textContent = `Yêu bé ${childName} nhất trần đời! Kuromi tặng bé một triệu trái tim hồng nè! 💖💖💖`;
+    const speaker = getPersonaSpeakerTitle();
+    const cheerMsg = `Yêu bé ${childName} nhất trần đời! ${speaker} tặng bé một triệu trái tim hồng nè! 💖💖💖`;
+    document.getElementById('kuromiStatusText').textContent = cheerMsg;
     playRealisticSound('cat');
+    if (APP_STATE.ttsEnabled) {
+      speakText(`Yêu bé ${childName} nhất trần đời! ${speaker} tặng bé một triệu trái tim hồng nè!`);
+    }
   });
 
   // TTS & SFX Toggles
